@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "TFG_Unreal",
+			"Path": "../Source/TFG_Unreal.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "TFG_UnrealEditor",
+			"Path": "../Source/TFG_UnrealEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
