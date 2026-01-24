@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Blueprint/UserWidgetBlueprint.h"
 #include "MainMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TFG_UNREAL_API UMainMenu : public UUserWidget
+class TFG_UNREAL_API UMainMenu : public UUserWidgetBlueprint
 {
 	GENERATED_BODY()
 	
