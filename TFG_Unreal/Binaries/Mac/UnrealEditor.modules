@@ -2,6 +2,6 @@
 	"BuildId": "47537391",
 	"Modules": 
 	{
-		"TFG_Unreal": "UnrealEditor-TFG_Unreal-6392.dylib"
+		"TFG_Unreal": "UnrealEditor-TFG_Unreal.dylib"
 	}
 }
