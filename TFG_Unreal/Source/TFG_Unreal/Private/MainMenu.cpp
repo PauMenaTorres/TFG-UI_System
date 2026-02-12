@@ -31,8 +31,6 @@ void UMainMenu::OnStartClicked()
     
     RemoveFromParent();
     
-    delete this;
-    
     UGameplayStatics::OpenLevel(GetWorld(), FName("LevelTest"));
 }
 
