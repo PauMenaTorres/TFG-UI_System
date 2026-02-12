@@ -18,9 +18,19 @@ class TFG_UNREAL_API UModularMenu : public UUserWidget
 protected:
 
     virtual void NativePreConstruct() override;
+    virtual void SynchronizeProperties() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu Config")
     TArray<FUIElementConfig> MenuElements;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu Config")
+    UUITheme* MenuTheme = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu Config")
+    TEnumAsByte<EHorizontalAlignment> MenuHorizontalAlignment = HAlign_Center;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu Config")
+    TEnumAsByte<EVerticalAlignment> MenuVerticalAlignment = VAlign_Center;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu Config")
     UTexture2D* BackgroundImage = nullptr;

@@ -197,3 +197,40 @@ struct FUIElementConfig
         meta = (EditCondition = "Type == EUIElementType::Spacer", EditConditionHides))
     float SpacerHeight = 20.0f;
 };
+
+UCLASS(BlueprintType)
+class TFG_UNREAL_API UUITheme : public UDataAsset
+{
+    GENERATED_BODY()
+
+public:
+    // Button Style
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    UTexture2D* ButtonNormalTexture = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    UTexture2D* ButtonHoveredTexture = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    UTexture2D* ButtonPressedTexture = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    FLinearColor ButtonTextColor = FLinearColor::White;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    int32 ButtonFontSize = 24;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Button")
+    FVector2D ButtonSize = FVector2D(300.0f, 60.0f);
+
+    // Label Style
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Label")
+    FLinearColor LabelTextColor = FLinearColor::White;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|Label")
+    int32 LabelFontSize = 48;
+
+    // General
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Theme|General")
+    UTexture2D* BackgroundImage = nullptr;
+};

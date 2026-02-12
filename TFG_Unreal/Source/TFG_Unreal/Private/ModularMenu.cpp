@@ -36,6 +36,12 @@ void UModularMenu::NativePreConstruct()
     PopulateMenu();
 }
 
+void UModularMenu::SynchronizeProperties()
+{
+    Super::SynchronizeProperties();
+    PopulateMenu();
+}
+
 void UModularMenu::BuildWidgetTree()
 {
     CanvasPanel = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), TEXT("CanvasPanel"));
@@ -48,21 +54,55 @@ void UModularMenu::BuildWidgetTree()
 
     GridPanel = WidgetTree->ConstructWidget<UGridPanel>(UGridPanel::StaticClass(), TEXT("GridPanel"));
     UCanvasPanelSlot* GSlot = CanvasPanel->AddChildToCanvas(GridPanel);
-    GSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
-    GSlot->SetOffsets(FMargin(0.0f));
+    GSlot->SetAutoSize(true);
 }
 
 void UModularMenu::SetupBackground()
 {
-    if (BackgroundWidget && BackgroundImage)
+    if (BackgroundWidget)
     {
-        BackgroundWidget->SetBrushFromTexture(BackgroundImage);
+        if (MenuTheme && MenuTheme->BackgroundImage)
+        {
+            BackgroundWidget->SetBrushFromTexture(MenuTheme->BackgroundImage);
+        }
+        else if (BackgroundImage)
+        {
+            BackgroundWidget->SetBrushFromTexture(BackgroundImage);
+        }
     }
 }
 
 void UModularMenu::PopulateMenu()
 {
-    if (!GridPanel) return;
+    if (!GridPanel || !CanvasPanel) return;
+
+    // Update Menu Alignment
+    if (UCanvasPanelSlot* GSlot = Cast<UCanvasPanelSlot>(GridPanel->Slot))
+    {
+        FVector2D Anchor(0.5f, 0.5f);
+        FVector2D Alignment(0.5f, 0.5f);
+
+        switch (MenuHorizontalAlignment)
+        {
+        case HAlign_Left: Anchor.X = 0.0f; Alignment.X = 0.0f; break;
+        case HAlign_Center: Anchor.X = 0.5f; Alignment.X = 0.5f; break;
+        case HAlign_Right: Anchor.X = 1.0f; Alignment.X = 1.0f; break;
+        case HAlign_Fill: Anchor.X = 0.5f; Alignment.X = 0.5f; break; // Fill not supported for point anchoring
+        }
+
+        switch (MenuVerticalAlignment)
+        {
+        case VAlign_Top: Anchor.Y = 0.0f; Alignment.Y = 0.0f; break;
+        case VAlign_Center: Anchor.Y = 0.5f; Alignment.Y = 0.5f; break;
+        case VAlign_Bottom: Anchor.Y = 1.0f; Alignment.Y = 1.0f; break;
+        case VAlign_Fill: Anchor.Y = 0.5f; Alignment.Y = 0.5f; break;
+        }
+
+        GSlot->SetAnchors(FAnchors(Anchor.X, Anchor.Y));
+        GSlot->SetAlignment(Alignment);
+        GSlot->SetAutoSize(true);
+        GSlot->SetOffsets(FMargin(0.0f));
+    }
 
     TArray<UWidget*> Children = GridPanel->GetAllChildren();
     for (UWidget* Child : Children)
@@ -134,32 +174,50 @@ void UModularMenu::CreateButton(const FUIElementConfig& Config, int32 AutoRow)
     UTextBlock* Label = WidgetTree->ConstructWidget<UTextBlock>();
 
     Label->SetText(Config.ButtonText);
-    Label->SetColorAndOpacity(FSlateColor(Config.ButtonTextColor));
+
+    FSlateColor TextColor = FSlateColor(Config.ButtonTextColor);
+    int32 FontSize = Config.ButtonFontSize;
+    FVector2D BtnSize = Config.ButtonSize;
+    UTexture2D* NormalTex = Config.ButtonNormalTexture;
+    UTexture2D* HoveredTex = Config.ButtonHoveredTexture;
+    UTexture2D* PressedTex = Config.ButtonPressedTexture;
+
+    if (MenuTheme)
+    {
+        TextColor = FSlateColor(MenuTheme->ButtonTextColor);
+        FontSize = MenuTheme->ButtonFontSize;
+        BtnSize = MenuTheme->ButtonSize;
+        if (MenuTheme->ButtonNormalTexture) NormalTex = MenuTheme->ButtonNormalTexture;
+        if (MenuTheme->ButtonHoveredTexture) HoveredTex = MenuTheme->ButtonHoveredTexture;
+        if (MenuTheme->ButtonPressedTexture) PressedTex = MenuTheme->ButtonPressedTexture;
+    }
+
+    Label->SetColorAndOpacity(TextColor);
 
     FSlateFontInfo Font = Label->GetFont();
-    Font.Size = Config.ButtonFontSize;
+    Font.Size = FontSize;
     Label->SetFont(Font);
 
     Button->AddChild(Label);
 
     FButtonStyle BtnStyle = Button->GetStyle();
-    BtnStyle.Normal.ImageSize = Config.ButtonSize;
-    BtnStyle.Hovered.ImageSize = Config.ButtonSize;
-    BtnStyle.Pressed.ImageSize = Config.ButtonSize;
+    BtnStyle.Normal.ImageSize = BtnSize;
+    BtnStyle.Hovered.ImageSize = BtnSize;
+    BtnStyle.Pressed.ImageSize = BtnSize;
 
-    if (Config.ButtonNormalTexture)
+    if (NormalTex)
     {
-        BtnStyle.Normal.SetResourceObject(Config.ButtonNormalTexture);
+        BtnStyle.Normal.SetResourceObject(NormalTex);
         BtnStyle.Normal.DrawAs = ESlateBrushDrawType::Image;
     }
-    if (Config.ButtonHoveredTexture)
+    if (HoveredTex)
     {
-        BtnStyle.Hovered.SetResourceObject(Config.ButtonHoveredTexture);
+        BtnStyle.Hovered.SetResourceObject(HoveredTex);
         BtnStyle.Hovered.DrawAs = ESlateBrushDrawType::Image;
     }
-    if (Config.ButtonPressedTexture)
+    if (PressedTex)
     {
-        BtnStyle.Pressed.SetResourceObject(Config.ButtonPressedTexture);
+        BtnStyle.Pressed.SetResourceObject(PressedTex);
         BtnStyle.Pressed.DrawAs = ESlateBrushDrawType::Image;
     }
     Button->SetStyle(BtnStyle);
@@ -167,7 +225,7 @@ void UModularMenu::CreateButton(const FUIElementConfig& Config, int32 AutoRow)
     ButtonConfigMap.Add(Button, Config);
     Button->OnClicked.AddDynamic(this, &UModularMenu::OnDynamicButtonClicked);
 
-    AddToGrid(Button, Config, AutoRow, Config.ButtonSize);
+    AddToGrid(Button, Config, AutoRow, BtnSize);
 }
 
 void UModularMenu::CreateSlider(const FUIElementConfig& Config, int32 AutoRow)
@@ -233,10 +291,20 @@ void UModularMenu::CreateLabel(const FUIElementConfig& Config, int32 AutoRow)
 {
     UTextBlock* TextBlock = WidgetTree->ConstructWidget<UTextBlock>();
     TextBlock->SetText(Config.LabelText);
-    TextBlock->SetColorAndOpacity(FSlateColor(Config.LabelTextColor));
+    
+    FSlateColor TextColor = FSlateColor(Config.LabelTextColor);
+    int32 FontSize = Config.LabelFontSize;
+
+    if (MenuTheme)
+    {
+        TextColor = FSlateColor(MenuTheme->LabelTextColor);
+        FontSize = MenuTheme->LabelFontSize;
+    }
+
+    TextBlock->SetColorAndOpacity(TextColor);
 
     FSlateFontInfo Font = TextBlock->GetFont();
-    Font.Size = Config.LabelFontSize;
+    Font.Size = FontSize;
     TextBlock->SetFont(Font);
 
     AddToGrid(TextBlock, Config, AutoRow, Config.LabelSize);
