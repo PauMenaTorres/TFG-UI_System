@@ -86,3 +86,6 @@ DerivedDataCache/*
 /TFG_Unreal/Binaries
 /TFG_Unreal/Saved
 /TFG_Unreal/Intermediate
+TFG_Unreal/Intermediate/Build/BuildRules/TFG_UnrealModuleRulesManifest.json
+TFG_Unreal/Intermediate/Build/XmlConfigCache.bin
+/TFG_Unreal/DerivedDataCache
