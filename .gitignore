@@ -189,3 +189,6 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+/TFG_Unity/Library
+/TFG_Unity/Temp
+/TFG_Unity/UserSettings
