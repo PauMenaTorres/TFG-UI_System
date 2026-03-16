@@ -14,11 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModularThemeData
   primaryColor: {r: 1, g: 1, b: 1, a: 1}
   secondaryColor: {r: 0, g: 0, b: 0, a: 1}
-  textFont: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
-  titleFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
+  textFont: {fileID: 0}
+  titleFont: {fileID: 0}
   baseFontSize: 24
   headerFontSize: 36
-  buttonNormalBackground: {fileID: 0}
-  buttonPressedBackground: {fileID: 0}
-  buttonHoveredBackground: {fileID: 0}
-  buttonDisabledBackground: {fileID: 0}
+  buttonNormal:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+  buttonHovered:
+    backgroundType: 0
+    backgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    backgroundSprite: {fileID: 0}
+  buttonPressed:
+    backgroundType: 0
+    backgroundColor: {r: 0.6627451, g: 0.6627451, b: 0.6627451, a: 1}
+    backgroundSprite: {fileID: 0}
+  buttonDisabled:
+    backgroundType: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    backgroundSprite: {fileID: 0}

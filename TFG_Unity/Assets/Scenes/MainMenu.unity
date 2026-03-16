@@ -417,6 +417,10 @@ PrefabInstance:
       propertyPath: useOverride
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1322877915046469490, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: useOverride
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1702260589725906824, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -481,6 +485,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3008702567346560758, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008702567346560758, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: m_SpriteState.m_SelectedSprite
+      value: 
+      objectReference: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 3359034841493209673, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -553,6 +565,14 @@ PrefabInstance:
       propertyPath: themeData
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4467410846685227193, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: useOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4467410846685227193, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: currentTheme
+      value: 
+      objectReference: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
     - target: {fileID: 4659043767377059837, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -706,6 +726,10 @@ PrefabInstance:
     - target: {fileID: 7106127789650529854, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -165.08005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7207476979982211230, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
+      propertyPath: useOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7804918308210246538, guid: cd7cf7a289e6b754b8756ae14b66112a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1457,6 +1481,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7293573379250503778, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}

@@ -14,6 +14,16 @@ public abstract class ModularComponents : MonoBehaviour
         ApplyTheme();
     }
 
+    protected virtual void OnEnable()
+    {
+        currentTheme.OnThemeChanged += ApplyTheme;
+    }
+
+    protected virtual void OnDisable()
+    {
+        currentTheme.OnThemeChanged -= ApplyTheme;
+    }
+
     protected virtual void OnValidate()
     {
         ApplyTheme();

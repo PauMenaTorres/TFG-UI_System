@@ -5,10 +5,12 @@ using UnityEngine.UI;
 public class ModularButton : ModularComponents
 {
     private Button targetButton;
+    private Image buttonImage;
+
     protected override void Awake()
     {
         targetButton = GetComponent<Button>();
-
+        buttonImage = GetComponent<Image>();
         base.Awake();
     }
 
@@ -21,18 +23,53 @@ public class ModularButton : ModularComponents
             targetButton = GetComponent<Button>();
         }
 
-        // 2. EL ESCUDO: Si no hay tema, no hay botón, o activaste el override manual, abortamos y no hay error.
-        if (currentTheme == null || targetButton == null || useOverride) return;
+        if (buttonImage == null)
+        {
+            buttonImage = GetComponent<Image>();
+        }
 
-        ColorBlock buttonColors = targetButton.colors;
+        if (currentTheme == null || useOverride)
+        {
+            return;
+        }
 
-        buttonColors.normalColor = currentTheme.primaryColor;
-        buttonColors.highlightedColor = currentTheme.secondaryColor;
-        buttonColors.pressedColor = currentTheme.primaryColor;
-        buttonColors.selectedColor = currentTheme.primaryColor;
+        ModularStyleBox normalStyle = currentTheme.buttonNormal;
 
-        targetButton.colors = buttonColors;
+        if (normalStyle.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
+        {
+            buttonImage.sprite = null;
+            buttonImage.color = normalStyle.backgroundColor;
 
+            targetButton.transition = Selectable.Transition.ColorTint;
 
+            ColorBlock colorBlock = targetButton.colors;
+            colorBlock.normalColor = normalStyle.backgroundColor;
+            colorBlock.highlightedColor = currentTheme.buttonHovered.backgroundColor;
+            colorBlock.pressedColor = currentTheme.buttonPressed.backgroundColor;
+            colorBlock.disabledColor = currentTheme.buttonDisabled.backgroundColor;
+            colorBlock.selectedColor = normalStyle.backgroundColor;
+
+            targetButton.colors = colorBlock;
+        }
+        else if (normalStyle.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+        {
+            buttonImage.sprite = normalStyle.backgroundSprite;
+            buttonImage.color = Color.white;
+
+            targetButton.transition = Selectable.Transition.SpriteSwap;
+
+            SpriteState spriteState = targetButton.spriteState;
+            spriteState.highlightedSprite = currentTheme.buttonHovered.backgroundSprite;
+            spriteState.pressedSprite = currentTheme.buttonPressed.backgroundSprite;
+            spriteState.disabledSprite = currentTheme.buttonDisabled.backgroundSprite;
+            spriteState.selectedSprite = normalStyle.backgroundSprite;
+
+            targetButton.spriteState = spriteState;
+        }
+        else
+        {
+            targetButton.transition = Selectable.Transition.None;
+            buttonImage.color = Color.clear;
+        }
     }
 }
