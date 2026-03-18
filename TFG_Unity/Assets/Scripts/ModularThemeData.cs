@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using TMPro;
 
-[System.Serializable]
+[Serializable]
 public struct ModularStyleBox
 {
     public enum StyleBoxType 
@@ -61,6 +61,9 @@ public class ModularThemeData : ScriptableObject
     }
     private void OnValidate()
     {
+        generatedTMPTextFont = null;
+        generatedTMPTitleFont = null;
+
         OnThemeChanged?.Invoke();
     }
 }

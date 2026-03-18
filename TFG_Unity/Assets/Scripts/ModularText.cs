@@ -46,5 +46,7 @@ public class ModularText : ModularComponents
 			textComponent.fontSize = currentTheme.baseFontSize;
 			textComponent.color = currentTheme.secondaryColor;
 		}
-	}
+
+        textComponent.SetAllDirty();
+    }
 }
