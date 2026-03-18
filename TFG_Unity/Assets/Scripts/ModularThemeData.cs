@@ -24,15 +24,15 @@ public class ModularThemeData : ScriptableObject
 {
     public event Action OnThemeChanged;
 
-    [Header("Colors Globales")]
+    [Header("Global Colors")]
     public Color primaryColor = Color.white;
     public Color secondaryColor = Color.black;
 
     [Header("Typography")]
     public Font textFont;
     public Font titleFont;
-    public float baseFontSize = 24.0f;
-    public float headerFontSize = 36.0f;
+    public float textFontSize = 24.0f;
+    public float titleFontSize = 36.0f;
 
     private TMP_FontAsset generatedTMPTextFont;
     private TMP_FontAsset generatedTMPTitleFont;

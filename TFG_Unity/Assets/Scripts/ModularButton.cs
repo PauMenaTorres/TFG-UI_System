@@ -4,14 +4,38 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class ModularButton : ModularComponents
 {
+    public ModularStyleBox overrideNormal;
+    public ModularStyleBox overrideHovered;
+    public ModularStyleBox overridePressed;
+    public ModularStyleBox overrideDisabled;
+
     private Button targetButton;
     private Image buttonImage;
+    private bool lastOverrideState;
 
-    protected override void Awake()
+    protected override void Awake() 
     {
         targetButton = GetComponent<Button>();
         buttonImage = GetComponent<Image>();
         base.Awake();
+    }
+
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+
+        if (useOverride && lastOverrideState == false)
+        {
+            if (currentTheme != null)
+            {
+                overrideNormal = currentTheme.buttonNormal;
+                overrideHovered = currentTheme.buttonHovered;
+                overridePressed = currentTheme.buttonPressed;
+                overrideDisabled = currentTheme.buttonDisabled;
+            }
+        }
+
+        lastOverrideState = useOverride;
     }
 
     public override void ApplyTheme()
@@ -28,41 +52,60 @@ public class ModularButton : ModularComponents
             buttonImage = GetComponent<Image>();
         }
 
-        if (currentTheme == null || useOverride)
+        if (currentTheme == null)
         {
             return;
         }
 
-        ModularStyleBox normalStyle = currentTheme.buttonNormal;
+        ModularStyleBox activeNormal;
+        ModularStyleBox activeHovered;
+        ModularStyleBox activePressed;
+        ModularStyleBox activeDisabled;
 
-        if (normalStyle.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
+        if (useOverride)
+        {
+            activeNormal = overrideNormal;
+            activeHovered = overrideHovered;
+            activePressed = overridePressed;
+            activeDisabled = overrideDisabled;
+        }
+        else
+        {
+            activeNormal = currentTheme.buttonNormal;
+            activeHovered = currentTheme.buttonHovered;
+            activePressed = currentTheme.buttonPressed;
+            activeDisabled = currentTheme.buttonDisabled;
+        }
+
+
+        if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
         {
             buttonImage.sprite = null;
-            buttonImage.color = normalStyle.backgroundColor;
+            buttonImage.color = activeNormal.backgroundColor;
 
             targetButton.transition = Selectable.Transition.ColorTint;
 
             ColorBlock colorBlock = targetButton.colors;
-            colorBlock.normalColor = normalStyle.backgroundColor;
-            colorBlock.highlightedColor = currentTheme.buttonHovered.backgroundColor;
-            colorBlock.pressedColor = currentTheme.buttonPressed.backgroundColor;
-            colorBlock.disabledColor = currentTheme.buttonDisabled.backgroundColor;
-            colorBlock.selectedColor = normalStyle.backgroundColor;
+            colorBlock.normalColor = activeNormal.backgroundColor;
+            colorBlock.highlightedColor = activeHovered.backgroundColor;
+            colorBlock.pressedColor = activePressed.backgroundColor;
+            colorBlock.disabledColor = activeDisabled.backgroundColor;
+            colorBlock.selectedColor = activeNormal.backgroundColor;
 
             targetButton.colors = colorBlock;
         }
-        else if (normalStyle.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+        else if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
         {
-            buttonImage.sprite = normalStyle.backgroundSprite;
+            buttonImage.sprite = activeNormal.backgroundSprite;
             buttonImage.color = Color.white;
 
             targetButton.transition = Selectable.Transition.SpriteSwap;
 
             SpriteState spriteState = targetButton.spriteState;
-            spriteState.highlightedSprite = currentTheme.buttonHovered.backgroundSprite;
-            spriteState.pressedSprite = currentTheme.buttonPressed.backgroundSprite;
-            spriteState.disabledSprite = currentTheme.buttonDisabled.backgroundSprite;
-            spriteState.selectedSprite = normalStyle.backgroundSprite;
+            spriteState.highlightedSprite = activeHovered.backgroundSprite;
+            spriteState.pressedSprite = activePressed.backgroundSprite;
+            spriteState.disabledSprite = activeDisabled.backgroundSprite;
+            spriteState.selectedSprite = activeNormal.backgroundSprite;
 
             targetButton.spriteState = spriteState;
         }

@@ -52,8 +52,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b23a183f2b03d40a4c1f55d1a332ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularButton
-  currentTheme: {fileID: 0}
+  currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
   useOverride: 0
+  overrideNormal:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+  overrideHovered:
+    backgroundType: 0
+    backgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    backgroundSprite: {fileID: 0}
+  overridePressed:
+    backgroundType: 0
+    backgroundColor: {r: 0.6627451, g: 0.6627451, b: 0.6627451, a: 1}
+    backgroundSprite: {fileID: 0}
+  overrideDisabled:
+    backgroundType: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    backgroundSprite: {fileID: 0}
 --- !u!222 &2862008965628758244
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -82,7 +98,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -114,10 +130,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_HighlightedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_PressedColor: {r: 0.6627451, g: 0.6627451, b: 0.6627451, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -227,6 +243,14 @@ PrefabInstance:
     - target: {fileID: 509790431449781689, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_Name
       value: Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: textRole
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: useOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_text
