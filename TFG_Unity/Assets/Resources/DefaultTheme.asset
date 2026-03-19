@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: DefaultTheme
   m_EditorClassIdentifier: Assembly-CSharp::ModularThemeData
   primaryColor: {r: 1, g: 1, b: 1, a: 1}
-  secondaryColor: {r: 0, g: 0, b: 0, a: 1}
+  secondaryColor: {r: 1, g: 1, b: 1, a: 1}
   textFont: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
   titleFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
-  baseFontSize: 24
-  headerFontSize: 36
+  textFontSize: 24
+  titleFontSize: 36
   buttonNormal:
     backgroundType: 0
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
