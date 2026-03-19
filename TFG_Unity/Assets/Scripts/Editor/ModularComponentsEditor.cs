@@ -19,7 +19,6 @@ namespace ModularUIEditor
             }
 
             bool enterChildren = true;
-
             while (property.NextVisible(enterChildren))
             {
                 enterChildren = false;
@@ -29,7 +28,7 @@ namespace ModularUIEditor
                     continue;
                 }
 
-                EditorGUILayout.PropertyField(property, true);
+                DrawPropertySmart(property);
             }
 
             if (useOverride != null)
@@ -42,19 +41,53 @@ namespace ModularUIEditor
             {
                 property.Reset();
                 enterChildren = true;
-
                 while (property.NextVisible(enterChildren))
                 {
                     enterChildren = false;
 
-                    if (property.name.StartsWith("override"))
+                    if (!property.name.StartsWith("override"))
                     {
-                        EditorGUILayout.PropertyField(property, true);
+                        continue;
                     }
+
+                    DrawPropertySmart(property);
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void DrawPropertySmart(SerializedProperty property)
+        {
+            if (property.type == "ModularStyleBox")
+            {
+                property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, property.displayName, true);
+                if (property.isExpanded)
+                {
+                    EditorGUI.indentLevel++;
+
+                    SerializedProperty typeProp = property.FindPropertyRelative("backgroundType");
+                    EditorGUILayout.PropertyField(typeProp);
+
+                    int typeValue = typeProp.enumValueIndex;
+
+                    if (typeValue == 0) // SolidColor
+                    {
+                        EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundColor"));
+                    }
+                    else if (typeValue == 1) // Sprite
+                    {
+                        EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundSprite"));
+                        EditorGUILayout.PropertyField(property.FindPropertyRelative("tintColor"));
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(property, true);
+            }
         }
     }
 }

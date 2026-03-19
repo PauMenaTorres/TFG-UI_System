@@ -14,15 +14,15 @@ namespace ModularUIRuntime
         }
 
         [Tooltip("The base sprite that this image will display")]
-        public Sprite baseSprite;
+        [SerializeField] private Sprite baseSprite;
 
         [Tooltip("What color from the theme should the image be tinted with?")]
-        public ImageColorRole colorRole = ImageColorRole.OriginalColor;
+        [SerializeField] private ImageColorRole colorRole = ImageColorRole.OriginalColor;
 
         [Tooltip("Prevent the image from stretching and distorting")]
-        public bool preserveAspect = true;
+        [SerializeField] private bool preserveAspect = true;
 
-        public Color overrideColor = Color.white;
+        [SerializeField] private Color overrideColor = Color.white;
 
         private Image targetImage;
         private bool lastOverrideState;

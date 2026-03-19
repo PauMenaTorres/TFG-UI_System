@@ -13,14 +13,14 @@ namespace ModularUIRuntime
             Title
         }
 
-        public TextStyle textRole;
+        [SerializeField] private TextStyle textRole;
 
-        public Color overridePrimaryColor;
-        public Color overrideSecondaryColor;
-        public Font overrideTextFont;
-        public Font overrideTitleFont;
-        public float overrideTextFontSize = 24.0f;
-        public float overrideTitleFontSize = 36.0f;
+        [SerializeField] private Color overridePrimaryColor;
+        [SerializeField] private Color overrideSecondaryColor;
+        [SerializeField] private Font overrideTextFont;
+        [SerializeField] private Font overrideTitleFont;
+        [SerializeField] private float overrideTextFontSize = 24.0f;
+        [SerializeField] private float overrideTitleFontSize = 36.0f;
 
         private TextMeshProUGUI textComponent;
         private bool lastOverrideState;

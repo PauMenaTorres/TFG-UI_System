@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -133,14 +133,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -306,6 +306,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5273908423554562118}
+  - component: {fileID: 8190287267270127988}
   - component: {fileID: 6104105015972834985}
   m_Layer: 5
   m_Name: Slider
@@ -336,6 +337,52 @@ RectTransform:
   m_AnchoredPosition: {x: -351.40002, y: -178.5}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8190287267270127988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7610477026641118352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc3c8616518d9346a4d60e336503928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularSlider
+  currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
+  useOverride: 0
+  sliderValue: 1
+  size: {x: 160, y: 20}
+  backgroundStyle:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 1}
+  fillStyle:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 1}
+  handleStyle:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 0, b: 0, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 1}
+  overrideBackground:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 0}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideFill:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 0}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideHandle:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 0, b: 0, a: 0}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6104105015972834985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +430,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

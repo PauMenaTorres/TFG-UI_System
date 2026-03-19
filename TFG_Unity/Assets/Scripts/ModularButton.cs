@@ -7,15 +7,15 @@ namespace ModularUIRuntime
     [RequireComponent(typeof(Button))]
     public class ModularButton : ModularComponents
     {
-        public ModularStyleBox overrideNormal;
-        public ModularStyleBox overrideHovered;
-        public ModularStyleBox overridePressed;
-        public ModularStyleBox overrideDisabled;
+        [SerializeField] private ModularStyleBox overrideNormal;
+        [SerializeField] private ModularStyleBox overrideHovered;
+        [SerializeField] private ModularStyleBox overridePressed;
+        [SerializeField] private ModularStyleBox overrideDisabled;
 
         private Button targetButton;
         private Image buttonImage;
         private bool lastOverrideState;
-        public string buttonText = "Button Text";
+        [SerializeField] private string buttonText = "Button Text";
         private TextMeshProUGUI buttonTextChild;
 
         protected override void Awake()

@@ -19,6 +19,15 @@ namespace ModularUIRuntime
 
         public Color backgroundColor;
         public Sprite backgroundSprite;
+        public Color tintColor;
+
+        public ModularStyleBox(StyleBoxType type)
+        {
+            backgroundType = type;
+            backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            backgroundSprite = null;
+            tintColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        }
     }
 
     [CreateAssetMenu(fileName = "ModularThemeData", menuName = "Scriptable Objects/ModularThemeData")]
@@ -27,8 +36,8 @@ namespace ModularUIRuntime
         public event Action OnThemeChanged;
 
         [Header("Global Colors")]
-        public Color primaryColor = Color.white;
-        public Color secondaryColor = Color.black;
+        public Color primaryColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        public Color secondaryColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 
         [Header("Typography")]
         public Font textFont;
@@ -40,10 +49,11 @@ namespace ModularUIRuntime
         private TMP_FontAsset generatedTMPTitleFont;
 
         [Header("Button States (StyleBoxes)")]
-        public ModularStyleBox buttonNormal = new ModularStyleBox { backgroundColor = Color.white };
-        public ModularStyleBox buttonHovered = new ModularStyleBox { backgroundColor = Color.gray };
-        public ModularStyleBox buttonPressed = new ModularStyleBox { backgroundColor = Color.darkGray };
-        public ModularStyleBox buttonDisabled = new ModularStyleBox { backgroundColor = Color.clear };
+        public ModularStyleBox buttonNormal = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
+        public ModularStyleBox buttonHovered = new ModularStyleBox { backgroundColor = new Color(0.7f, 0.7f, 0.7f, 1.0f) };
+        public ModularStyleBox buttonPressed = new ModularStyleBox { backgroundColor = new Color(0.4f, 0.4f, 0.4f, 1.0f) };
+        public ModularStyleBox buttonDisabled = new ModularStyleBox { backgroundColor = new Color(0.2f, 0.2f, 0.2f, 1.0f) };
+
         public TMP_FontAsset GetTextFont()
         {
             if (generatedTMPTextFont == null && textFont != null)
@@ -61,11 +71,11 @@ namespace ModularUIRuntime
             }
             return generatedTMPTitleFont;
         }
+
         private void OnValidate()
         {
             generatedTMPTextFont = null;
             generatedTMPTitleFont = null;
-
             OnThemeChanged?.Invoke();
         }
     }
