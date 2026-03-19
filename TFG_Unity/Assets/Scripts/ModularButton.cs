@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,11 +15,14 @@ namespace ModularUIRuntime
         private Button targetButton;
         private Image buttonImage;
         private bool lastOverrideState;
+        public string buttonText = "Button Text";
+        private TextMeshProUGUI buttonTextChild;
 
         protected override void Awake()
         {
             targetButton = GetComponent<Button>();
             buttonImage = GetComponent<Image>();
+
             base.Awake();
         }
 
@@ -35,6 +39,16 @@ namespace ModularUIRuntime
                     overridePressed = currentTheme.buttonPressed;
                     overrideDisabled = currentTheme.buttonDisabled;
                 }
+            }
+
+            if (buttonTextChild == null)
+            {
+                buttonTextChild = GetComponentInChildren<TextMeshProUGUI>();
+            }
+
+            if (buttonTextChild != null && buttonTextChild.text != buttonText)
+            {
+                buttonTextChild.text = buttonText;
             }
 
             lastOverrideState = useOverride;
