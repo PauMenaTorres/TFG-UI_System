@@ -5,7 +5,7 @@ namespace ModularUIRuntime
     [ExecuteAlways]
     public abstract class ModularComponents : MonoBehaviour
     {
-        [Header("Theme Settings")]
+        [Header("THEME SETTINGS\n")]
         public ModularThemeData currentTheme;
 
         [Tooltip("If is activated this object will igonre the global theme")]
