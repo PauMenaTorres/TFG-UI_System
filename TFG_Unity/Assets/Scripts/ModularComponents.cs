@@ -1,44 +1,47 @@
 using UnityEngine;
 
-[ExecuteAlways]
-public abstract class ModularComponents : MonoBehaviour
+namespace ModularUIRuntime
 {
-    [Header("Theme Settings")]
-    public ModularThemeData currentTheme;
-
-    [Tooltip("If is activated this object will igonre the global theme")]   
-    public bool useOverride = false;
-
-    protected virtual void Awake()
+    [ExecuteAlways]
+    public abstract class ModularComponents : MonoBehaviour
     {
-        ApplyTheme();
-    }
+        [Header("Theme Settings")]
+        public ModularThemeData currentTheme;
 
-    protected virtual void OnEnable()
-    {
-        currentTheme.OnThemeChanged += ApplyTheme;
-    }
+        [Tooltip("If is activated this object will igonre the global theme")]
+        public bool useOverride = false;
 
-    protected virtual void OnDisable()
-    {
-        currentTheme.OnThemeChanged -= ApplyTheme;
-    }
-
-    protected virtual void OnValidate()
-    {
-        ApplyTheme();
-    }
-
-    public virtual void ApplyTheme()
-    {
-        if (currentTheme == null)
+        protected virtual void Awake()
         {
-            currentTheme = Resources.Load<ModularThemeData>("DefaultTheme");
+            ApplyTheme();
         }
 
-        if (currentTheme == null || useOverride)
-        { 
-            return;
+        protected virtual void OnEnable()
+        {
+            currentTheme.OnThemeChanged += ApplyTheme;
+        }
+
+        protected virtual void OnDisable()
+        {
+            currentTheme.OnThemeChanged -= ApplyTheme;
+        }
+
+        protected virtual void OnValidate()
+        {
+            ApplyTheme();
+        }
+
+        public virtual void ApplyTheme()
+        {
+            if (currentTheme == null)
+            {
+                currentTheme = Resources.Load<ModularThemeData>("DefaultTheme");
+            }
+
+            if (currentTheme == null || useOverride)
+            {
+                return;
+            }
         }
     }
 }

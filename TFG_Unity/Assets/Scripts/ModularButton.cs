@@ -1,118 +1,121 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class ModularButton : ModularComponents
+namespace ModularUIRuntime
 {
-    public ModularStyleBox overrideNormal;
-    public ModularStyleBox overrideHovered;
-    public ModularStyleBox overridePressed;
-    public ModularStyleBox overrideDisabled;
-
-    private Button targetButton;
-    private Image buttonImage;
-    private bool lastOverrideState;
-
-    protected override void Awake() 
+    [RequireComponent(typeof(Button))]
+    public class ModularButton : ModularComponents
     {
-        targetButton = GetComponent<Button>();
-        buttonImage = GetComponent<Image>();
-        base.Awake();
-    }
+        public ModularStyleBox overrideNormal;
+        public ModularStyleBox overrideHovered;
+        public ModularStyleBox overridePressed;
+        public ModularStyleBox overrideDisabled;
 
-    protected override void OnValidate()
-    {
-        base.OnValidate();
+        private Button targetButton;
+        private Image buttonImage;
+        private bool lastOverrideState;
 
-        if (useOverride && lastOverrideState == false)
-        {
-            if (currentTheme != null)
-            {
-                overrideNormal = currentTheme.buttonNormal;
-                overrideHovered = currentTheme.buttonHovered;
-                overridePressed = currentTheme.buttonPressed;
-                overrideDisabled = currentTheme.buttonDisabled;
-            }
-        }
-
-        lastOverrideState = useOverride;
-    }
-
-    public override void ApplyTheme()
-    {
-        base.ApplyTheme();
-
-        if (targetButton == null)
+        protected override void Awake()
         {
             targetButton = GetComponent<Button>();
-        }
-
-        if (buttonImage == null)
-        {
             buttonImage = GetComponent<Image>();
+            base.Awake();
         }
 
-        if (currentTheme == null)
+        protected override void OnValidate()
         {
-            return;
+            base.OnValidate();
+
+            if (useOverride && lastOverrideState == false)
+            {
+                if (currentTheme != null)
+                {
+                    overrideNormal = currentTheme.buttonNormal;
+                    overrideHovered = currentTheme.buttonHovered;
+                    overridePressed = currentTheme.buttonPressed;
+                    overrideDisabled = currentTheme.buttonDisabled;
+                }
+            }
+
+            lastOverrideState = useOverride;
         }
 
-        ModularStyleBox activeNormal;
-        ModularStyleBox activeHovered;
-        ModularStyleBox activePressed;
-        ModularStyleBox activeDisabled;
-
-        if (useOverride)
+        public override void ApplyTheme()
         {
-            activeNormal = overrideNormal;
-            activeHovered = overrideHovered;
-            activePressed = overridePressed;
-            activeDisabled = overrideDisabled;
-        }
-        else
-        {
-            activeNormal = currentTheme.buttonNormal;
-            activeHovered = currentTheme.buttonHovered;
-            activePressed = currentTheme.buttonPressed;
-            activeDisabled = currentTheme.buttonDisabled;
-        }
+            base.ApplyTheme();
+
+            if (targetButton == null)
+            {
+                targetButton = GetComponent<Button>();
+            }
+
+            if (buttonImage == null)
+            {
+                buttonImage = GetComponent<Image>();
+            }
+
+            if (currentTheme == null)
+            {
+                return;
+            }
+
+            ModularStyleBox activeNormal;
+            ModularStyleBox activeHovered;
+            ModularStyleBox activePressed;
+            ModularStyleBox activeDisabled;
+
+            if (useOverride)
+            {
+                activeNormal = overrideNormal;
+                activeHovered = overrideHovered;
+                activePressed = overridePressed;
+                activeDisabled = overrideDisabled;
+            }
+            else
+            {
+                activeNormal = currentTheme.buttonNormal;
+                activeHovered = currentTheme.buttonHovered;
+                activePressed = currentTheme.buttonPressed;
+                activeDisabled = currentTheme.buttonDisabled;
+            }
 
 
-        if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
-        {
-            buttonImage.sprite = null;
-            buttonImage.color = activeNormal.backgroundColor;
+            if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
+            {
+                buttonImage.sprite = null;
+                buttonImage.color = activeNormal.backgroundColor;
 
-            targetButton.transition = Selectable.Transition.ColorTint;
+                targetButton.transition = Selectable.Transition.ColorTint;
 
-            ColorBlock colorBlock = targetButton.colors;
-            colorBlock.normalColor = activeNormal.backgroundColor;
-            colorBlock.highlightedColor = activeHovered.backgroundColor;
-            colorBlock.pressedColor = activePressed.backgroundColor;
-            colorBlock.disabledColor = activeDisabled.backgroundColor;
-            colorBlock.selectedColor = activeNormal.backgroundColor;
+                ColorBlock colorBlock = targetButton.colors;
+                colorBlock.normalColor = activeNormal.backgroundColor;
+                colorBlock.highlightedColor = activeHovered.backgroundColor;
+                colorBlock.pressedColor = activePressed.backgroundColor;
+                colorBlock.disabledColor = activeDisabled.backgroundColor;
+                colorBlock.selectedColor = activeNormal.backgroundColor;
 
-            targetButton.colors = colorBlock;
-        }
-        else if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
-        {
-            buttonImage.sprite = activeNormal.backgroundSprite;
-            buttonImage.color = Color.white;
+                targetButton.colors = colorBlock;
+            }
+            else if (activeNormal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+            {
+                buttonImage.sprite = activeNormal.backgroundSprite;
+                buttonImage.color = Color.white;
 
-            targetButton.transition = Selectable.Transition.SpriteSwap;
+                targetButton.transition = Selectable.Transition.SpriteSwap;
 
-            SpriteState spriteState = targetButton.spriteState;
-            spriteState.highlightedSprite = activeHovered.backgroundSprite;
-            spriteState.pressedSprite = activePressed.backgroundSprite;
-            spriteState.disabledSprite = activeDisabled.backgroundSprite;
-            spriteState.selectedSprite = activeNormal.backgroundSprite;
+                SpriteState spriteState = targetButton.spriteState;
+                spriteState.highlightedSprite = activeHovered.backgroundSprite;
+                spriteState.pressedSprite = activePressed.backgroundSprite;
+                spriteState.disabledSprite = activeDisabled.backgroundSprite;
+                spriteState.selectedSprite = activeNormal.backgroundSprite;
 
-            targetButton.spriteState = spriteState;
-        }
-        else
-        {
-            targetButton.transition = Selectable.Transition.None;
-            buttonImage.color = Color.clear;
+                targetButton.spriteState = spriteState;
+            }
+            else
+            {
+                targetButton.transition = Selectable.Transition.None;
+                buttonImage.color = Color.clear;
+            }
         }
     }
 }

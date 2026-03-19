@@ -1,6 +1,6 @@
 using UnityEditor;
 
-[CustomEditor(typeof(ModularButton))]
+[CustomEditor(typeof(ModularUIRuntime.ModularButton))]
 public class ModularButtonEditor : Editor
 {
     private SerializedProperty currentTheme;
