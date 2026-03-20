@@ -101,28 +101,5 @@ namespace ModularUIRuntime
                 ApplyStyle(backgroundImage, activeBG);
             }
         }
-
-        private void ApplyStyle(Image image, ModularStyleBox style)
-        {
-            if (image == null)
-            {
-                return;
-            }
-
-            if (style.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
-            {
-                image.sprite = null;
-                image.color = style.backgroundColor;
-            }
-            else if (style.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
-            {
-                image.sprite = style.backgroundSprite;
-                image.color = style.tintColor;
-            }
-            else
-            {
-                image.color = new Color(0.0f, 0.0f, 0.0f, 0f);
-            }
-        }
     }
 }
