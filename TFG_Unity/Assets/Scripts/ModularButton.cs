@@ -15,7 +15,7 @@ namespace ModularUIRuntime
 
         [Header("Button Content (Proxied to Text Child)")]
         [SerializeField] private string buttonText = "Modular Button";
-        [SerializeField] private TextRole textFontRole = TextRole.Body; // Vuelve el selector
+        [SerializeField] private TextRole textFontRole = TextRole.Body;
         [SerializeField] private TextAlignmentOptions textAlignment = TextAlignmentOptions.Center;
         [SerializeField] private FontStyles fontStyle = FontStyles.Bold;
         [SerializeField] private Color textColor = new Color(0.1f, 0.1f, 0.1f, 1.0f);
@@ -49,6 +49,7 @@ namespace ModularUIRuntime
                 textComponent.alignment = textAlignment;
                 textComponent.fontStyle = fontStyle;
                 textComponent.color = textColor;
+                textComponent.SetAllDirty();
             }
 
             base.OnValidate();
@@ -105,6 +106,11 @@ namespace ModularUIRuntime
         private void ApplyTextStyles()
         {
             if (textComponent == null) return;
+
+            textComponent.text = buttonText;
+            textComponent.alignment = textAlignment;
+            textComponent.fontStyle = fontStyle;
+            textComponent.color = textColor;
 
             if (useOverride)
             {
