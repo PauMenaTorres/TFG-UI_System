@@ -4,23 +4,32 @@ using TMPro;
 namespace ModularUIRuntime
 {
     [RequireComponent(typeof(TextMeshProUGUI))]
-
     public class ModularText : ModularComponents
     {
-        public enum TextStyle
+        public enum TextRole
         {
             Body,
             Title
         }
 
-        [SerializeField] private TextStyle textRole;
+        public enum TextColorRole
+        {
+            Custom,
+            Primary,
+            Secondary
+        }
 
-        [SerializeField] private Color overridePrimaryColor;
-        [SerializeField] private Color overrideSecondaryColor;
-        [SerializeField] private Font overrideTextFont;
-        [SerializeField] private Font overrideTitleFont;
-        [SerializeField] private float overrideTextFontSize = 24.0f;
-        [SerializeField] private float overrideTitleFontSize = 36.0f;
+        [Header("Text Settings")]
+        [SerializeField] private TextRole textRole = TextRole.Body;
+        [SerializeField] private TextColorRole colorRole = TextColorRole.Secondary;
+        [SerializeField] private Color customColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        [SerializeField] private string textContent = "Text Content";
+        [SerializeField] private TextAlignmentOptions alignment = TextAlignmentOptions.Center;
+        [SerializeField] private FontStyles fontStyle = FontStyles.Normal;
+
+        [SerializeField] private Font overrideFont;
+        [SerializeField] private float overrideFontSize = 24.0f;
 
         private TextMeshProUGUI textComponent;
         private bool lastOverrideState;
@@ -35,17 +44,32 @@ namespace ModularUIRuntime
         {
             base.OnValidate();
 
+            if (textComponent == null)
+            {
+                textComponent = GetComponent<TextMeshProUGUI>();
+            }
+
             if (useOverride && lastOverrideState == false)
             {
                 if (currentTheme != null)
                 {
-                    overridePrimaryColor = currentTheme.primaryColor;
-                    overrideSecondaryColor = currentTheme.secondaryColor;
-                    overrideTextFont = currentTheme.textFont;
-                    overrideTitleFont = currentTheme.titleFont;
-                    overrideTextFontSize = currentTheme.textFontSize;
-                    overrideTitleFontSize = currentTheme.titleFontSize;
+                    if (textRole == TextRole.Title)
+                    {
+                        overrideFont = currentTheme.titleFont;
+                        overrideFontSize = currentTheme.titleFontSize;
+                    }
+                    else
+                    {
+                        overrideFont = currentTheme.textFont;
+                        overrideFontSize = currentTheme.textFontSize;
+                    }
                 }
+            }
+
+            bool isButtonChild = transform.parent != null && transform.parent.GetComponent<UnityEngine.UI.Button>() != null;
+            if (!isButtonChild && textComponent != null)
+            {
+                textComponent.text = textContent;
             }
 
             lastOverrideState = useOverride;
@@ -59,65 +83,47 @@ namespace ModularUIRuntime
             {
                 textComponent = GetComponent<TextMeshProUGUI>();
             }
-
             if (currentTheme == null)
             {
                 return;
             }
 
-            Font activeTextFont;
-            Font activeTitleFont;
-            Color activePrimaryColor;
-            Color activeSecondaryColor;
-            float activeTextFontSize;
-            float activeTitleFontSize;
+            textComponent.alignment = alignment;
+            textComponent.fontStyle = fontStyle;
 
             if (useOverride)
             {
-                activeTextFont = overrideTextFont;
-                activeTitleFont = overrideTitleFont;
-                activePrimaryColor = overridePrimaryColor;
-                activeSecondaryColor = overrideSecondaryColor;
-                activeTextFontSize = overrideTextFontSize;
-                activeTitleFontSize = overrideTitleFontSize;
+                if (overrideFont != null)
+                {
+                    textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                }
+                textComponent.fontSize = overrideFontSize;
             }
             else
             {
-                activeTextFont = currentTheme.textFont;
-                activeTitleFont = currentTheme.titleFont;
-                activePrimaryColor = currentTheme.primaryColor;
-                activeSecondaryColor = currentTheme.secondaryColor;
-                activeTextFontSize = currentTheme.textFontSize;
-                activeTitleFontSize = currentTheme.titleFontSize;
-            }
-
-            if (textRole == TextStyle.Title)
-            {
-                if (useOverride && activeTitleFont != null)
-                {
-                    textComponent.font = TMP_FontAsset.CreateFontAsset(activeTitleFont);
-                }
-                else
+                if (textRole == TextRole.Title)
                 {
                     textComponent.font = currentTheme.GetTitleFont();
-                }
-
-                textComponent.fontSize = activeTitleFontSize;
-                textComponent.color = activePrimaryColor;
-            }
-            else if (textRole == TextStyle.Body)
-            {
-                if (useOverride && activeTextFont != null)
-                {
-                    textComponent.font = TMP_FontAsset.CreateFontAsset(activeTextFont);
+                    textComponent.fontSize = currentTheme.titleFontSize;
                 }
                 else
                 {
                     textComponent.font = currentTheme.GetTextFont();
+                    textComponent.fontSize = currentTheme.textFontSize;
                 }
+            }
 
-                textComponent.fontSize = activeTextFontSize;
-                textComponent.color = activeSecondaryColor;
+            if (colorRole == TextColorRole.Primary)
+            {
+                textComponent.color = currentTheme.primaryColor;
+            }
+            else if (colorRole == TextColorRole.Secondary)
+            {
+                textComponent.color = currentTheme.secondaryColor;
+            }
+            else
+            {
+                textComponent.color = customColor;
             }
 
             textComponent.SetAllDirty();

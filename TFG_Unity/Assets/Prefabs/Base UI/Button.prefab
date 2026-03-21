@@ -54,23 +54,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularButton
   currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
   useOverride: 0
-  overrideNormal:
-    backgroundType: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    backgroundSprite: {fileID: 0}
-  overrideHovered:
-    backgroundType: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    backgroundSprite: {fileID: 0}
-  overridePressed:
-    backgroundType: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    backgroundSprite: {fileID: 0}
-  overrideDisabled:
-    backgroundType: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    backgroundSprite: {fileID: 0}
   buttonText: Button Text
+  textFontRole: 0
+  textAlignment: 514
+  fontStyle: 0
+  textColor: {r: 0, g: 0, b: 0, a: 1}
+  backgroundNormal:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  backgroundHovered:
+    backgroundType: 0
+    backgroundColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  backgroundPressed:
+    backgroundType: 0
+    backgroundColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  backgroundDisabled:
+    backgroundType: 0
+    backgroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideNormalBG:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideHoveredBG:
+    backgroundType: 0
+    backgroundColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overridePressedBG:
+    backgroundType: 0
+    backgroundColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideDisabledBG:
+    backgroundType: 0
+    backgroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 0, g: 0, b: 0, a: 0}
+  overrideFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
+  overrideFontSize: 36
 --- !u!222 &2862008965628758244
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -131,10 +161,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    m_PressedColor: {r: 0.6627451, g: 0.6627451, b: 0.6627451, a: 1}
+    m_HighlightedColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    m_PressedColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0}
+    m_DisabledColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -250,12 +280,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: alignment
+      value: 514
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: colorRole
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: useOverride
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_text
-      value: "Mi Bot\xF3n"
+      value: Button Text
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSize
@@ -266,16 +304,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
-      propertyPath: m_fontColor.b
+      propertyPath: m_fontStyle
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSizeBase

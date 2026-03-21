@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 
 namespace ModularUIEditor
 {
@@ -11,13 +12,14 @@ namespace ModularUIEditor
 
             SerializedProperty currentTheme = serializedObject.FindProperty("currentTheme");
             SerializedProperty useOverride = serializedObject.FindProperty("useOverride");
-            SerializedProperty property = serializedObject.GetIterator();
 
+            // 1. Theme always at top
             if (currentTheme != null)
             {
                 EditorGUILayout.PropertyField(currentTheme);
             }
 
+            SerializedProperty property = serializedObject.GetIterator();
             bool enterChildren = true;
             while (property.NextVisible(enterChildren))
             {
@@ -28,7 +30,23 @@ namespace ModularUIEditor
                     continue;
                 }
 
-                DrawPropertySmart(property);
+                if (property.name == "textContent" || property.name == "textRole" ||property.name == "colorRole" || property.name == "customColor" || property.name == "alignment" || property.name == "fontStyle")
+                {
+                    Component comp = target as Component;
+                    if (comp != null && comp.transform.parent != null && comp.transform.parent.GetComponent<UnityEngine.UI.Button>() != null)
+                    {
+                        continue;
+                    }
+                }
+
+                if (property.type == "ModularStyleBox")
+                {
+                    DrawStyleBox(property);
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(property, true);
+                }
             }
 
             if (useOverride != null)
@@ -39,7 +57,7 @@ namespace ModularUIEditor
 
             if (useOverride != null && useOverride.boolValue)
             {
-                property.Reset();
+                property = serializedObject.GetIterator();
                 enterChildren = true;
                 while (property.NextVisible(enterChildren))
                 {
@@ -50,43 +68,43 @@ namespace ModularUIEditor
                         continue;
                     }
 
-                    DrawPropertySmart(property);
+                    if (property.type == "ModularStyleBox")
+                    {
+                        DrawStyleBox(property);
+                    }
+                    else
+                    {
+                        EditorGUILayout.PropertyField(property, true);
+                    }
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawPropertySmart(SerializedProperty property)
+        private void DrawStyleBox(SerializedProperty property)
         {
-            if (property.type == "ModularStyleBox")
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, property.displayName, true);
+            if (property.isExpanded)
             {
-                property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, property.displayName, true);
-                if (property.isExpanded)
+                EditorGUI.indentLevel++;
+
+                SerializedProperty typeProp = property.FindPropertyRelative("backgroundType");
+                EditorGUILayout.PropertyField(typeProp);
+
+                int typeValue = typeProp.enumValueIndex;
+
+                if (typeValue == 0) // SolidColor
                 {
-                    EditorGUI.indentLevel++;
-
-                    SerializedProperty typeProp = property.FindPropertyRelative("backgroundType");
-                    EditorGUILayout.PropertyField(typeProp);
-
-                    int typeValue = typeProp.enumValueIndex;
-
-                    if (typeValue == 0) // SolidColor
-                    {
-                        EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundColor"));
-                    }
-                    else if (typeValue == 1) // Sprite
-                    {
-                        EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundSprite"));
-                        EditorGUILayout.PropertyField(property.FindPropertyRelative("tintColor"));
-                    }
-
-                    EditorGUI.indentLevel--;
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundColor"));
                 }
-            }
-            else
-            {
-                EditorGUILayout.PropertyField(property, true);
+                else if (typeValue == 1) // Sprite
+                {
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundSprite"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("tintColor"));
+                }
+
+                EditorGUI.indentLevel--;
             }
         }
     }
