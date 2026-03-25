@@ -13,7 +13,6 @@ namespace ModularUIEditor
             SerializedProperty currentTheme = serializedObject.FindProperty("currentTheme");
             SerializedProperty useOverride = serializedObject.FindProperty("useOverride");
 
-            // 1. Theme always at top
             if (currentTheme != null)
             {
                 EditorGUILayout.PropertyField(currentTheme);

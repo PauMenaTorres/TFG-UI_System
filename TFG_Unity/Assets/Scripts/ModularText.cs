@@ -70,9 +70,28 @@ namespace ModularUIRuntime
             if (!isButtonChild && textComponent != null)
             {
                 textComponent.text = textContent;
+
+                ModularMainMenu parentMenu = GetComponentInParent<ModularMainMenu>();
+                if (parentMenu != null)
+                {
+                    parentMenu.UpdateTextFromChild(this, textContent);
+                }
             }
 
             lastOverrideState = useOverride;
+        }
+
+        public void UpdateTextFromExternal(string newText)
+        {
+            if (textContent != newText)
+            {
+                textContent = newText;
+                if (textComponent != null)
+                {
+                    textComponent.text = newText;
+                    textComponent.SetAllDirty();
+                }
+            }
         }
 
         public override void ApplyTheme()
@@ -83,6 +102,7 @@ namespace ModularUIRuntime
             {
                 textComponent = GetComponent<TextMeshProUGUI>();
             }
+
             if (currentTheme == null)
             {
                 return;
