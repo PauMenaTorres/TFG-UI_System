@@ -266,6 +266,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_text
+      value: Exit
+      objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -436,6 +440,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_text
+      value: Continue
+      objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -570,6 +578,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_text
+      value: Credits
+      objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -810,6 +822,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_text
+      value: Options
+      objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -944,6 +960,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_text
+      value: Start
+      objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1284,15 +1304,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_sharedMaterial

@@ -41,17 +41,6 @@ namespace ModularUIRuntime
 
         protected override void OnValidate()
         {
-            FetchReferences();
-
-            if (textComponent != null)
-            {
-                textComponent.text = buttonText;
-                textComponent.alignment = textAlignment;
-                textComponent.fontStyle = fontStyle;
-                textComponent.color = textColor;
-                textComponent.SetAllDirty();
-            }
-
             base.OnValidate();
 
             if (useOverride && lastOverrideState == false)
@@ -62,11 +51,33 @@ namespace ModularUIRuntime
                     overrideHoveredBG = backgroundHovered;
                     overridePressedBG = backgroundPressed;
                     overrideDisabledBG = backgroundDisabled;
-                    overrideFont = textFontRole == TextRole.Title ? currentTheme.titleFont : currentTheme.textFont;
-                    overrideFontSize = textFontRole == TextRole.Title ? currentTheme.titleFontSize : currentTheme.textFontSize;
+
+                    if (textFontRole == TextRole.Title)
+                    {
+                        overrideFont = currentTheme.titleFont;
+                        overrideFontSize = currentTheme.titleFontSize;
+                    }
+                    else
+                    {
+                        overrideFont = currentTheme.textFont;
+                        overrideFontSize = currentTheme.textFontSize;
+                    }
                 }
             }
+
             lastOverrideState = useOverride;
+
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (this != null)
+                    {
+                        ApplyTheme();
+                    }
+                };
+            #else
+                ApplyTheme();
+            #endif
         }
 
         public override void ApplyTheme()
@@ -74,7 +85,10 @@ namespace ModularUIRuntime
             base.ApplyTheme();
             FetchReferences();
 
-            if (currentTheme == null) return;
+            if (currentTheme == null)
+            {
+                return;
+            }
 
             ModularStyleBox activeNormal = useOverride ? overrideNormalBG : backgroundNormal;
             ModularStyleBox activeHovered = useOverride ? overrideHoveredBG : backgroundHovered;
@@ -83,6 +97,34 @@ namespace ModularUIRuntime
 
             ApplyBackgroundTransitions(activeNormal, activeHovered, activePressed, activeDisabled);
             ApplyTextStyles();
+
+            if (targetButton != null && targetButton.targetGraphic != null)
+            {
+                targetButton.targetGraphic.canvasRenderer.SetColor(targetButton.colors.normalColor);
+                targetButton.targetGraphic.SetAllDirty();
+            }
+
+            if (textComponent != null)
+            {
+                textComponent.SetAllDirty();
+            }
+
+            #if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.EditorUtility.SetDirty(this);
+
+                    if (targetButton != null && targetButton.targetGraphic != null)
+                    {
+                        UnityEditor.EditorUtility.SetDirty(targetButton.targetGraphic);
+                    }
+
+                    if (textComponent != null)
+                    {
+                        UnityEditor.EditorUtility.SetDirty(textComponent);
+                    }
+                }
+            #endif
         }
 
         private void FetchReferences()
@@ -105,7 +147,10 @@ namespace ModularUIRuntime
 
         private void ApplyTextStyles()
         {
-            if (textComponent == null) return;
+            if (textComponent == null)
+            {
+                return;
+            }
 
             textComponent.text = buttonText;
             textComponent.alignment = textAlignment;
@@ -133,12 +178,16 @@ namespace ModularUIRuntime
                     textComponent.fontSize = currentTheme.textFontSize;
                 }
             }
+
             textComponent.SetAllDirty();
         }
 
         private void ApplyBackgroundTransitions(ModularStyleBox normal, ModularStyleBox hovered, ModularStyleBox pressed, ModularStyleBox disabled)
         {
-            if (buttonImage == null || targetButton == null) return;
+            if (buttonImage == null || targetButton == null)
+            {
+                return;
+            }
 
             if (normal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
             {
