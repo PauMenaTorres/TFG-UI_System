@@ -12,7 +12,7 @@ namespace ModularUIRuntime
     {
         public string buttonName = "New Button";
         public ModularButton targetButton;
-        public UnityEvent onClickAction;
+        public UnityEvent OnClickAction;
     }
 
     public class ModularMainMenu : MonoBehaviour
@@ -66,7 +66,7 @@ namespace ModularUIRuntime
                     if (menuBtn != null)
                     {
                         menuBtn.onClick.RemoveAllListeners();
-                        menuBtn.onClick.AddListener(() => data.onClickAction?.Invoke());
+                        menuBtn.onClick.AddListener(() => data.OnClickAction?.Invoke());
                     }
                 }
             }
