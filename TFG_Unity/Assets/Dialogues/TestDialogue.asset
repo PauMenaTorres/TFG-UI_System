@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee0a0063a7027143860a7fe3970e779, type: 3}
+  m_Name: TestDialogue
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.DialogueData
+  characterLimit: 180
+  dialogueLines:
+  - characterName: NPC
+    dialogueText: 'HELLO HELLO 123 PROBANDOOOO '
+    characterPortrait: {fileID: 0}
+    voiceAudioClip: {fileID: 0}
+  - characterName: PLAYER
+    dialogueText: O Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO
+      ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y
+      CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO
+    characterPortrait: {fileID: 0}
+    voiceAudioClip: {fileID: 0}
