@@ -91,7 +91,11 @@ namespace ModularUIRuntime
 
             UpdateTextComponent(nameTextComponent, line.characterName);
 
-            if (typeCoroutine != null) StopCoroutine(typeCoroutine);
+            if (typeCoroutine != null)
+            {
+                StopCoroutine(typeCoroutine);
+            }
+
             typeCoroutine = StartCoroutine(TypeText(fullText));
 
             if (portraitImageComponent != null)
@@ -118,7 +122,10 @@ namespace ModularUIRuntime
                 bodyTextComponent.text += letter;
 
                 ModularText modText = bodyTextComponent.GetComponent<ModularText>();
-                if (modText != null) modText.UpdateTextFromExternal(bodyTextComponent.text);
+                if (modText != null)
+                { 
+                    modText.UpdateTextFromExternal(bodyTextComponent.text);
+                }
 
                 yield return new WaitForSeconds(typingSpeed);
             }
@@ -139,7 +146,10 @@ namespace ModularUIRuntime
         private void EndDialogue()
         {
             isDialogueActive = false;
-            if (dialoguePanel != null) dialoguePanel.SetActive(false);
+            if (dialoguePanel != null)
+            {
+                dialoguePanel.SetActive(false);
+            }
         }
     }
 }

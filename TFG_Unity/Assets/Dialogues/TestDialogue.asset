@@ -12,15 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee0a0063a7027143860a7fe3970e779, type: 3}
   m_Name: TestDialogue
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.DialogueData
-  characterLimit: 180
+  characterLimit: 140
   dialogueLines:
   - characterName: NPC
-    dialogueText: 'HELLO HELLO 123 PROBANDOOOO '
-    characterPortrait: {fileID: 0}
+    dialogueText: H
+    characterPortrait: {fileID: 21300000, guid: e9a8eb08482ca2449a5e43ddb6d2894c, type: 3}
     voiceAudioClip: {fileID: 0}
   - characterName: PLAYER
-    dialogueText: O Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO
-      ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO ALTO Y CLAROOOOO Y
-      CLAROOOO ALTO Y CLAROOOOO Y CLAROOOO
-    characterPortrait: {fileID: 0}
+    dialogueText: H
+    characterPortrait: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     voiceAudioClip: {fileID: 0}

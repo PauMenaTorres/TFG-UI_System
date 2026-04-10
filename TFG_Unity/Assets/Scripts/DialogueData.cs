@@ -20,8 +20,8 @@ namespace ModularUIRuntime
     public class DialogueData : ScriptableObject
     {
         [Header("Dialogue Configuration")]
-        [Tooltip("Recommended limit: 180 characters to prevent UI overflow.")]
-        public int characterLimit = 180;
+        [Tooltip("Recommended limit: 140 characters to prevent UI overflow.")]
+        public int characterLimit = 140;
 
         public List<DialogueLine> dialogueLines = new List<DialogueLine>();
 
