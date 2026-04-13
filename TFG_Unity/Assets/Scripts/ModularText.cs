@@ -28,6 +28,12 @@ namespace ModularUIRuntime
         [SerializeField] private TextAlignmentOptions alignment = TextAlignmentOptions.Center;
         [SerializeField] private FontStyles fontStyle = FontStyles.Normal;
 
+        [Header("Size Override")]
+        [Tooltip("If true, the font size will ignore the theme and use the custom size below.")]
+        [SerializeField] private bool useCustomFontSize = false;
+        [SerializeField] private float customFontSize = 24.0f;
+
+        [Header("Full Override Settings")]
         [SerializeField] private Font overrideFont;
         [SerializeField] private float overrideFontSize = 24.0f;
 
@@ -117,19 +123,19 @@ namespace ModularUIRuntime
                 {
                     textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
                 }
-                textComponent.fontSize = overrideFontSize;
+                textComponent.fontSize = useCustomFontSize ? customFontSize : overrideFontSize;
             }
             else
             {
                 if (textRole == TextRole.Title)
                 {
                     textComponent.font = currentTheme.GetTitleFont();
-                    textComponent.fontSize = currentTheme.titleFontSize;
+                    textComponent.fontSize = useCustomFontSize ? customFontSize : currentTheme.titleFontSize;
                 }
                 else
                 {
                     textComponent.font = currentTheme.GetTextFont();
-                    textComponent.fontSize = currentTheme.textFontSize;
+                    textComponent.fontSize = useCustomFontSize ? customFontSize : currentTheme.textFontSize;
                 }
             }
 

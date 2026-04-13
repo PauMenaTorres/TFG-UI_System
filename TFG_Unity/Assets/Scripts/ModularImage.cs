@@ -10,17 +10,23 @@ namespace ModularUIRuntime
         {
             OriginalColor,
             Primary,
-            Secondary
+            Secondary,
+            Custom
         }
 
+        [Header("Image Settings")]
         [Tooltip("The base sprite that this image will display")]
         [SerializeField] private Sprite baseSprite;
 
+        [Tooltip("Prevent the image from stretching and distorting")]
+        [SerializeField] private bool preserveAspect = true;
+
+        [Header("Color Settings")]
         [Tooltip("What color from the theme should the image be tinted with?")]
         [SerializeField] private ImageColorRole colorRole = ImageColorRole.OriginalColor;
 
-        [Tooltip("Prevent the image from stretching and distorting")]
-        [SerializeField] private bool preserveAspect = true;
+        [Tooltip("Custom color applied only if colorRole is set to Custom")]
+        [SerializeField] private Color customColor = Color.white;
 
         [SerializeField] private Color overrideColor = Color.white;
 
@@ -48,6 +54,10 @@ namespace ModularUIRuntime
                     else if (colorRole == ImageColorRole.Secondary)
                     {
                         overrideColor = currentTheme.secondaryColor;
+                    }
+                    else if (colorRole == ImageColorRole.Custom)
+                    {
+                        overrideColor = customColor;
                     }
                     else
                     {
@@ -89,6 +99,10 @@ namespace ModularUIRuntime
                 else if (colorRole == ImageColorRole.Secondary)
                 {
                     targetImage.color = currentTheme.secondaryColor;
+                }
+                else if (colorRole == ImageColorRole.Custom)
+                {
+                    targetImage.color = customColor;
                 }
                 else
                 {
