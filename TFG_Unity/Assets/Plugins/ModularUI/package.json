@@ -1,0 +1,7 @@
+{
+    "name": "com.pau.modularui",
+    "version": "1.0.0",
+    "displayName": "Modular UI System",
+    "description": "Sistema modular de UI para TFG.",
+    "unity": "6000.0"
+}
