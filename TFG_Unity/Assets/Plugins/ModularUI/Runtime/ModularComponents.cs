@@ -11,6 +11,7 @@ namespace ModularUIRuntime
         public bool useOverride = false;
 
         private bool isApplyingTheme = false;
+        protected bool shouldMarkDirty = false;
 
         protected virtual void Awake()
         {
@@ -21,7 +22,7 @@ namespace ModularUIRuntime
         {
             if (currentTheme != null)
             {
-                currentTheme.OnThemeChanged += ApplyTheme;
+                currentTheme.OnThemeChanged += HandleThemeChanged;
             }
         }
 
@@ -29,28 +30,45 @@ namespace ModularUIRuntime
         {
             if (currentTheme != null)
             {
-                currentTheme.OnThemeChanged -= ApplyTheme;
+                currentTheme.OnThemeChanged -= HandleThemeChanged;
             }
+        }
+
+        private void HandleThemeChanged()
+        {
+            #if UNITY_EDITOR
+                shouldMarkDirty = true;
+            #endif
+
+                ApplyTheme();
+
+            #if UNITY_EDITOR
+                shouldMarkDirty = false;
+            #endif
         }
 
         protected virtual void OnValidate()
         {
-#if UNITY_EDITOR
-            if (Application.isPlaying)
-            {
-                return;
-            }
-
-            UnityEditor.EditorApplication.delayCall += () =>
-            {
-                if (this != null && !isApplyingTheme)
+            #if UNITY_EDITOR
+                if (Application.isPlaying)
                 {
-                    isApplyingTheme = true;
-                    ApplyTheme();
-                    isApplyingTheme = false;
+                    return;
                 }
-            };
-#endif
+
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (this != null && !isApplyingTheme)
+                    {
+                        isApplyingTheme = true;
+                        shouldMarkDirty = true;
+
+                        ApplyTheme();
+
+                        shouldMarkDirty = false;
+                        isApplyingTheme = false;
+                    }
+                };
+            #endif
         }
 
         public virtual void ApplyTheme()
@@ -94,6 +112,16 @@ namespace ModularUIRuntime
             {
                 image.color = new Color(0, 0, 0, 0);
             }
+        }
+
+        protected void MarkAsDirty(Object targetObj)
+        {
+            #if UNITY_EDITOR
+                if (!Application.isPlaying && targetObj != null && shouldMarkDirty)
+                {
+                    UnityEditor.EditorUtility.SetDirty(targetObj);
+                }
+            #endif
         }
     }
 }

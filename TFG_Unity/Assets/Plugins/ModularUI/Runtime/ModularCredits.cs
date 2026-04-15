@@ -41,8 +41,20 @@ namespace ModularUIRuntime
 
             Canvas.ForceUpdateCanvases();
 
-            RectTransform viewport = contentTransform.parent != null ? contentTransform.parent.GetComponent<RectTransform>() : null;
-            float viewportHeight = viewport != null ? viewport.rect.height : Screen.height;
+            RectTransform viewport = null;
+
+            if (contentTransform.parent != null)
+            {
+                viewport = contentTransform.parent.GetComponent<RectTransform>();
+            }
+
+            float viewportHeight = Screen.height;
+
+            if (viewport != null)
+            {
+                viewportHeight = viewport.rect.height;
+            }
+
             float contentHeight = contentTransform.rect.height;
 
             contentTransform.anchoredPosition = new Vector2(contentTransform.anchoredPosition.x, -viewportHeight);
@@ -76,14 +88,17 @@ namespace ModularUIRuntime
         {
             if (creditsTextComponent != null)
             {
-                creditsTextComponent.text = creditsText;
-                creditsTextComponent.SetAllDirty();
-
-                ModularText modText = creditsTextComponent.GetComponent<ModularText>();
-
-                if (modText != null)
+                if (creditsTextComponent.text != creditsText)
                 {
-                    modText.UpdateTextFromExternal(creditsText);
+                    creditsTextComponent.text = creditsText;
+                    creditsTextComponent.SetAllDirty();
+
+                    ModularText modText = creditsTextComponent.GetComponent<ModularText>();
+
+                    if (modText != null)
+                    {
+                        modText.UpdateTextFromExternal(creditsText);
+                    }
                 }
             }
         }
@@ -91,16 +106,16 @@ namespace ModularUIRuntime
         #if UNITY_EDITOR
             protected void OnValidate()
             {
+                if (Application.isPlaying)
+                {
+                    return;
+                }
+
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
                     if (this != null)
                     {
                         UpdateCreditsText();
-
-                        if (creditsTextComponent != null)
-                        {
-                            UnityEditor.EditorUtility.SetDirty(creditsTextComponent);
-                        }
                     }
                 };
             }

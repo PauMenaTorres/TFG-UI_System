@@ -15,23 +15,15 @@ namespace ModularUIRuntime
         }
 
         [Header("Image Settings")]
-        [Tooltip("The base sprite that this image will display")]
         [SerializeField] private Sprite baseSprite;
-
-        [Tooltip("Prevent the image from stretching and distorting")]
         [SerializeField] private bool preserveAspect = true;
 
         [Header("Color Settings")]
-        [Tooltip("What color from the theme should the image be tinted with?")]
         [SerializeField] private ImageColorRole colorRole = ImageColorRole.OriginalColor;
-
-        [Tooltip("Custom color applied only if colorRole is set to Custom")]
         [SerializeField] private Color customColor = Color.white;
-
         [SerializeField] private Color overrideColor = Color.white;
 
         private Image targetImage;
-        private bool lastOverrideState;
 
         protected override void Awake()
         {
@@ -42,31 +34,6 @@ namespace ModularUIRuntime
         protected override void OnValidate()
         {
             base.OnValidate();
-
-            if (useOverride && lastOverrideState == false)
-            {
-                if (currentTheme != null)
-                {
-                    if (colorRole == ImageColorRole.Primary)
-                    {
-                        overrideColor = currentTheme.primaryColor;
-                    }
-                    else if (colorRole == ImageColorRole.Secondary)
-                    {
-                        overrideColor = currentTheme.secondaryColor;
-                    }
-                    else if (colorRole == ImageColorRole.Custom)
-                    {
-                        overrideColor = customColor;
-                    }
-                    else
-                    {
-                        overrideColor = Color.white;
-                    }
-                }
-            }
-
-            lastOverrideState = useOverride;
         }
 
         public override void ApplyTheme()
@@ -83,30 +50,46 @@ namespace ModularUIRuntime
                 return;
             }
 
-            targetImage.sprite = baseSprite;
-            targetImage.preserveAspect = preserveAspect;
+            if (targetImage.sprite != baseSprite)
+            {
+                targetImage.sprite = baseSprite;
+            }
+
+            if (targetImage.preserveAspect != preserveAspect)
+            {
+                targetImage.preserveAspect = preserveAspect;
+            }
 
             if (useOverride)
             {
-                targetImage.color = overrideColor;
+                if (targetImage.color != overrideColor)
+                {
+                    targetImage.color = overrideColor;
+                }
             }
-            else
+
+            if (!useOverride)
             {
+                Color targetColor = Color.white;
+
                 if (colorRole == ImageColorRole.Primary)
                 {
-                    targetImage.color = currentTheme.primaryColor;
+                    targetColor = currentTheme.primaryColor;
                 }
-                else if (colorRole == ImageColorRole.Secondary)
+
+                if (colorRole == ImageColorRole.Secondary)
                 {
-                    targetImage.color = currentTheme.secondaryColor;
+                    targetColor = currentTheme.secondaryColor;
                 }
-                else if (colorRole == ImageColorRole.Custom)
+
+                if (colorRole == ImageColorRole.Custom)
                 {
-                    targetImage.color = customColor;
+                    targetColor = customColor;
                 }
-                else
+
+                if (targetImage.color != targetColor)
                 {
-                    targetImage.color = Color.white;
+                    targetImage.color = targetColor;
                 }
             }
         }

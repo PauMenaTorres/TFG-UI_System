@@ -24,7 +24,6 @@ namespace ModularUIRuntime
         private Image backgroundImage;
         private Image checkmarkImage;
         private TextMeshProUGUI labelComponent;
-        private bool lastOverrideState;
 
         protected override void OnValidate()
         {
@@ -32,39 +31,25 @@ namespace ModularUIRuntime
 
             if (targetToggle != null)
             {
-                targetToggle.isOn = isOn;
+                if (targetToggle.isOn != isOn)
+                {
+                    targetToggle.isOn = isOn;
+                }
             }
 
             if (labelComponent != null)
             {
-                labelComponent.gameObject.SetActive(showLabel);
-                labelComponent.text = labelText;
-
-                if (useOverride)
+                if (labelComponent.gameObject.activeSelf != showLabel)
                 {
-                    labelComponent.fontSize = overrideFontSize;
-                    labelComponent.color = overrideColor;
+                    labelComponent.gameObject.SetActive(showLabel);
                 }
 
-                if (!useOverride)
+                if (labelComponent.text != labelText)
                 {
-                    labelComponent.fontSize = labelFontSize;
-                    labelComponent.color = labelColor;
+                    labelComponent.text = labelText;
                 }
             }
 
-            if (useOverride && lastOverrideState == false)
-            {
-                if (currentTheme != null)
-                {
-                    overrideBackground = currentTheme.toggleBackground;
-                    overrideCheckmark = currentTheme.toggleCheckmark;
-                    overrideFontSize = labelFontSize;
-                    overrideColor = labelColor;
-                }
-            }
-
-            lastOverrideState = useOverride;
             base.OnValidate();
         }
 
@@ -88,18 +73,34 @@ namespace ModularUIRuntime
             {
                 if (useOverride == false)
                 {
-                    labelComponent.font = currentTheme.GetTextFont();
-                    labelComponent.fontSize = labelFontSize;
-                    labelComponent.color = labelColor;
+                    if (labelComponent.font != currentTheme.GetTextFont())
+                    {
+                        labelComponent.font = currentTheme.GetTextFont();
+                    }
+
+                    if (labelComponent.fontSize != labelFontSize)
+                    {
+                        labelComponent.fontSize = labelFontSize;
+                    }
+
+                    if (labelComponent.color != labelColor)
+                    {
+                        labelComponent.color = labelColor;
+                    }
                 }
 
                 if (useOverride == true)
                 {
-                    labelComponent.fontSize = overrideFontSize;
-                    labelComponent.color = overrideColor;
-                }
+                    if (labelComponent.fontSize != overrideFontSize)
+                    {
+                        labelComponent.fontSize = overrideFontSize;
+                    }
 
-                labelComponent.SetAllDirty();
+                    if (labelComponent.color != overrideColor)
+                    {
+                        labelComponent.color = overrideColor;
+                    }
+                }
             }
         }
 

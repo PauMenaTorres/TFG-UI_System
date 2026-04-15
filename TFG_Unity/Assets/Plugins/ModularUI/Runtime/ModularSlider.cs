@@ -17,7 +17,6 @@ namespace ModularUIRuntime
 
         private Slider targetSlider;
         private RectTransform rectTransform;
-        private bool lastOverrideState;
 
         protected override void OnValidate()
         {
@@ -31,17 +30,6 @@ namespace ModularUIRuntime
                 targetSlider = GetComponent<Slider>();
             }
 
-            if (useOverride && lastOverrideState == false)
-            {
-                if (currentTheme != null)
-                {
-                    overrideBackground = currentTheme.sliderBackground;
-                    overrideFill = currentTheme.sliderFill;
-                    overrideHandle = currentTheme.sliderHandle;
-                }
-            }
-
-            lastOverrideState = useOverride;
             base.OnValidate();
 
 #if UNITY_EDITOR
@@ -51,12 +39,18 @@ namespace ModularUIRuntime
                 {
                     if (this != null && rectTransform != null)
                     {
-                        rectTransform.sizeDelta = size;
+                        if (rectTransform.sizeDelta != size)
+                        {
+                            rectTransform.sizeDelta = size;
+                        }
                     }
 
                     if (this != null && targetSlider != null)
                     {
-                        targetSlider.value = sliderValue;
+                        if (targetSlider.value != sliderValue)
+                        {
+                            targetSlider.value = sliderValue;
+                        }
                     }
                 };
             }

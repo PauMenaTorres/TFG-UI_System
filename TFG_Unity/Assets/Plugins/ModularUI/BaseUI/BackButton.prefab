@@ -63,17 +63,17 @@ MonoBehaviour:
   m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
-    m_PressedColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -122,51 +122,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularButton
   currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
-  useOverride: 0
+  useOverride: 1
   buttonText: 
   textFontRole: 0
   textAlignment: 514
   fontStyle: 0
   textColor: {r: 0, g: 0, b: 0, a: 1}
-  backgroundNormal:
-    backgroundType: 1
-    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    tintColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundHovered:
-    backgroundType: 1
-    backgroundColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    tintColor: {r: 1, g: 1, b: 1, a: 0}
-  backgroundPressed:
-    backgroundType: 1
-    backgroundColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    tintColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundDisabled:
-    backgroundType: 1
-    backgroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideClickSound: {fileID: 0}
   overrideNormalBG:
-    backgroundType: 0
+    backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overrideHoveredBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overridePressedBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overrideDisabledBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overrideFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
   overrideFontSize: 36
@@ -335,7 +316,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSize
-      value: 24
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontAsset
@@ -347,19 +328,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.r
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSizeBase
-      value: 24
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_sharedMaterial

@@ -61,9 +61,11 @@ namespace ModularUIRuntime
             for (int i = 0; i < optionTabs.Count; i++)
             {
                 OptionTabButtonData tabData = optionTabs[i];
+
                 if (tabData.tabButton != null && tabData.sectionPanel != null)
                 {
                     Button menuBtn = tabData.tabButton.GetComponent<Button>();
+
                     if (menuBtn != null)
                     {
                         menuBtn.onClick.RemoveAllListeners();
@@ -136,6 +138,7 @@ namespace ModularUIRuntime
                 titleComponent.SetAllDirty();
 
                 ModularText modText = titleComponent.GetComponent<ModularText>();
+
                 if (modText != null)
                 {
                     modText.UpdateTextFromExternal(newTitle);
@@ -145,36 +148,60 @@ namespace ModularUIRuntime
 
         protected void OnValidate()
         {
-            if (titleComponent != null)
+#if UNITY_EDITOR
+            if (Application.isPlaying)
             {
-                titleComponent.text = titleText;
-                titleComponent.SetAllDirty();
-
-                ModularText modText = titleComponent.GetComponent<ModularText>();
-                if (modText != null)
-                {
-                    modText.UpdateTextFromExternal(titleText);
-                }
+                return;
             }
 
-            if (optionTabs != null)
+            UnityEditor.EditorApplication.delayCall += () =>
             {
-                foreach (OptionTabButtonData data in optionTabs)
+                if (this == null)
                 {
-                    if (data.tabButton != null)
-                    {
-                        TextMeshProUGUI textComp = data.tabButton.GetComponentInChildren<TextMeshProUGUI>();
-                        string detectedName = textComp != null ? textComp.text : data.tabButton.name;
+                    return;
+                }
 
-                        if (data.tabName != detectedName)
+                if (titleComponent != null)
+                {
+                    if (titleComponent.text != titleText)
+                    {
+                        titleComponent.text = titleText;
+                        titleComponent.SetAllDirty();
+
+                        ModularText modText = titleComponent.GetComponent<ModularText>();
+
+                        if (modText != null)
                         {
-                            data.tabName = detectedName;
+                            modText.UpdateTextFromExternal(titleText);
                         }
                     }
                 }
-            }
 
-            UpdateLayout();
+                if (optionTabs != null)
+                {
+                    foreach (OptionTabButtonData data in optionTabs)
+                    {
+                        if (data.tabButton != null)
+                        {
+                            TextMeshProUGUI textComp = data.tabButton.GetComponentInChildren<TextMeshProUGUI>();
+                            string detectedName = data.tabButton.name;
+
+                            if (textComp != null)
+                            {
+                                detectedName = textComp.text;
+                            }
+
+                            if (data.tabName != detectedName)
+                            {
+                                data.tabName = detectedName;
+                            }
+                        }
+                    }
+                }
+
+                UpdateLayout();
+            };
+#endif
         }
 
         public void UpdateTextFromChild(ModularText child, string newText)
@@ -215,11 +242,7 @@ namespace ModularUIRuntime
                 gridLayout.cellSize = cellSize;
             }
 
-            if (gridLayout.padding == null ||
-                gridLayout.padding.left != paddingLeft ||
-                gridLayout.padding.right != paddingRight ||
-                gridLayout.padding.top != paddingTop ||
-                gridLayout.padding.bottom != paddingBottom)
+            if (gridLayout.padding == null || gridLayout.padding.left != paddingLeft || gridLayout.padding.right != paddingRight || gridLayout.padding.top != paddingTop || gridLayout.padding.bottom != paddingBottom)
             {
                 gridLayout.padding = new RectOffset(paddingLeft, paddingRight, paddingTop, paddingBottom);
             }
@@ -227,20 +250,22 @@ namespace ModularUIRuntime
             GridLayoutGroup.Constraint newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
             int newCount = 1;
 
-            switch (layoutType)
+            if (layoutType == MenuLayoutType.Vertical)
             {
-                case MenuLayoutType.Vertical:
-                    newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                    newCount = 1;
-                    break;
-                case MenuLayoutType.Horizontal:
-                    newConstraint = GridLayoutGroup.Constraint.FixedRowCount;
-                    newCount = 1;
-                    break;
-                case MenuLayoutType.Grid:
-                    newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                    newCount = gridColumns;
-                    break;
+                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                newCount = 1;
+            }
+
+            if (layoutType == MenuLayoutType.Horizontal)
+            {
+                newConstraint = GridLayoutGroup.Constraint.FixedRowCount;
+                newCount = 1;
+            }
+
+            if (layoutType == MenuLayoutType.Grid)
+            {
+                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                newCount = gridColumns;
             }
 
             if (gridLayout.constraint != newConstraint)

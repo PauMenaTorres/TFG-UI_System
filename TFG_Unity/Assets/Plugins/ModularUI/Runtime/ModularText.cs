@@ -29,7 +29,6 @@ namespace ModularUIRuntime
         [SerializeField] private FontStyles fontStyle = FontStyles.Normal;
 
         [Header("Size Override")]
-        [Tooltip("If true, the font size will ignore the theme and use the custom size below.")]
         [SerializeField] private bool useCustomFontSize = false;
         [SerializeField] private float customFontSize = 24.0f;
 
@@ -38,7 +37,6 @@ namespace ModularUIRuntime
         [SerializeField] private float overrideFontSize = 24.0f;
 
         private TextMeshProUGUI textComponent;
-        private bool lastOverrideState;
 
         protected override void Awake()
         {
@@ -50,41 +48,50 @@ namespace ModularUIRuntime
         {
             base.OnValidate();
 
-            if (textComponent == null)
+#if UNITY_EDITOR
+            if (Application.isPlaying)
             {
-                textComponent = GetComponent<TextMeshProUGUI>();
+                return;
             }
 
-            if (useOverride && lastOverrideState == false)
+            UnityEditor.EditorApplication.delayCall += () =>
             {
-                if (currentTheme != null)
+                if (this == null)
                 {
-                    if (textRole == TextRole.Title)
+                    return;
+                }
+
+                if (textComponent == null)
+                {
+                    textComponent = GetComponent<TextMeshProUGUI>();
+                }
+
+                bool isButtonChild = false;
+
+                if (transform.parent != null)
+                {
+                    if (transform.parent.GetComponent<UnityEngine.UI.Button>() != null)
                     {
-                        overrideFont = currentTheme.titleFont;
-                        overrideFontSize = currentTheme.titleFontSize;
-                    }
-                    else
-                    {
-                        overrideFont = currentTheme.textFont;
-                        overrideFontSize = currentTheme.textFontSize;
+                        isButtonChild = true;
                     }
                 }
-            }
 
-            bool isButtonChild = transform.parent != null && transform.parent.GetComponent<UnityEngine.UI.Button>() != null;
-            if (!isButtonChild && textComponent != null)
-            {
-                textComponent.text = textContent;
-
-                ModularMainMenu parentMenu = GetComponentInParent<ModularMainMenu>();
-                if (parentMenu != null)
+                if (!isButtonChild && textComponent != null)
                 {
-                    parentMenu.UpdateTextFromChild(this, textContent);
-                }
-            }
+                    if (textComponent.text != textContent)
+                    {
+                        textComponent.text = textContent;
+                    }
 
-            lastOverrideState = useOverride;
+                    ModularMainMenu parentMenu = GetComponentInParent<ModularMainMenu>();
+
+                    if (parentMenu != null)
+                    {
+                        parentMenu.UpdateTextFromChild(this, textContent);
+                    }
+                }
+            };
+#endif
         }
 
         public void UpdateTextFromExternal(string newText)
@@ -92,10 +99,14 @@ namespace ModularUIRuntime
             if (textContent != newText)
             {
                 textContent = newText;
+
                 if (textComponent != null)
                 {
-                    textComponent.text = newText;
-                    textComponent.SetAllDirty();
+                    if (textComponent.text != newText)
+                    {
+                        textComponent.text = newText;
+                        textComponent.SetAllDirty();
+                    }
                 }
             }
         }
@@ -114,42 +125,71 @@ namespace ModularUIRuntime
                 return;
             }
 
-            textComponent.alignment = alignment;
-            textComponent.fontStyle = fontStyle;
+            if (textComponent.alignment != alignment)
+            {
+                textComponent.alignment = alignment;
+            }
+
+            if (textComponent.fontStyle != fontStyle)
+            {
+                textComponent.fontStyle = fontStyle;
+            }
 
             if (useOverride)
             {
                 if (overrideFont != null)
                 {
-                    textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                    if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
+                    {
+                        textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                    }
                 }
-                textComponent.fontSize = useCustomFontSize ? customFontSize : overrideFontSize;
-            }
-            else
-            {
-                if (textRole == TextRole.Title)
+
+                float targetSize = useCustomFontSize ? customFontSize : overrideFontSize;
+
+                if (textComponent.fontSize != targetSize)
                 {
-                    textComponent.font = currentTheme.GetTitleFont();
-                    textComponent.fontSize = useCustomFontSize ? customFontSize : currentTheme.titleFontSize;
-                }
-                else
-                {
-                    textComponent.font = currentTheme.GetTextFont();
-                    textComponent.fontSize = useCustomFontSize ? customFontSize : currentTheme.textFontSize;
+                    textComponent.fontSize = targetSize;
                 }
             }
 
+            if (!useOverride)
+            {
+                TMP_FontAsset targetFont = currentTheme.GetTextFont();
+                float targetSize = useCustomFontSize ? customFontSize : currentTheme.textFontSize;
+
+                if (textRole == TextRole.Title)
+                {
+                    targetFont = currentTheme.GetTitleFont();
+                    targetSize = useCustomFontSize ? customFontSize : currentTheme.titleFontSize;
+                }
+
+                if (textComponent.font != targetFont)
+                {
+                    textComponent.font = targetFont;
+                }
+
+                if (textComponent.fontSize != targetSize)
+                {
+                    textComponent.fontSize = targetSize;
+                }
+            }
+
+            Color targetColor = customColor;
+
             if (colorRole == TextColorRole.Primary)
             {
-                textComponent.color = currentTheme.primaryColor;
+                targetColor = currentTheme.primaryColor;
             }
-            else if (colorRole == TextColorRole.Secondary)
+
+            if (colorRole == TextColorRole.Secondary)
             {
-                textComponent.color = currentTheme.secondaryColor;
+                targetColor = currentTheme.secondaryColor;
             }
-            else
+
+            if (textComponent.color != targetColor)
             {
-                textComponent.color = customColor;
+                textComponent.color = targetColor;
             }
 
             textComponent.SetAllDirty();

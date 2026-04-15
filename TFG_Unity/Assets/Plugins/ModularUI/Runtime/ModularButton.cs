@@ -32,7 +32,6 @@ namespace ModularUIRuntime
         private Button targetButton;
         private Image buttonImage;
         private TextMeshProUGUI textComponent;
-        private bool lastOverrideState;
 
         protected override void OnEnable()
         {
@@ -53,35 +52,6 @@ namespace ModularUIRuntime
             {
                 targetButton.onClick.RemoveListener(PlayClickSound);
             }
-        }
-
-        protected override void OnValidate()
-        {
-            if (useOverride && lastOverrideState == false)
-            {
-                if (currentTheme != null)
-                {
-                    overrideNormalBG = currentTheme.buttonNormal;
-                    overrideHoveredBG = currentTheme.buttonHovered;
-                    overridePressedBG = currentTheme.buttonPressed;
-                    overrideDisabledBG = currentTheme.buttonDisabled;
-
-                    if (textFontRole == TextRole.Title)
-                    {
-                        overrideFont = currentTheme.titleFont;
-                        overrideFontSize = currentTheme.titleFontSize;
-                    }
-
-                    if (textFontRole == TextRole.Body)
-                    {
-                        overrideFont = currentTheme.textFont;
-                        overrideFontSize = currentTheme.textFontSize;
-                    }
-                }
-            }
-
-            lastOverrideState = useOverride;
-            base.OnValidate();
         }
 
         public override void ApplyTheme()
@@ -128,37 +98,63 @@ namespace ModularUIRuntime
                 return;
             }
 
-            textComponent.text = buttonText;
-            textComponent.alignment = textAlignment;
-            textComponent.fontStyle = fontStyle;
-            textComponent.color = textColor;
+            if (textComponent.text != buttonText)
+            {
+                textComponent.text = buttonText;
+            }
+
+            if (textComponent.alignment != textAlignment)
+            {
+                textComponent.alignment = textAlignment;
+            }
+
+            if (textComponent.fontStyle != fontStyle)
+            {
+                textComponent.fontStyle = fontStyle;
+            }
+
+            if (textComponent.color != textColor)
+            {
+                textComponent.color = textColor;
+            }
 
             if (useOverride)
             {
                 if (overrideFont != null)
                 {
-                    textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                    if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
+                    {
+                        textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                    }
                 }
 
-                textComponent.fontSize = overrideFontSize;
+                if (textComponent.fontSize != overrideFontSize)
+                {
+                    textComponent.fontSize = overrideFontSize;
+                }
             }
 
             if (!useOverride)
             {
+                TMP_FontAsset targetFont = currentTheme.GetTextFont();
+                float targetSize = currentTheme.textFontSize;
+
                 if (textFontRole == TextRole.Title)
                 {
-                    textComponent.font = currentTheme.GetTitleFont();
-                    textComponent.fontSize = currentTheme.titleFontSize;
+                    targetFont = currentTheme.GetTitleFont();
+                    targetSize = currentTheme.titleFontSize;
                 }
 
-                if (textFontRole == TextRole.Body)
+                if (textComponent.font != targetFont)
                 {
-                    textComponent.font = currentTheme.GetTextFont();
-                    textComponent.fontSize = currentTheme.textFontSize;
+                    textComponent.font = targetFont;
+                }
+
+                if (textComponent.fontSize != targetSize)
+                {
+                    textComponent.fontSize = targetSize;
                 }
             }
-
-            textComponent.SetAllDirty();
         }
 
         private void ApplyBackgroundTransitions(ModularStyleBox normal, ModularStyleBox hovered, ModularStyleBox pressed, ModularStyleBox disabled)
@@ -170,37 +166,86 @@ namespace ModularUIRuntime
 
             if (normal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
             {
-                buttonImage.sprite = null;
-                buttonImage.color = normal.backgroundColor;
-                targetButton.transition = Selectable.Transition.ColorTint;
+                if (buttonImage.sprite != null)
+                {
+                    buttonImage.sprite = null;
+                }
+
+                if (buttonImage.color != normal.backgroundColor)
+                {
+                    buttonImage.color = normal.backgroundColor;
+                }
+
+                if (targetButton.transition != Selectable.Transition.ColorTint)
+                {
+                    targetButton.transition = Selectable.Transition.ColorTint;
+                }
 
                 ColorBlock colorBlock = targetButton.colors;
-                colorBlock.normalColor = normal.backgroundColor;
-                colorBlock.highlightedColor = hovered.backgroundColor;
-                colorBlock.pressedColor = pressed.backgroundColor;
-                colorBlock.disabledColor = disabled.backgroundColor;
-                colorBlock.selectedColor = normal.backgroundColor;
-                targetButton.colors = colorBlock;
+                bool colorsChanged = false;
+
+                if (colorBlock.normalColor != normal.backgroundColor || colorBlock.highlightedColor != hovered.backgroundColor || colorBlock.pressedColor != pressed.backgroundColor || colorBlock.disabledColor != disabled.backgroundColor || colorBlock.selectedColor != normal.backgroundColor)
+                {
+                    colorsChanged = true;
+                }
+
+                if (colorsChanged)
+                {
+                    colorBlock.normalColor = normal.backgroundColor;
+                    colorBlock.highlightedColor = hovered.backgroundColor;
+                    colorBlock.pressedColor = pressed.backgroundColor;
+                    colorBlock.disabledColor = disabled.backgroundColor;
+                    colorBlock.selectedColor = normal.backgroundColor;
+                    targetButton.colors = colorBlock;
+                }
             }
 
             if (normal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
             {
-                buttonImage.sprite = normal.backgroundSprite;
-                buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                targetButton.transition = Selectable.Transition.SpriteSwap;
+                if (buttonImage.sprite != normal.backgroundSprite)
+                {
+                    buttonImage.sprite = normal.backgroundSprite;
+                }
+
+                if (buttonImage.color != new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                {
+                    buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+
+                if (targetButton.transition != Selectable.Transition.SpriteSwap)
+                {
+                    targetButton.transition = Selectable.Transition.SpriteSwap;
+                }
 
                 SpriteState spriteState = targetButton.spriteState;
-                spriteState.highlightedSprite = hovered.backgroundSprite;
-                spriteState.pressedSprite = pressed.backgroundSprite;
-                spriteState.disabledSprite = disabled.backgroundSprite;
-                spriteState.selectedSprite = normal.backgroundSprite;
-                targetButton.spriteState = spriteState;
+                bool spritesChanged = false;
+
+                if (spriteState.highlightedSprite != hovered.backgroundSprite || spriteState.pressedSprite != pressed.backgroundSprite || spriteState.disabledSprite != disabled.backgroundSprite || spriteState.selectedSprite != normal.backgroundSprite)
+                {
+                    spritesChanged = true;
+                }
+
+                if (spritesChanged)
+                {
+                    spriteState.highlightedSprite = hovered.backgroundSprite;
+                    spriteState.pressedSprite = pressed.backgroundSprite;
+                    spriteState.disabledSprite = disabled.backgroundSprite;
+                    spriteState.selectedSprite = normal.backgroundSprite;
+                    targetButton.spriteState = spriteState;
+                }
             }
 
             if (normal.backgroundType == ModularStyleBox.StyleBoxType.None)
             {
-                targetButton.transition = Selectable.Transition.None;
-                buttonImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                if (targetButton.transition != Selectable.Transition.None)
+                {
+                    targetButton.transition = Selectable.Transition.None;
+                }
+
+                if (buttonImage.color != new Color(0.0f, 0.0f, 0.0f, 0.0f))
+                {
+                    buttonImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                }
             }
         }
 
