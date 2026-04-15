@@ -6,11 +6,11 @@ namespace ModularUIRuntime
     [ExecuteAlways]
     public abstract class ModularComponents : MonoBehaviour
     {
-        [Header("THEME SETTINGS\n")]
+        [Header("THEME SETTINGS")]
         public ModularThemeData currentTheme;
-
-        [Tooltip("If is activated this object will igonre the global theme")]
         public bool useOverride = false;
+
+        private bool isApplyingTheme = false;
 
         protected virtual void Awake()
         {
@@ -19,17 +19,38 @@ namespace ModularUIRuntime
 
         protected virtual void OnEnable()
         {
-            currentTheme.OnThemeChanged += ApplyTheme;
+            if (currentTheme != null)
+            {
+                currentTheme.OnThemeChanged += ApplyTheme;
+            }
         }
 
         protected virtual void OnDisable()
         {
-            currentTheme.OnThemeChanged -= ApplyTheme;
+            if (currentTheme != null)
+            {
+                currentTheme.OnThemeChanged -= ApplyTheme;
+            }
         }
 
         protected virtual void OnValidate()
         {
-            ApplyTheme();
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this != null && !isApplyingTheme)
+                {
+                    isApplyingTheme = true;
+                    ApplyTheme();
+                    isApplyingTheme = false;
+                }
+            };
+#endif
         }
 
         public virtual void ApplyTheme()
@@ -39,7 +60,7 @@ namespace ModularUIRuntime
                 currentTheme = Resources.Load<ModularThemeData>("DefaultTheme");
             }
 
-            if (currentTheme == null || useOverride)
+            if (currentTheme == null)
             {
                 return;
             }
@@ -47,21 +68,31 @@ namespace ModularUIRuntime
 
         protected void ApplyStyle(Image image, ModularStyleBox style)
         {
-            if (image == null) return;
+            if (image == null)
+            {
+                return;
+            }
 
             if (style.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
             {
                 image.sprite = null;
                 image.color = style.backgroundColor;
             }
-            else if (style.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+
+            if (style.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
             {
                 image.sprite = style.backgroundSprite;
                 image.color = style.tintColor;
+
+                if (image.sprite == null)
+                {
+                    image.color = new Color(0, 0, 0, 0);
+                }
             }
-            else
+
+            if (style.backgroundType == ModularStyleBox.StyleBoxType.None)
             {
-                image.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                image.color = new Color(0, 0, 0, 0);
             }
         }
     }

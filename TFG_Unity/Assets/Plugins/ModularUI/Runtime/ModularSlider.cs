@@ -10,14 +10,10 @@ namespace ModularUIRuntime
         [SerializeField][Range(0.0f, 1.0f)] private float sliderValue = 0.5f;
         [SerializeField] private Vector2 size = new Vector2(160f, 20f);
 
-        [Header("Styles")]
-        [SerializeField] private ModularStyleBox backgroundStyle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox fillStyle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox handleStyle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-
-        [SerializeField] private ModularStyleBox overrideBackground = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overrideFill = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overrideHandle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
+        [Header("Overrides")]
+        [SerializeField] private ModularStyleBox overrideBackground = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overrideFill = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overrideHandle = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
 
         private Slider targetSlider;
         private RectTransform rectTransform;
@@ -35,28 +31,36 @@ namespace ModularUIRuntime
                 targetSlider = GetComponent<Slider>();
             }
 
-            if (rectTransform != null)
-            {
-                rectTransform.sizeDelta = size;
-            }
-
-            if (targetSlider != null)
-            {
-                targetSlider.value = sliderValue;
-            }
-
-            base.OnValidate();
-
             if (useOverride && lastOverrideState == false)
             {
                 if (currentTheme != null)
                 {
-                    overrideBackground = backgroundStyle;
-                    overrideFill = fillStyle;
-                    overrideHandle = handleStyle;
+                    overrideBackground = currentTheme.sliderBackground;
+                    overrideFill = currentTheme.sliderFill;
+                    overrideHandle = currentTheme.sliderHandle;
                 }
             }
+
             lastOverrideState = useOverride;
+            base.OnValidate();
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (this != null && rectTransform != null)
+                    {
+                        rectTransform.sizeDelta = size;
+                    }
+
+                    if (this != null && targetSlider != null)
+                    {
+                        targetSlider.value = sliderValue;
+                    }
+                };
+            }
+#endif
         }
 
         public override void ApplyTheme()
@@ -67,26 +71,38 @@ namespace ModularUIRuntime
             {
                 targetSlider = GetComponent<Slider>();
             }
+
             if (currentTheme == null)
             {
                 return;
             }
 
-            ModularStyleBox activeBG = useOverride ? overrideBackground : backgroundStyle;
-            ModularStyleBox activeFill = useOverride ? overrideFill : fillStyle;
-            ModularStyleBox activeHandle = useOverride ? overrideHandle : handleStyle;
+            ModularStyleBox activeBG = useOverride ? overrideBackground : currentTheme.sliderBackground;
+            ModularStyleBox activeFill = useOverride ? overrideFill : currentTheme.sliderFill;
+            ModularStyleBox activeHandle = useOverride ? overrideHandle : currentTheme.sliderHandle;
 
             if (targetSlider.fillRect != null)
             {
-                ApplyStyle(targetSlider.fillRect.GetComponent<Image>(), activeFill);
+                Image fillImage = targetSlider.fillRect.GetComponent<Image>();
+
+                if (fillImage != null)
+                {
+                    ApplyStyle(fillImage, activeFill);
+                }
             }
 
             if (targetSlider.handleRect != null)
             {
-                ApplyStyle(targetSlider.handleRect.GetComponent<Image>(), activeHandle);
+                Image handleImage = targetSlider.handleRect.GetComponent<Image>();
+
+                if (handleImage != null)
+                {
+                    ApplyStyle(handleImage, activeHandle);
+                }
             }
 
             Image backgroundImage = null;
+
             foreach (Transform child in transform)
             {
                 if (child.name == "Background")

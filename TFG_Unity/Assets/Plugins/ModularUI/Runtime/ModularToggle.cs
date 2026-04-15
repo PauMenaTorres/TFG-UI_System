@@ -14,13 +14,9 @@ namespace ModularUIRuntime
         [SerializeField] private float labelFontSize = 24.0f;
         [SerializeField] private Color labelColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        [Header("Styles")]
-        [SerializeField] private ModularStyleBox backgroundStyle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox checkmarkStyle = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-
         [Header("Overrides")]
-        [SerializeField] private ModularStyleBox overrideBackground = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overrideCheckmark = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
+        [SerializeField] private ModularStyleBox overrideBackground = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overrideCheckmark = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
         [SerializeField] private float overrideFontSize = 24.0f;
         [SerializeField] private Color overrideColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -34,7 +30,10 @@ namespace ModularUIRuntime
         {
             FetchReferences();
 
-            if (targetToggle != null) targetToggle.isOn = isOn;
+            if (targetToggle != null)
+            {
+                targetToggle.isOn = isOn;
+            }
 
             if (labelComponent != null)
             {
@@ -46,26 +45,27 @@ namespace ModularUIRuntime
                     labelComponent.fontSize = overrideFontSize;
                     labelComponent.color = overrideColor;
                 }
-                else
+
+                if (!useOverride)
                 {
                     labelComponent.fontSize = labelFontSize;
                     labelComponent.color = labelColor;
                 }
             }
 
-            base.OnValidate();
-
             if (useOverride && lastOverrideState == false)
             {
                 if (currentTheme != null)
                 {
-                    overrideBackground = backgroundStyle;
-                    overrideCheckmark = checkmarkStyle;
+                    overrideBackground = currentTheme.toggleBackground;
+                    overrideCheckmark = currentTheme.toggleCheckmark;
                     overrideFontSize = labelFontSize;
                     overrideColor = labelColor;
                 }
             }
+
             lastOverrideState = useOverride;
+            base.OnValidate();
         }
 
         public override void ApplyTheme()
@@ -73,38 +73,51 @@ namespace ModularUIRuntime
             base.ApplyTheme();
             FetchReferences();
 
-            if (currentTheme == null) return;
+            if (currentTheme == null)
+            {
+                return;
+            }
 
-            ModularStyleBox activeBG = useOverride ? overrideBackground : backgroundStyle;
-            ModularStyleBox activeCheck = useOverride ? overrideCheckmark : checkmarkStyle;
+            ModularStyleBox activeBG = useOverride ? overrideBackground : currentTheme.toggleBackground;
+            ModularStyleBox activeCheck = useOverride ? overrideCheckmark : currentTheme.toggleCheckmark;
 
             ApplyStyle(backgroundImage, activeBG);
             ApplyStyle(checkmarkImage, activeCheck);
 
             if (labelComponent != null)
             {
-                if (!useOverride)
+                if (useOverride == false)
                 {
                     labelComponent.font = currentTheme.GetTextFont();
                     labelComponent.fontSize = labelFontSize;
                     labelComponent.color = labelColor;
                 }
-                else
+
+                if (useOverride == true)
                 {
                     labelComponent.fontSize = overrideFontSize;
                     labelComponent.color = overrideColor;
                 }
+
+                labelComponent.SetAllDirty();
             }
         }
 
         private void FetchReferences()
         {
-            if (targetToggle == null) targetToggle = GetComponent<Toggle>();
+            if (targetToggle == null)
+            {
+                targetToggle = GetComponent<Toggle>();
+            }
 
             if (backgroundImage == null)
             {
                 Transform bgTransform = transform.Find("Background");
-                if (bgTransform != null) backgroundImage = bgTransform.GetComponent<Image>();
+
+                if (bgTransform != null)
+                {
+                    backgroundImage = bgTransform.GetComponent<Image>();
+                }
             }
 
             if (targetToggle != null && targetToggle.graphic != null)

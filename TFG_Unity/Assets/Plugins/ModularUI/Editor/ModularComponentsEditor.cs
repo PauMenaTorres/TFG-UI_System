@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using ModularUIRuntime;
 
 namespace ModularUIEditor
 {
@@ -20,6 +21,7 @@ namespace ModularUIEditor
 
             SerializedProperty property = serializedObject.GetIterator();
             bool enterChildren = true;
+
             while (property.NextVisible(enterChildren))
             {
                 enterChildren = false;
@@ -27,15 +29,6 @@ namespace ModularUIEditor
                 if (property.name == "m_Script" || property.name == "currentTheme" || property.name == "useOverride" || property.name.StartsWith("override"))
                 {
                     continue;
-                }
-
-                if (property.name == "textContent" || property.name == "textRole" ||property.name == "colorRole" || property.name == "customColor" || property.name == "alignment" || property.name == "fontStyle")
-                {
-                    Component comp = target as Component;
-                    if (comp != null && comp.transform.parent != null && comp.transform.parent.GetComponent<UnityEngine.UI.Button>() != null)
-                    {
-                        continue;
-                    }
                 }
 
                 if (property.type == "ModularStyleBox")
@@ -56,34 +49,67 @@ namespace ModularUIEditor
 
             if (useOverride != null && useOverride.boolValue)
             {
-                property = serializedObject.GetIterator();
-                enterChildren = true;
-                while (property.NextVisible(enterChildren))
-                {
-                    enterChildren = false;
-
-                    if (!property.name.StartsWith("override"))
-                    {
-                        continue;
-                    }
-
-                    if (property.type == "ModularStyleBox")
-                    {
-                        DrawStyleBox(property);
-                    }
-                    else
-                    {
-                        EditorGUILayout.PropertyField(property, true);
-                    }
-                }
+                DrawOverridesSection();
             }
 
             serializedObject.ApplyModifiedProperties();
         }
 
+        private void DrawOverridesSection()
+        {
+            SerializedProperty property = serializedObject.GetIterator();
+            bool enterChildren = true;
+
+            while (property.NextVisible(enterChildren))
+            {
+                enterChildren = false;
+
+                if (!property.name.StartsWith("override"))
+                {
+                    continue;
+                }
+
+                if (property.type == "ModularStyleBox")
+                {
+                    DrawStyleBox(property);
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(property, true);
+                }
+            }
+
+            EditorGUILayout.Space(5);
+
+            if (target is ModularButton)
+            {
+                if (GUILayout.Button("Sync All Button States", GUILayout.Height(20)))
+                {
+                    ApplyNormalToAll("overrideNormalBG", new string[] { "overrideHoveredBG", "overridePressedBG", "overrideDisabledBG" });
+                }
+            }
+
+            if (target is ModularSlider)
+            {
+                if (GUILayout.Button("Sync Background to Fill", GUILayout.Height(20)))
+                {
+                    ApplyNormalToAll("overrideBackground", new string[] { "overrideFill" });
+                }
+            }
+
+            if (target is ModularToggle)
+            {
+                if (GUILayout.Button("Sync Toggle States", GUILayout.Height(20)))
+                {
+                    ApplyNormalToAll("overrideBackground", new string[] { "overrideCheckmark" });
+                }
+            }
+        }
+
         private void DrawStyleBox(SerializedProperty property)
         {
             property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, property.displayName, true);
+
             if (property.isExpanded)
             {
                 EditorGUI.indentLevel++;
@@ -91,19 +117,41 @@ namespace ModularUIEditor
                 SerializedProperty typeProp = property.FindPropertyRelative("backgroundType");
                 EditorGUILayout.PropertyField(typeProp);
 
-                int typeValue = typeProp.enumValueIndex;
-
-                if (typeValue == 0) // SolidColor
+                if (typeProp.enumValueIndex == 0)
                 {
                     EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundColor"));
                 }
-                else if (typeValue == 1) // Sprite
+
+                if (typeProp.enumValueIndex == 1)
                 {
                     EditorGUILayout.PropertyField(property.FindPropertyRelative("backgroundSprite"));
                     EditorGUILayout.PropertyField(property.FindPropertyRelative("tintColor"));
                 }
 
                 EditorGUI.indentLevel--;
+            }
+        }
+
+        private void ApplyNormalToAll(string normalName, string[] targetNames)
+        {
+            SerializedProperty normalProp = serializedObject.FindProperty(normalName);
+
+            if (normalProp == null)
+            {
+                return;
+            }
+
+            foreach (string targetName in targetNames)
+            {
+                SerializedProperty targetProp = serializedObject.FindProperty(targetName);
+
+                if (targetProp != null)
+                {
+                    targetProp.FindPropertyRelative("backgroundType").enumValueIndex = normalProp.FindPropertyRelative("backgroundType").enumValueIndex;
+                    targetProp.FindPropertyRelative("backgroundColor").colorValue = normalProp.FindPropertyRelative("backgroundColor").colorValue;
+                    targetProp.FindPropertyRelative("backgroundSprite").objectReferenceValue = normalProp.FindPropertyRelative("backgroundSprite").objectReferenceValue;
+                    targetProp.FindPropertyRelative("tintColor").colorValue = normalProp.FindPropertyRelative("tintColor").colorValue;
+                }
             }
         }
     }

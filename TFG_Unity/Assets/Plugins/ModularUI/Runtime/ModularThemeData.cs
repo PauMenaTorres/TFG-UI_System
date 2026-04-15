@@ -14,9 +14,7 @@ namespace ModularUIRuntime
             None
         }
 
-        [Tooltip("Choose between solid color or sprite.")]
         public StyleBoxType backgroundType;
-
         public Color backgroundColor;
         public Sprite backgroundSprite;
         public Color tintColor;
@@ -35,9 +33,10 @@ namespace ModularUIRuntime
     {
         public event Action OnThemeChanged;
 
-        [Header("Global Colors")]
+        [Header("Global Settings")]
         public Color primaryColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public Color secondaryColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        public AudioClip defaultClickSound;
 
         [Header("Typography")]
         public Font textFont;
@@ -48,11 +47,20 @@ namespace ModularUIRuntime
         private TMP_FontAsset generatedTMPTextFont;
         private TMP_FontAsset generatedTMPTitleFont;
 
-        [Header("Button States (StyleBoxes)")]
-        public ModularStyleBox buttonNormal = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        public ModularStyleBox buttonHovered = new ModularStyleBox { backgroundColor = new Color(0.7f, 0.7f, 0.7f, 1.0f) };
-        public ModularStyleBox buttonPressed = new ModularStyleBox { backgroundColor = new Color(0.4f, 0.4f, 0.4f, 1.0f) };
-        public ModularStyleBox buttonDisabled = new ModularStyleBox { backgroundColor = new Color(0.2f, 0.2f, 0.2f, 1.0f) };
+        [Header("Button States")]
+        public ModularStyleBox buttonNormal = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox buttonHovered = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox buttonPressed = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox buttonDisabled = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+
+        [Header("Slider States")]
+        public ModularStyleBox sliderBackground = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox sliderFill = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox sliderHandle = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+
+        [Header("Toggle States")]
+        public ModularStyleBox toggleBackground = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        public ModularStyleBox toggleCheckmark = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
 
         public TMP_FontAsset GetTextFont()
         {
@@ -60,6 +68,7 @@ namespace ModularUIRuntime
             {
                 generatedTMPTextFont = TMP_FontAsset.CreateFontAsset(textFont);
             }
+
             return generatedTMPTextFont;
         }
 
@@ -69,6 +78,7 @@ namespace ModularUIRuntime
             {
                 generatedTMPTitleFont = TMP_FontAsset.CreateFontAsset(titleFont);
             }
+
             return generatedTMPTitleFont;
         }
 

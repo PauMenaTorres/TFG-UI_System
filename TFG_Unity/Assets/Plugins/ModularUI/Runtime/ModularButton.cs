@@ -13,24 +13,19 @@ namespace ModularUIRuntime
             Title
         }
 
-        [Header("Button Content (Proxied to Text Child)")]
+        [Header("Button Content")]
         [SerializeField] private string buttonText = "Modular Button";
         [SerializeField] private TextRole textFontRole = TextRole.Body;
         [SerializeField] private TextAlignmentOptions textAlignment = TextAlignmentOptions.Center;
         [SerializeField] private FontStyles fontStyle = FontStyles.Bold;
         [SerializeField] private Color textColor = new Color(0.1f, 0.1f, 0.1f, 1.0f);
 
-        [Header("Background Styles")]
-        [SerializeField] private ModularStyleBox backgroundNormal = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox backgroundHovered = new ModularStyleBox { backgroundColor = new Color(0.9f, 0.9f, 0.9f, 1.0f) };
-        [SerializeField] private ModularStyleBox backgroundPressed = new ModularStyleBox { backgroundColor = new Color(0.7f, 0.7f, 0.7f, 1.0f) };
-        [SerializeField] private ModularStyleBox backgroundDisabled = new ModularStyleBox { backgroundColor = new Color(0.4f, 0.4f, 0.4f, 1.0f) };
-
         [Header("Overrides")]
-        [SerializeField] private ModularStyleBox overrideNormalBG = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overrideHoveredBG = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overridePressedBG = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
-        [SerializeField] private ModularStyleBox overrideDisabledBG = new ModularStyleBox { backgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
+        [SerializeField] private AudioClip overrideClickSound;
+        [SerializeField] private ModularStyleBox overrideNormalBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overrideHoveredBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overridePressedBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
+        [SerializeField] private ModularStyleBox overrideDisabledBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
         [SerializeField] private Font overrideFont;
         [SerializeField] private float overrideFontSize = 24.0f;
 
@@ -39,25 +34,45 @@ namespace ModularUIRuntime
         private TextMeshProUGUI textComponent;
         private bool lastOverrideState;
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            FetchReferences();
+
+            if (targetButton != null)
+            {
+                targetButton.onClick.AddListener(PlayClickSound);
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            if (targetButton != null)
+            {
+                targetButton.onClick.RemoveListener(PlayClickSound);
+            }
+        }
+
         protected override void OnValidate()
         {
-            base.OnValidate();
-
             if (useOverride && lastOverrideState == false)
             {
                 if (currentTheme != null)
                 {
-                    overrideNormalBG = backgroundNormal;
-                    overrideHoveredBG = backgroundHovered;
-                    overridePressedBG = backgroundPressed;
-                    overrideDisabledBG = backgroundDisabled;
+                    overrideNormalBG = currentTheme.buttonNormal;
+                    overrideHoveredBG = currentTheme.buttonHovered;
+                    overridePressedBG = currentTheme.buttonPressed;
+                    overrideDisabledBG = currentTheme.buttonDisabled;
 
                     if (textFontRole == TextRole.Title)
                     {
                         overrideFont = currentTheme.titleFont;
                         overrideFontSize = currentTheme.titleFontSize;
                     }
-                    else
+
+                    if (textFontRole == TextRole.Body)
                     {
                         overrideFont = currentTheme.textFont;
                         overrideFontSize = currentTheme.textFontSize;
@@ -66,18 +81,7 @@ namespace ModularUIRuntime
             }
 
             lastOverrideState = useOverride;
-
-            #if UNITY_EDITOR
-                UnityEditor.EditorApplication.delayCall += () =>
-                {
-                    if (this != null)
-                    {
-                        ApplyTheme();
-                    }
-                };
-            #else
-                ApplyTheme();
-            #endif
+            base.OnValidate();
         }
 
         public override void ApplyTheme()
@@ -90,41 +94,13 @@ namespace ModularUIRuntime
                 return;
             }
 
-            ModularStyleBox activeNormal = useOverride ? overrideNormalBG : backgroundNormal;
-            ModularStyleBox activeHovered = useOverride ? overrideHoveredBG : backgroundHovered;
-            ModularStyleBox activePressed = useOverride ? overridePressedBG : backgroundPressed;
-            ModularStyleBox activeDisabled = useOverride ? overrideDisabledBG : backgroundDisabled;
+            ModularStyleBox activeNormal = useOverride ? overrideNormalBG : currentTheme.buttonNormal;
+            ModularStyleBox activeHovered = useOverride ? overrideHoveredBG : currentTheme.buttonHovered;
+            ModularStyleBox activePressed = useOverride ? overridePressedBG : currentTheme.buttonPressed;
+            ModularStyleBox activeDisabled = useOverride ? overrideDisabledBG : currentTheme.buttonDisabled;
 
             ApplyBackgroundTransitions(activeNormal, activeHovered, activePressed, activeDisabled);
             ApplyTextStyles();
-
-            if (targetButton != null && targetButton.targetGraphic != null)
-            {
-                targetButton.targetGraphic.canvasRenderer.SetColor(targetButton.colors.normalColor);
-                targetButton.targetGraphic.SetAllDirty();
-            }
-
-            if (textComponent != null)
-            {
-                textComponent.SetAllDirty();
-            }
-
-            #if UNITY_EDITOR
-                if (!Application.isPlaying)
-                {
-                    UnityEditor.EditorUtility.SetDirty(this);
-
-                    if (targetButton != null && targetButton.targetGraphic != null)
-                    {
-                        UnityEditor.EditorUtility.SetDirty(targetButton.targetGraphic);
-                    }
-
-                    if (textComponent != null)
-                    {
-                        UnityEditor.EditorUtility.SetDirty(textComponent);
-                    }
-                }
-            #endif
         }
 
         private void FetchReferences()
@@ -163,16 +139,19 @@ namespace ModularUIRuntime
                 {
                     textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
                 }
+
                 textComponent.fontSize = overrideFontSize;
             }
-            else
+
+            if (!useOverride)
             {
                 if (textFontRole == TextRole.Title)
                 {
                     textComponent.font = currentTheme.GetTitleFont();
                     textComponent.fontSize = currentTheme.titleFontSize;
                 }
-                else
+
+                if (textFontRole == TextRole.Body)
                 {
                     textComponent.font = currentTheme.GetTextFont();
                     textComponent.fontSize = currentTheme.textFontSize;
@@ -193,7 +172,6 @@ namespace ModularUIRuntime
             {
                 buttonImage.sprite = null;
                 buttonImage.color = normal.backgroundColor;
-
                 targetButton.transition = Selectable.Transition.ColorTint;
 
                 ColorBlock colorBlock = targetButton.colors;
@@ -204,11 +182,11 @@ namespace ModularUIRuntime
                 colorBlock.selectedColor = normal.backgroundColor;
                 targetButton.colors = colorBlock;
             }
-            else if (normal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+
+            if (normal.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
             {
                 buttonImage.sprite = normal.backgroundSprite;
                 buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
                 targetButton.transition = Selectable.Transition.SpriteSwap;
 
                 SpriteState spriteState = targetButton.spriteState;
@@ -218,10 +196,36 @@ namespace ModularUIRuntime
                 spriteState.selectedSprite = normal.backgroundSprite;
                 targetButton.spriteState = spriteState;
             }
-            else
+
+            if (normal.backgroundType == ModularStyleBox.StyleBoxType.None)
             {
                 targetButton.transition = Selectable.Transition.None;
                 buttonImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+            }
+        }
+
+        private void PlayClickSound()
+        {
+            AudioClip clip = null;
+
+            if (useOverride && overrideClickSound != null)
+            {
+                clip = overrideClickSound;
+            }
+
+            if (!useOverride && currentTheme != null)
+            {
+                clip = currentTheme.defaultClickSound;
+            }
+
+            if (clip != null)
+            {
+                GameObject audioObj = new GameObject("UI_Click_Audio");
+                AudioSource source = audioObj.AddComponent<AudioSource>();
+                source.clip = clip;
+                source.spatialBlend = 0f;
+                source.Play();
+                Destroy(audioObj, clip.length);
             }
         }
     }

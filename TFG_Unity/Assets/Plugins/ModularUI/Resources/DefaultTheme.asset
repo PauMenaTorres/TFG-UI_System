@@ -11,30 +11,56 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 888fae39e764e7945b35df30e74deef9, type: 3}
   m_Name: DefaultTheme
-  m_EditorClassIdentifier: Assembly-CSharp::ModularThemeData
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularThemeData
   primaryColor: {r: 1, g: 1, b: 1, a: 1}
   secondaryColor: {r: 0, g: 0, b: 0, a: 1}
-  textFont: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
-  titleFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
+  defaultClickSound: {fileID: 0}
+  textFont: {fileID: 0}
+  titleFont: {fileID: 0}
   textFontSize: 24
   titleFontSize: 36
   buttonNormal:
     backgroundType: 0
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
     backgroundSprite: {fileID: 0}
-    tintColor: {r: 0, g: 0, b: 0, a: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
   buttonHovered:
     backgroundType: 0
-    backgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
     backgroundSprite: {fileID: 0}
-    tintColor: {r: 0, g: 0, b: 0, a: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
   buttonPressed:
     backgroundType: 0
-    backgroundColor: {r: 0.6627451, g: 0.6627451, b: 0.6627451, a: 1}
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
     backgroundSprite: {fileID: 0}
-    tintColor: {r: 0, g: 0, b: 0, a: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
   buttonDisabled:
     backgroundType: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
     backgroundSprite: {fileID: 0}
-    tintColor: {r: 0, g: 0, b: 0, a: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  sliderBackground:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  sliderFill:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  sliderHandle:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleBackground:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleCheckmark:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
