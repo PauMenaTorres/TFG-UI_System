@@ -6,7 +6,10 @@ namespace ModularUIEditor
     [InitializeOnLoad]
     public class ModularUIStartup
     {
-        private const string PREFS_KEY = "ModularUI_Wizard_Shown_v1";
+        private static string GetPrefsKey()
+        {
+            return "ModularUI_" + Application.dataPath.GetHashCode();
+        }
 
         static ModularUIStartup()
         {
@@ -22,13 +25,12 @@ namespace ModularUIEditor
 
             EditorApplication.update -= RunOnce;
 
-            if (!EditorPrefs.GetBool(PREFS_KEY, false))
+            if (!EditorPrefs.GetBool(GetPrefsKey(), false))
             {
-                // Un pequeño delay extra para asegurar que la UI de Unity está lista
                 EditorApplication.delayCall += () =>
                 {
                     ModularUIWizard.ShowWindow();
-                    EditorPrefs.SetBool(PREFS_KEY, true);
+                    EditorPrefs.SetBool(GetPrefsKey(), true);
                 };
             }
         }
@@ -36,8 +38,7 @@ namespace ModularUIEditor
         [MenuItem("Tools/Modular UI/Debug/Reset First Load Popup")]
         public static void ResetFirstLoad()
         {
-            EditorPrefs.DeleteKey(PREFS_KEY);
-            Debug.Log("[Modular UI] Startup reset. The Wizard will show on next reload.");
+            EditorPrefs.DeleteKey(GetPrefsKey());
         }
     }
 }

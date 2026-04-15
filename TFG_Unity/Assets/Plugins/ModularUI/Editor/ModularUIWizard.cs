@@ -5,10 +5,40 @@ namespace ModularUIEditor
 {
     public class ModularUIWizard : EditorWindow
     {
-        public enum TargetPlatform { DESKTOP, MOBILE, VR }
-        public enum GameGenre { SHOOTER, FPS, ACTION_ADVENTURE, RPG, MOBA, SANDBOX, STRATEGY, RACING, PUZZLE, SPORT, SIMULATOR, FIGHTING }
-        public enum ProjectStatus { NEW_PROJECT, EXISTING_PROJECT }
-        public enum ImportScope { FULL_SYSTEM, SPECIFIC_MODULES }
+        public enum TargetPlatform
+        {
+            DESKTOP,
+            MOBILE,
+            VR
+        }
+
+        public enum GameGenre
+        {
+            SHOOTER,
+            FPS,
+            ACTION_ADVENTURE,
+            RPG,
+            MOBA,
+            SANDBOX,
+            STRATEGY,
+            RACING,
+            PUZZLE,
+            SPORT,
+            SIMULATOR,
+            FIGHTING
+        }
+
+        public enum ProjectStatus
+        {
+            NEW_PROJECT,
+            EXISTING_PROJECT
+        }
+
+        public enum ImportScope
+        {
+            FULL_SYSTEM,
+            SPECIFIC_MODULES
+        }
 
         private TargetPlatform selectedPlatform = TargetPlatform.DESKTOP;
         private GameGenre selectedGenre = GameGenre.RPG;
@@ -22,7 +52,7 @@ namespace ModularUIEditor
         private bool importSettings = true;
         private bool importMinimap = true;
 
-        private string targetPath = "Assets/ModularUI_Project";
+        private string targetPath = "Assets/ModularUI";
 
         [MenuItem("Tools/Modular UI/Setup Wizard")]
         public static void ShowWindow()
@@ -38,6 +68,7 @@ namespace ModularUIEditor
             {
                 return "Packages/com.pau.modularui";
             }
+
             return "Assets/Plugins/ModularUI";
         }
 
@@ -65,6 +96,7 @@ namespace ModularUIEditor
                 importMinimap = EditorGUILayout.Toggle("Minimap System", importMinimap);
                 EditorGUI.indentLevel--;
             }
+
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space(10);
@@ -75,6 +107,7 @@ namespace ModularUIEditor
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space(20);
+
             if (GUILayout.Button("Import UI Files to Project", GUILayout.Height(50)))
             {
                 ExecuteImport();
@@ -85,7 +118,7 @@ namespace ModularUIEditor
         {
             if (!AssetDatabase.IsValidFolder(targetPath))
             {
-                AssetDatabase.CreateFolder("Assets", "ModularUI_Project");
+                AssetDatabase.CreateFolder("Assets", "ModularUI");
             }
 
             if (currentScope == ImportScope.FULL_SYSTEM)
@@ -96,14 +129,38 @@ namespace ModularUIEditor
                 CopyAssetItem("Resources", "Resources");
                 CopyAssetItem("Minimap", "Minimap");
             }
-            else
+
+            if (currentScope != ImportScope.FULL_SYSTEM)
             {
-                if (importBaseUI) CopyAssetItem("BaseUI", "BaseUI");
-                if (importMainMenu) CopyAssetItem("Templates/MainMenu.prefab", "Templates/MainMenu.prefab");
-                if (importHUD) CopyAssetItem("Templates/HUD.prefab", "Templates/HUD.prefab");
-                if (importDialogues) CopyAssetItem("Dialogues", "Dialogues");
-                if (importSettings) CopyAssetItem("Resources", "Resources");
-                if (importMinimap) CopyAssetItem("Minimap", "Minimap");
+                if (importBaseUI)
+                {
+                    CopyAssetItem("BaseUI", "BaseUI");
+                }
+
+                if (importMainMenu)
+                {
+                    CopyAssetItem("Templates/MainMenu.prefab", "Templates/MainMenu.prefab");
+                }
+
+                if (importHUD)
+                {
+                    CopyAssetItem("Templates/HUD.prefab", "Templates/HUD.prefab");
+                }
+
+                if (importDialogues)
+                {
+                    CopyAssetItem("Dialogues", "Dialogues");
+                }
+
+                if (importSettings)
+                {
+                    CopyAssetItem("Resources", "Resources");
+                }
+
+                if (importMinimap)
+                {
+                    CopyAssetItem("Minimap", "Minimap");
+                }
             }
 
             AssetDatabase.Refresh();
@@ -125,19 +182,23 @@ namespace ModularUIEditor
         private void EnsureFolderExists(string path)
         {
             int lastSlash = path.LastIndexOf('/');
+
             if (lastSlash > 0)
             {
                 string folderPath = path.Substring(0, lastSlash);
+
                 if (!AssetDatabase.IsValidFolder(folderPath))
                 {
                     string[] folders = folderPath.Split('/');
                     string current = folders[0];
+
                     for (int i = 1; i < folders.Length; i++)
                     {
                         if (!AssetDatabase.IsValidFolder(current + "/" + folders[i]))
                         {
                             AssetDatabase.CreateFolder(current, folders[i]);
                         }
+
                         current += "/" + folders[i];
                     }
                 }
