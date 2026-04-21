@@ -54,6 +54,23 @@ namespace ModularUIRuntime
             }
         }
 
+        public void UpdateButtonText(string newText)
+        {
+            if (buttonText != newText)
+            {
+                buttonText = newText;
+
+                if (textComponent != null)
+                {
+                    if (textComponent.text != newText)
+                    {
+                        textComponent.text = newText;
+                        textComponent.SetAllDirty();
+                    }
+                }
+            }
+        }
+
         public override void ApplyTheme()
         {
             base.ApplyTheme();

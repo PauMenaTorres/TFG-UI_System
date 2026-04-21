@@ -2,13 +2,28 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Events;
+using System;
 
 namespace ModularUIRuntime
 {
+    [Serializable]
+    public struct DialogueSceneEvent
+    {
+        public string eventID;
+        public UnityEvent sceneEvent;
+    }
+
     public class ModularDialogueManager : MonoBehaviour
     {
+        public static event Action<string> OnDialogueAction;
+
         [Header("Data")]
-        [SerializeField] private DialogueData currentDialogue;
+        [SerializeField] private DialogueNode startingNode;
+
+        [Header("Scene Events (Visual Bridge)")]
+        [SerializeField] private List<DialogueSceneEvent> sceneEvents = new();
 
         [Header("Settings")]
         [SerializeField] private float typingSpeed = 0.05f;
@@ -19,21 +34,27 @@ namespace ModularUIRuntime
         [SerializeField] private TextMeshProUGUI bodyTextComponent;
         [SerializeField] private Image portraitImageComponent;
 
+        [Header("Choices UI")]
+        [SerializeField] private Transform choicesContainer;
+        [SerializeField] private GameObject choiceButtonPrefab;
+
+        private DialogueNode currentNode;
         private int currentLineIndex = 0;
         private bool isDialogueActive = false;
         private bool isTyping = false;
         private string fullText;
         private Coroutine typeCoroutine;
+        private List<GameObject> activeChoiceButtons = new();
 
         private void Start()
         {
-            if (currentDialogue != null)
+            if (startingNode != null)
             {
-                StartDialogue(currentDialogue);
+                StartDialogue(startingNode);
             }
-            else
+            else if (dialoguePanel != null)
             {
-                if (dialoguePanel != null) dialoguePanel.SetActive(false);
+                dialoguePanel.SetActive(false);
             }
         }
 
@@ -45,13 +66,16 @@ namespace ModularUIRuntime
             }
         }
 
-        public void StartDialogue(DialogueData newDialogue)
+        public void StartDialogue(DialogueNode startNode)
         {
-            currentDialogue = newDialogue;
+            currentNode = startNode;
             currentLineIndex = 0;
             isDialogueActive = true;
 
-            if (dialoguePanel != null) dialoguePanel.SetActive(true);
+            if (dialoguePanel != null)
+            {
+                dialoguePanel.SetActive(true);
+            }
 
             DisplayCurrentLine();
         }
@@ -63,31 +87,45 @@ namespace ModularUIRuntime
                 StopCoroutine(typeCoroutine);
                 isTyping = false;
                 UpdateTextComponent(bodyTextComponent, fullText);
+
+                if (currentNode.dialogueLines[currentLineIndex].hasChoices)
+                {
+                    ShowChoices();
+                }
             }
             else
             {
-                AdvanceDialogue();
-            }
-        }
+                DialogueLine currentLine = currentNode.dialogueLines[currentLineIndex];
 
-        public void AdvanceDialogue()
-        {
-            currentLineIndex++;
-
-            if (currentLineIndex < currentDialogue.dialogueLines.Count)
-            {
-                DisplayCurrentLine();
-            }
-            else
-            {
-                EndDialogue();
+                if (!currentLine.hasChoices)
+                {
+                    if (currentLine.endDialogue)
+                    {
+                        EndDialogue();
+                    }
+                    else if (currentLineIndex < currentNode.dialogueLines.Count - 1)
+                    {
+                        currentLineIndex++;
+                        DisplayCurrentLine();
+                    }
+                    else
+                    {
+                        EndDialogue();
+                    }
+                }
             }
         }
 
         private void DisplayCurrentLine()
         {
-            DialogueLine line = currentDialogue.dialogueLines[currentLineIndex];
+            ClearChoices();
+            DialogueLine line = currentNode.dialogueLines[currentLineIndex];
             fullText = line.dialogueText;
+
+            if (line.hasAction)
+            {
+                TriggerEvent(line.actionID);
+            }
 
             UpdateTextComponent(nameTextComponent, line.characterName);
 
@@ -117,13 +155,12 @@ namespace ModularUIRuntime
             isTyping = true;
             bodyTextComponent.text = "";
 
-            foreach (char letter in text.ToCharArray())
+            foreach (char letter in text)
             {
                 bodyTextComponent.text += letter;
 
-                ModularText modText = bodyTextComponent.GetComponent<ModularText>();
-                if (modText != null)
-                { 
+                if (bodyTextComponent.TryGetComponent(out ModularText modText))
+                {
                     modText.UpdateTextFromExternal(bodyTextComponent.text);
                 }
 
@@ -131,6 +168,115 @@ namespace ModularUIRuntime
             }
 
             isTyping = false;
+
+            if (currentNode.dialogueLines[currentLineIndex].hasChoices)
+            {
+                ShowChoices();
+            }
+        }
+
+        private void ShowChoices()
+        {
+            DialogueLine currentLine = currentNode.dialogueLines[currentLineIndex];
+
+            if (currentLine.choices != null && currentLine.choices.Count > 0)
+            {
+                foreach (DialogueChoice choice in currentLine.choices)
+                {
+                    GameObject buttonObj = Instantiate(choiceButtonPrefab, choicesContainer);
+                    activeChoiceButtons.Add(buttonObj);
+
+                    if (buttonObj.TryGetComponent(out ModularButton modBtn))
+                    {
+                        modBtn.UpdateButtonText(choice.choiceText);
+                    }
+
+                    if (buttonObj.TryGetComponent(out Button btn))
+                    {
+                        DialogueChoice capturedChoice = choice;
+                        btn.onClick.AddListener(() => OnChoiceSelected(capturedChoice));
+                    }
+                }
+            }
+        }
+
+        private void OnChoiceSelected(DialogueChoice choice)
+        {
+            if (choice.hasAction)
+            {
+                TriggerEvent(choice.actionID);
+            }
+
+            if (choice.actionType == ChoiceActionType.Continue)
+            {
+                if (currentLineIndex < currentNode.dialogueLines.Count - 1)
+                {
+                    currentLineIndex++;
+                    DisplayCurrentLine();
+                }
+                else
+                {
+                    EndDialogue();
+                }
+            }
+            else if (choice.actionType == ChoiceActionType.JumpToLine)
+            {
+                if (choice.targetLineIndex >= 0 && choice.targetLineIndex < currentNode.dialogueLines.Count)
+                {
+                    currentLineIndex = choice.targetLineIndex;
+                    DisplayCurrentLine();
+                }
+                else
+                {
+                    EndDialogue();
+                }
+            }
+            else if (choice.actionType == ChoiceActionType.JumpToNode)
+            {
+                if (choice.nextNode != null)
+                {
+                    StartDialogue(choice.nextNode);
+                }
+                else
+                {
+                    EndDialogue();
+                }
+            }
+            else if (choice.actionType == ChoiceActionType.EndDialogue)
+            {
+                EndDialogue();
+            }
+        }
+
+        private void TriggerEvent(string idToTrigger)
+        {
+            if (string.IsNullOrEmpty(idToTrigger))
+            {
+                return;
+            }
+
+            OnDialogueAction?.Invoke(idToTrigger);
+
+            if (sceneEvents != null)
+            {
+                foreach (DialogueSceneEvent evt in sceneEvents)
+                {
+                    if (evt.eventID == idToTrigger)
+                    {
+                        evt.sceneEvent?.Invoke();
+                    }
+                }
+            }
+        }
+
+        private void ClearChoices()
+        {
+            foreach (GameObject btn in activeChoiceButtons)
+            {
+                Destroy(btn);
+            }
+
+            activeChoiceButtons.Clear();
         }
 
         private void UpdateTextComponent(TextMeshProUGUI component, string text)
@@ -138,14 +284,19 @@ namespace ModularUIRuntime
             if (component != null)
             {
                 component.text = text;
-                ModularText modText = component.GetComponent<ModularText>();
-                if (modText != null) modText.UpdateTextFromExternal(text);
+
+                if (component.TryGetComponent(out ModularText modText))
+                {
+                    modText.UpdateTextFromExternal(text);
+                }
             }
         }
 
         private void EndDialogue()
         {
             isDialogueActive = false;
+            ClearChoices();
+
             if (dialoguePanel != null)
             {
                 dialoguePanel.SetActive(false);

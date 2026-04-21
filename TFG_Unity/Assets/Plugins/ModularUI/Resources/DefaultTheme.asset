@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularThemeData
   primaryColor: {r: 1, g: 1, b: 1, a: 1}
   secondaryColor: {r: 0, g: 0, b: 0, a: 1}
-  defaultClickSound: {fileID: 0}
+  defaultClickSound: {fileID: 8300000, guid: 768dd5a0b48d4244db875d62ca2d32c8, type: 3}
   textFont: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
   titleFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
   textFontSize: 24
