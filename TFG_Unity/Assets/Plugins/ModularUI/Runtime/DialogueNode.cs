@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace ModularUIRuntime
 {
     public enum ChoiceActionType
@@ -48,6 +44,7 @@ namespace ModularUIRuntime
     }
 
     [CreateAssetMenu(fileName = "NewDialogueNode", menuName = "Modular UI/Dialogue Node")]
+
     public class DialogueNode : ScriptableObject
     {
         [Header("Settings")]
@@ -59,37 +56,39 @@ namespace ModularUIRuntime
 
         private void OnValidate()
         {
-            bool changed = false;
+            if (dialogueLines == null) return;
 
-            if (dialogueLines != null)
+            for (int i = 0; i < dialogueLines.Count; i++)
             {
-                for (int i = 0; i < dialogueLines.Count; i++)
+                DialogueLine line = dialogueLines[i];
+                bool lineModified = false;
+
+                if (line.dialogueText != null && line.dialogueText.Length > characterLimit)
                 {
-                    DialogueLine line = dialogueLines[i];
+                    line.dialogueText = line.dialogueText.Substring(0, characterLimit);
+                    lineModified = true;
+                }
 
-                    if (line.dialogueText != null && line.dialogueText.Length > characterLimit)
+                if (line.choices != null)
+                {
+                    for (int j = 0; j < line.choices.Count; j++)
                     {
-                        line.dialogueText = line.dialogueText.Substring(0, characterLimit);
-                        changed = true;
-                    }
-
-                    if (line.choices != null)
-                    {
-                        for (int j = 0; j < line.choices.Count; j++)
+                        DialogueChoice choice = line.choices[j];
+                        if (choice.choiceText != null && choice.choiceText.Length > choiceCharacterLimit)
                         {
-                            DialogueChoice choice = line.choices[j];
-                            if (choice.choiceText != null && choice.choiceText.Length > choiceCharacterLimit)
-                            {
-                                choice.choiceText = choice.choiceText.Substring(0, choiceCharacterLimit);
-                                line.choices[j] = choice;
-                                changed = true;
-                            }
+                            choice.choiceText = choice.choiceText.Substring(0, choiceCharacterLimit);
+                            line.choices[j] = choice;
+                            lineModified = true;
                         }
                     }
+                }
 
+                if (lineModified)
+                {
                     dialogueLines[i] = line;
                 }
             }
         }
     }
+    
 }

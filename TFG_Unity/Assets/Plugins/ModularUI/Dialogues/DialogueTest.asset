@@ -58,7 +58,7 @@ MonoBehaviour:
       nextNode: {fileID: 0}
       hasAction: 0
       actionID: 
-    - choiceText: Dame la espada YA
+    - choiceText: Dame la espada YAaaa
       actionType: 3
       targetLineIndex: 1
       nextNode: {fileID: 0}

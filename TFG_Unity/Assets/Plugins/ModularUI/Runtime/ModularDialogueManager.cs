@@ -99,6 +99,11 @@ namespace ModularUIRuntime
 
                 if (!currentLine.hasChoices)
                 {
+                    if (currentLine.hasAction)
+                    {
+                        TriggerEvent(currentLine.actionID);
+                    }
+
                     if (currentLine.endDialogue)
                     {
                         EndDialogue();
@@ -121,11 +126,6 @@ namespace ModularUIRuntime
             ClearChoices();
             DialogueLine line = currentNode.dialogueLines[currentLineIndex];
             fullText = line.dialogueText;
-
-            if (line.hasAction)
-            {
-                TriggerEvent(line.actionID);
-            }
 
             UpdateTextComponent(nameTextComponent, line.characterName);
 

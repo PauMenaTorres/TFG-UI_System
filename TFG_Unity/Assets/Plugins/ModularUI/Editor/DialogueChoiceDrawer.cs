@@ -15,18 +15,30 @@ namespace ModularUIEditor
             SerializedProperty actionType = property.FindPropertyRelative("actionType");
             SerializedProperty targetLineIndex = property.FindPropertyRelative("targetLineIndex");
             SerializedProperty nextNode = property.FindPropertyRelative("nextNode");
-
             SerializedProperty hasAction = property.FindPropertyRelative("hasAction");
             SerializedProperty actionID = property.FindPropertyRelative("actionID");
 
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float spacing = EditorGUIUtility.standardVerticalSpacing;
-
             Rect rect = new Rect(position.x, position.y, position.width, lineHeight);
 
-            EditorGUI.PropertyField(rect, choiceText);
-            rect.y += lineHeight + spacing;
+            int limit = property.serializedObject.FindProperty("choiceCharacterLimit").intValue;
 
+            float labelWidth = EditorGUIUtility.labelWidth;
+            Rect labelRect = new Rect(rect.x, rect.y, labelWidth, lineHeight);
+            Rect fieldRect = new Rect(rect.x + labelWidth, rect.y, rect.width - labelWidth, lineHeight);
+
+            EditorGUI.LabelField(labelRect, choiceText.displayName);
+
+            EditorGUI.BeginChangeCheck();
+            string newText = GUI.TextField(fieldRect, choiceText.stringValue, limit, EditorStyles.textField);
+            if (EditorGUI.EndChangeCheck())
+            {
+                choiceText.stringValue = newText;
+                property.serializedObject.ApplyModifiedProperties();
+            }
+
+            rect.y += lineHeight + spacing;
             EditorGUI.PropertyField(rect, actionType);
             rect.y += lineHeight + spacing;
 
@@ -65,7 +77,7 @@ namespace ModularUIEditor
 
             if (type == ChoiceActionType.Continue || type == ChoiceActionType.EndDialogue)
             {
-                height -= (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+                height -= EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             }
 
             if (hasAction.boolValue)
