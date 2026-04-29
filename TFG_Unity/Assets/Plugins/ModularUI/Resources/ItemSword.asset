@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948c91b788a0f8b4baa8c2b8251f10cb, type: 3}
+  m_Name: ItemSword
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ItemData
+  itemName: Star Sword
+  itemIcon: {fileID: 21300000, guid: 20b78772048c0a74c9e14ecb51b637d0, type: 3}
+  itemDescription: A sleek, dual-edged blade designed for speed. Its balance is unmatched,
+    allowing for lightning-fast strikes in close combat.
+  type: 1
+  isStackable: 0
+  canDrop: 0
+  useText: 
