@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5668774298756327985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4764383418739315691
 CanvasRenderer:
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 2862008965628758244}
   - component: {fileID: 1022872735367837440}
   - component: {fileID: 4758239584374134588}
+  - component: {fileID: 5004405089333945411}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -174,7 +175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -351.40002, y: -173.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6212373482857800051
@@ -190,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularButton
   currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
-  useOverride: 0
+  useOverride: 1
   buttonText: Button Text
   textFontRole: 0
   textAlignment: 514
@@ -198,27 +199,27 @@ MonoBehaviour:
   textColor: {r: 0, g: 0, b: 0, a: 1}
   overrideClickSound: {fileID: 0}
   overrideNormalBG:
-    backgroundType: 0
+    backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overrideHoveredBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overridePressedBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
   overrideDisabledBG:
-    backgroundType: 0
-    backgroundColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
-    backgroundSprite: {fileID: 0}
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     tintColor: {r: 0, g: 0, b: 0, a: 0}
-  overrideFont: {fileID: 12800000, guid: 057a4255cf3577644b1097d68bea95e6, type: 3}
-  overrideFontSize: 36
+  overrideFont: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
+  overrideFontSize: 18
 --- !u!222 &2862008965628758244
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -247,7 +248,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -276,7 +277,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
@@ -286,10 +287,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    m_PressedSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    m_SelectedSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    m_DisabledSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -300,4 +301,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1022872735367837440}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ModularUIRuntime.ModularInventoryManager, ModularUIRuntime
+        m_MethodName: DropSelectedItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5004405089333945411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8564888453822002243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd54c8299b03d42bfca8941f602c30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularUIEffects
+  hoverScale: 1.05
+  clickScale: 0.95
+  transitionSpeed: 15

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6604385577061037586}
   - component: {fileID: 6151188600404563432}
   - component: {fileID: 3552864488851646757}
+  - component: {fileID: -3002544911619603193}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -70,10 +71,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
     m_SelectedSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 8f12914e84b658949ba8bc30935fb491, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -202,6 +203,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularMenuActions
   gameSceneName: GameScene
+--- !u!114 &-3002544911619603193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199675538220263232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd54c8299b03d42bfca8941f602c30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularUIEffects
+  hoverScale: 1.05
+  clickScale: 0.95
+  transitionSpeed: 15
 --- !u!1001 &6752949563077554203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -316,7 +332,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSize
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontAsset
@@ -328,19 +344,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSizeBase
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_sharedMaterial

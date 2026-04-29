@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4659043767377059837}
   - component: {fileID: 7345611143479541109}
+  - component: {fileID: 1198867400484961445}
   m_Layer: 0
   m_Name: MainMenu
   m_TagString: Untagged
@@ -75,22 +76,107 @@ MonoBehaviour:
     targetButton: {fileID: 7207476979982211230}
     OnClickAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: StartGame
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - buttonName: Options
     targetButton: {fileID: 1081677587043187914}
     OnClickAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: OpenPanel
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: ClosePanel
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 2529596236403633926}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - buttonName: Credits
     targetButton: {fileID: 1322877915046469490}
     OnClickAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: OpenPanel
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: ClosePanel
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 2529596236403633926}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - buttonName: Exit
     targetButton: {fileID: 8167443809193948247}
     OnClickAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1198867400484961445}
+          m_TargetAssemblyTypeName: ModularUIRuntime.ModularMenuActions, ModularUIRuntime
+          m_MethodName: QuitGame
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1198867400484961445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529596236403633926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1744d85c4d0276a46b777b7e4df4ca77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularMenuActions
+  gameSceneName: SampleScene
 --- !u!1 &2911921777597286807
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,9 +404,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 1022872735367837440, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758239584374134588, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
       value: Exit
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
@@ -405,6 +515,14 @@ PrefabInstance:
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: buttonText
       value: Exit
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: overrideFontSize
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 7293573379250503778, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
@@ -503,9 +621,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 1022872735367837440, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758239584374134588, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
       value: Continue
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
@@ -590,6 +732,10 @@ PrefabInstance:
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: buttonText
       value: Continue
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: overrideFont
@@ -660,9 +806,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 1022872735367837440, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758239584374134588, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
       value: Credits
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
@@ -747,6 +917,10 @@ PrefabInstance:
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: buttonText
       value: Credits
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: overrideFont
@@ -923,9 +1097,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 1022872735367837440, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758239584374134588, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
       value: Options
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
@@ -1012,6 +1210,10 @@ PrefabInstance:
       value: Options
       objectReference: {fileID: 0}
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: overrideFont
       value: 
       objectReference: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
@@ -1080,9 +1282,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2569404196410363786}
     m_Modifications:
+    - target: {fileID: 1022872735367837440, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758239584374134588, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_text
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5599891174190548217, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_Pivot.x
@@ -1173,9 +1399,17 @@ PrefabInstance:
       value: Start
       objectReference: {fileID: 0}
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: useOverride
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: overrideFont
       value: 
       objectReference: {fileID: 12800000, guid: 22c783732bfb75a449e7fe2d509c67ee, type: 3}
+    - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
+      propertyPath: overrideFontSize
+      value: 24
+      objectReference: {fileID: 0}
     - target: {fileID: 6212373482857800051, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: textHoverColor.b
       value: 0

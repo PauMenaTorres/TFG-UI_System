@@ -19,4 +19,4 @@ MonoBehaviour:
   type: 1
   isStackable: 0
   canDrop: 0
-  useText: 
+  customUseText: 
