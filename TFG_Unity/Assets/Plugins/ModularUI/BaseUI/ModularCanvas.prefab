@@ -114,3 +114,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 246b2ab6293f6a942b928f6ac9dc22bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularCanvasInitializer
+  config: {fileID: 11400000, guid: edcdc47a63c7d1841bf9da42892b81e4, type: 2}
