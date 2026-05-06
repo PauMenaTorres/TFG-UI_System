@@ -52,12 +52,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7237f8148af76ef4a89d39a9a2efaf7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularDialogueManager
-  currentDialogue: {fileID: 11400000, guid: 66d8b7f6e4a55c24bb06c1854817b236, type: 2}
+  startingNode: {fileID: 0}
+  sceneEvents: []
   typingSpeed: 0.05
   dialoguePanel: {fileID: 3842602449353742828}
   nameTextComponent: {fileID: 4992646299403598501}
   bodyTextComponent: {fileID: 2508868195231375047}
   portraitImageComponent: {fileID: 5079461433170150032}
+  choicesContainer: {fileID: 0}
+  choiceButtonPrefab: {fileID: 0}
 --- !u!1001 &1626628818097374079
 PrefabInstance:
   m_ObjectHideFlags: 0

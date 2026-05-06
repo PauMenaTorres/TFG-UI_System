@@ -709,13 +709,14 @@ GameObject:
   m_Component:
   - component: {fileID: 6784268910713861418}
   - component: {fileID: 5066380333469373893}
+  - component: {fileID: -8194155240593916254}
   m_Layer: 0
   m_Name: Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6784268910713861418
 RectTransform:
   m_ObjectHideFlags: 0
@@ -774,6 +775,18 @@ MonoBehaviour:
   - tabName: Graphics
     tabButton: {fileID: 2362855850689285403}
     sectionPanel: {fileID: 3385147013811148689}
+--- !u!114 &-8194155240593916254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129912506297106751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3efeb44725bb9a469b3d5265a4965e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularPanelFitter
 --- !u!1 &5877491450352753092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3874,20 +3887,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.r
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_sharedMaterial
@@ -4401,15 +4422,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_PreserveAspect
@@ -6888,20 +6909,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.r
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_sharedMaterial

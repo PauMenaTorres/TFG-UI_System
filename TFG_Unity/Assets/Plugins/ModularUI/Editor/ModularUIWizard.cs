@@ -88,7 +88,7 @@ namespace ModularUIEditor
             {
                 EditorGUILayout.Space(5);
                 EditorGUI.indentLevel++;
-                importBaseUI = EditorGUILayout.Toggle("Base UI (Atomic)", importBaseUI);
+                importBaseUI = EditorGUILayout.Toggle("Base UI", importBaseUI);
                 importMainMenu = EditorGUILayout.Toggle("Main Menu Template", importMainMenu);
                 importHUD = EditorGUILayout.Toggle("HUD Template", importHUD);
                 importDialogues = EditorGUILayout.Toggle("Dialogue System", importDialogues);
