@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using System.IO;
+using ModularUIRuntime;
 
 namespace ModularUIEditor
 {
@@ -64,7 +66,7 @@ namespace ModularUIEditor
 
         private string GetRootPath()
         {
-            if (System.IO.Directory.Exists("Packages/com.pau.modularui"))
+            if (Directory.Exists("Packages/com.pau.modularui"))
             {
                 return "Packages/com.pau.modularui";
             }
@@ -108,10 +110,53 @@ namespace ModularUIEditor
 
             EditorGUILayout.Space(20);
 
-            if (GUILayout.Button("Import UI Files to Project", GUILayout.Height(50)))
+            if (GUILayout.Button("Import & Configure UI System", GUILayout.Height(50)))
             {
                 ExecuteImport();
+                CreateAndApplyConfiguration();
             }
+        }
+
+        private void CreateAndApplyConfiguration()
+        {
+            string configFolder = targetPath + "/Settings";
+            if (!AssetDatabase.IsValidFolder(configFolder))
+            {
+                AssetDatabase.CreateFolder(targetPath, "Settings");
+            }
+
+            string configPath = configFolder + "/UIConfiguration.asset";
+            UIConfiguration config = AssetDatabase.LoadAssetAtPath<UIConfiguration>(configPath);
+
+            if (config == null)
+            {
+                config = CreateInstance<UIConfiguration>();
+                AssetDatabase.CreateAsset(config, configPath);
+            }
+
+            config.selectedPlatform = (UIConfiguration.TargetPlatform)selectedPlatform;
+            EditorUtility.SetDirty(config);
+            AssetDatabase.SaveAssets();
+
+            string canvasPath = targetPath + "/BaseUI/ModularCanvas.prefab";
+            GameObject canvasPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(canvasPath);
+
+            if (canvasPrefab != null)
+            {
+                using (var editingScope = new PrefabUtility.EditPrefabContentsScope(canvasPath))
+                {
+                    GameObject root = editingScope.prefabContentsRoot;
+
+                    var initializer = root.GetComponent<ModularCanvasInitializer>();
+                    if (initializer != null)
+                    {
+                        initializer.config = config;
+                    }
+                }
+            }
+
+            AssetDatabase.Refresh();
+            Debug.Log($"[ModularUI] Configuration applied: {selectedPlatform} for {selectedGenre}");
         }
 
         private void ExecuteImport()
@@ -129,38 +174,14 @@ namespace ModularUIEditor
                 CopyAssetItem("Resources", "Resources");
                 CopyAssetItem("Minimap", "Minimap");
             }
-
-            if (currentScope != ImportScope.FULL_SYSTEM)
+            else
             {
-                if (importBaseUI)
-                {
-                    CopyAssetItem("BaseUI", "BaseUI");
-                }
-
-                if (importMainMenu)
-                {
-                    CopyAssetItem("Templates/MainMenu.prefab", "Templates/MainMenu.prefab");
-                }
-
-                if (importHUD)
-                {
-                    CopyAssetItem("Templates/HUD.prefab", "Templates/HUD.prefab");
-                }
-
-                if (importDialogues)
-                {
-                    CopyAssetItem("Dialogues", "Dialogues");
-                }
-
-                if (importSettings)
-                {
-                    CopyAssetItem("Resources", "Resources");
-                }
-
-                if (importMinimap)
-                {
-                    CopyAssetItem("Minimap", "Minimap");
-                }
+                if (importBaseUI) CopyAssetItem("BaseUI", "BaseUI");
+                if (importMainMenu) CopyAssetItem("Templates/MainMenu.prefab", "Templates/MainMenu.prefab");
+                if (importHUD) CopyAssetItem("Templates/HUD.prefab", "Templates/HUD.prefab");
+                if (importDialogues) CopyAssetItem("Dialogues", "Dialogues");
+                if (importSettings) CopyAssetItem("Resources", "Resources");
+                if (importMinimap) CopyAssetItem("Minimap", "Minimap");
             }
 
             AssetDatabase.Refresh();
@@ -182,23 +203,19 @@ namespace ModularUIEditor
         private void EnsureFolderExists(string path)
         {
             int lastSlash = path.LastIndexOf('/');
-
             if (lastSlash > 0)
             {
                 string folderPath = path.Substring(0, lastSlash);
-
                 if (!AssetDatabase.IsValidFolder(folderPath))
                 {
                     string[] folders = folderPath.Split('/');
                     string current = folders[0];
-
                     for (int i = 1; i < folders.Length; i++)
                     {
                         if (!AssetDatabase.IsValidFolder(current + "/" + folders[i]))
                         {
                             AssetDatabase.CreateFolder(current, folders[i]);
                         }
-
                         current += "/" + folders[i];
                     }
                 }
