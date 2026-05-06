@@ -28,7 +28,7 @@ namespace ModularUIRuntime
         }
     }
 
-    [CreateAssetMenu(fileName = "ModularThemeData", menuName = "Scriptable Objects/ModularThemeData")]
+    [CreateAssetMenu(fileName = "ModularThemeData", menuName = "Modular UI/ModularThemeData")]
     public class ModularThemeData : ScriptableObject
     {
         public event Action OnThemeChanged;
