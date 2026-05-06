@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace ModularUIRuntime
 {
@@ -30,5 +31,18 @@ namespace ModularUIRuntime
 
         public TargetPlatform selectedPlatform;
         public GameGenre selectedGenre;
+
+        public event Action OnConfigurationChanged;
+
+        private void OnValidate()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this != null)
+                    OnConfigurationChanged?.Invoke();
+            };
+#endif
+        }
     }
 }

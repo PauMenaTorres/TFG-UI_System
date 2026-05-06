@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace ModularUIRuntime
@@ -8,6 +8,7 @@ namespace ModularUIRuntime
         public void SetupCanvas(Canvas targetCanvas)
         {
             targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            targetCanvas.transform.localScale = Vector3.one;
 
             CanvasScaler scaler = targetCanvas.GetComponent<CanvasScaler>();
             if (scaler != null)

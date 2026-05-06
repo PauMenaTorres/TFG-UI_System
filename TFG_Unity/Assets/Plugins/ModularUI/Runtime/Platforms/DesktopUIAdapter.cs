@@ -8,6 +8,7 @@ namespace ModularUIRuntime
         public void SetupCanvas(Canvas targetCanvas)
         {
             targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            targetCanvas.transform.localScale = Vector3.one;
 
             if (targetCanvas.GetComponent<GraphicRaycaster>() == null)
             {

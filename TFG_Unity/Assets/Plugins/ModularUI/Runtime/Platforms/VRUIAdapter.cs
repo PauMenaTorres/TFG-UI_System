@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace ModularUIRuntime
@@ -14,7 +14,14 @@ namespace ModularUIRuntime
             GraphicRaycaster oldRaycaster = targetCanvas.GetComponent<GraphicRaycaster>();
             if (oldRaycaster != null)
             {
-                Object.Destroy(oldRaycaster);
+                if (Application.isPlaying)
+                {
+                    Object.Destroy(oldRaycaster);
+                }
+                else
+                {
+                    Object.DestroyImmediate(oldRaycaster, true);
+                }
             }
         }
     }
