@@ -50,7 +50,6 @@ namespace ModularUIRuntime
             if (config == null || this == null) return;
 
 #if UNITY_EDITOR
-            // Avoid modifying prefab assets directly during OnValidate to prevent "Destroying assets" errors
             if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
 #endif
 

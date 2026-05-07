@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7aed789495e3cc40911b0551226e608, type: 3}
   m_Name: UIConfiguration
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.UIConfiguration
-  selectedPlatform: 0
+  selectedPlatform: 1
   selectedGenre: 0

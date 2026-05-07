@@ -20,7 +20,7 @@ namespace ModularUIRuntime
         public ItemType type;
         public bool isStackable;
         public bool canDrop;
-        [Tooltip("Si se deja vacío, el sistema usará EQUIP para equipo y USE para el resto.")]
+        [Tooltip("If left empty, the system will use EQUIP for equipment and USE for everything else.")]
         public string customUseText;
     }
 }
