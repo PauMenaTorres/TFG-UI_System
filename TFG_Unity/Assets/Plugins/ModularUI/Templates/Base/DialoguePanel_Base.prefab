@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7945285446313695216}
   - component: {fileID: 5959666456107878227}
   m_Layer: 5
-  m_Name: DialoguePanel
+  m_Name: DialoguePanel_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -523,6 +523,10 @@ PrefabInstance:
     - target: {fileID: 8674615970996472639, guid: 012674805fc70fd4d9879d62ead4f052, type: 3}
       propertyPath: m_Name
       value: CharacterImage
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674615970996472639, guid: 012674805fc70fd4d9879d62ead4f052, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
