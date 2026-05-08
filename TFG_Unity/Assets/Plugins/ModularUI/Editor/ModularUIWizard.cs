@@ -109,6 +109,7 @@ namespace ModularUIEditor
         private void CreateAndApplyConfiguration()
         {
             string configFolder = targetPath + "/Settings";
+
             if (!AssetDatabase.IsValidFolder(configFolder))
             {
                 AssetDatabase.CreateFolder(targetPath, "Settings");
@@ -123,7 +124,7 @@ namespace ModularUIEditor
                 AssetDatabase.CreateAsset(config, configPath);
             }
 
-            config.selectedPlatform = (UIConfiguration.TargetPlatform)selectedPlatform;
+            config.selectedPlatform = selectedPlatform;
             config.selectedGenre = selectedGenre;
             EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssets();
@@ -138,6 +139,7 @@ namespace ModularUIEditor
                     GameObject root = editingScope.prefabContentsRoot;
 
                     var initializer = root.GetComponent<ModularCanvasInitializer>();
+
                     if (initializer != null)
                     {
                         initializer.config = config;
@@ -167,21 +169,94 @@ namespace ModularUIEditor
             }
             else
             {
-                if (importBaseUI) CopyAssetItem("BaseUI", "BaseUI");
-                if (importMainMenu) CopyAssetItem("Templates/MainMenu.prefab", "Templates/MainMenu.prefab");
-                if (importHUD) CopyAssetItem("Templates/HUD.prefab", "Templates/HUD.prefab");
-                if (importInventory) CopyAssetItem("Templates/InventoryPanel.prefab", "Templates/InventoryPanel.prefab");
-                if (importOptions) CopyAssetItem("Templates/Options.prefab", "Templates/Options.prefab");
-                if (importPauseMenu) CopyAssetItem("Templates/PauseMenu.prefab", "Templates/PauseMenu.prefab");
-                if (importCredits) CopyAssetItem("Templates/Credits.prefab", "Templates/Credits.prefab");
-                if (importWinLose) CopyAssetItem("Templates/WinLoseMenu.prefab", "Templates/WinLoseMenu.prefab");
-                if (importDialogues) CopyAssetItem("Dialogues", "Dialogues");
-                if (importSettings) CopyAssetItem("Resources", "Resources");
-                if (importMinimap) CopyAssetItem("Minimap", "Minimap");
-                if (importSamples) CopyAssetItem("Samples", "Samples");
+                if (importBaseUI)
+                {
+                    CopyAssetItem("BaseUI", "BaseUI");
+                }
+
+                if (importMainMenu)
+                {
+                    ImportTemplateVariant("MainMenu");
+                }
+
+                if (importHUD)
+                {
+                    ImportTemplateVariant("HUD");
+                }
+
+                if (importInventory)
+                {
+                    ImportTemplateVariant("InventoryPanel");
+                }
+
+                if (importOptions)
+                {
+                    ImportTemplateVariant("Options");
+                }
+
+                if (importPauseMenu)
+                {
+                    ImportTemplateVariant("PauseMenu");
+                }
+
+                if (importCredits)
+                {
+                    ImportTemplateVariant("Credits");
+                }
+
+                if (importWinLose)
+                {
+                    ImportTemplateVariant("WinLoseMenu");
+                }
+
+                if (importDialogues)
+                {
+                    CopyAssetItem("Dialogues", "Dialogues");
+                    ImportTemplateVariant("DialoguePanel");
+                }
+
+                if (importSettings)
+                {
+                    CopyAssetItem("Resources", "Resources");
+                }
+
+                if (importMinimap)
+                {
+                    CopyAssetItem("Minimap", "Minimap");
+                }
+
+                if (importSamples)
+                {
+                    CopyAssetItem("Samples", "Samples");
+                }
             }
 
             AssetDatabase.Refresh();
+        }
+
+        private void ImportTemplateVariant(string templateName)
+        {
+            CopyAssetItem($"Templates/Base/{templateName}_Base.prefab", $"Templates/Base/{templateName}_Base.prefab");
+
+            if (selectedPlatform == UIConfiguration.TargetPlatform.Desktop)
+            {
+                CopyAssetItem($"Templates/Desktop/{templateName}_Desktop.prefab", $"Templates/Desktop/{templateName}_Desktop.prefab");
+            }
+
+            if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
+            {
+                CopyAssetItem($"Templates/Mobile/Portrait/{templateName}_Portrait.prefab", $"Templates/Mobile/Portrait/{templateName}_Portrait.prefab");
+            }
+
+            if (selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+            {
+                CopyAssetItem($"Templates/Mobile/Landscape/{templateName}_Landscape.prefab", $"Templates/Mobile/Landscape/{templateName}_Landscape.prefab");
+            }
+
+            if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+            {
+                CopyAssetItem($"Templates/VR/{templateName}_VR.prefab", $"Templates/VR/{templateName}_VR.prefab");
+            }
         }
 
         private void CopyAssetItem(string subPath, string targetSubPath)
@@ -200,19 +275,23 @@ namespace ModularUIEditor
         private void EnsureFolderExists(string path)
         {
             int lastSlash = path.LastIndexOf('/');
+
             if (lastSlash > 0)
             {
                 string folderPath = path.Substring(0, lastSlash);
+
                 if (!AssetDatabase.IsValidFolder(folderPath))
                 {
                     string[] folders = folderPath.Split('/');
                     string current = folders[0];
+
                     for (int i = 1; i < folders.Length; i++)
                     {
                         if (!AssetDatabase.IsValidFolder(current + "/" + folders[i]))
                         {
                             AssetDatabase.CreateFolder(current, folders[i]);
                         }
+
                         current += "/" + folders[i];
                     }
                 }

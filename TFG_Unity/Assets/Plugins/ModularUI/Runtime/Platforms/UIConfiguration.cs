@@ -1,16 +1,18 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace ModularUIRuntime
 {
     [CreateAssetMenu(fileName = "UIConfiguration", menuName = "Modular UI/Config Project")]
     public class UIConfiguration : ScriptableObject
     {
-        public enum TargetPlatform 
-        {   
+        public enum TargetPlatform
+        {
             Desktop,
-            Mobile,
-            VR 
+            MobilePortrait,
+            MobileLandscape,
+            VR
         }
 
         public enum GameGenre
@@ -29,8 +31,17 @@ namespace ModularUIRuntime
             Fighting
         }
 
+        [Serializable]
+        public struct GenreThemeMap
+        {
+            public GameGenre genre;
+            public ModularThemeData theme;
+        }
+
         public TargetPlatform selectedPlatform;
         public GameGenre selectedGenre;
+
+        public List<GenreThemeMap> genreThemes = new List<GenreThemeMap>();
 
         public event Action OnConfigurationChanged;
 
@@ -40,9 +51,24 @@ namespace ModularUIRuntime
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 if (this != null)
+                {
                     OnConfigurationChanged?.Invoke();
+                }
             };
 #endif
+        }
+
+        public ModularThemeData GetActiveTheme()
+        {
+            foreach (var map in genreThemes)
+            {
+                if (map.genre == selectedGenre)
+                {
+                    return map.theme;
+                }
+            }
+
+            return null;
         }
     }
 }
