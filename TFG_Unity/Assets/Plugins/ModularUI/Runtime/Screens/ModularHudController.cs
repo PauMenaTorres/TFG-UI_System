@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace ModularUIRuntime
 {
-    [System.Serializable]
+    [Serializable]
     public class VitalBarReference
     {
         public Slider vitalSlider;
@@ -17,7 +18,7 @@ namespace ModularUIRuntime
         [HideInInspector] public Vector3 originalScale = Vector3.one;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class HotbarActionBinding
     {
         public string actionName = "New Action";

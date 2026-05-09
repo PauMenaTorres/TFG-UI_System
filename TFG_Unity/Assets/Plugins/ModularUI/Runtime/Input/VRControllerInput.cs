@@ -1,13 +1,14 @@
 using UnityEngine;
+using System;
 using UnityEngine.XR;
 
 namespace ModularUIRuntime
 {
     public class VRControllerInput : MonoBehaviour, IUIInputProvider
     {
-        public event System.Action<int> OnHotbarSlotPressed;
-        public event System.Action OnCancelPressed;
-        public event System.Action OnMenuTogglePressed;
+        public event Action<int> OnHotbarSlotPressed;
+        public event Action OnCancelPressed;
+        public event Action OnMenuTogglePressed;
 
         private bool isEnabled = true;
         private InputDevice rightController;
@@ -53,7 +54,7 @@ namespace ModularUIRuntime
             HandleButtonState(leftController, CommonUsages.primaryButton, ref previousMenuState, OnMenuTogglePressed);
         }
 
-        private void HandleButtonState(InputDevice device, InputFeatureUsage<bool> buttonUsage, ref bool previousState, System.Action action)
+        private void HandleButtonState(InputDevice device, InputFeatureUsage<bool> buttonUsage, ref bool previousState, Action action)
         {
             if (device.TryGetFeatureValue(buttonUsage, out bool currentState))
             {

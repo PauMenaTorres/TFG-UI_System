@@ -1,11 +1,12 @@
 using UnityEngine;
+using System;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 
 namespace ModularUIRuntime
 {
-    [System.Serializable]
+    [Serializable]
     public class ItemEvent : UnityEvent<ItemData> { }
 
     public class ModularInventoryManager : MonoBehaviour

@@ -1,12 +1,13 @@
 using UnityEngine;
+using System;
 
 namespace ModularUIRuntime  
 {
     public class MobileTouchInput : MonoBehaviour, IUIInputProvider
     {
-        public event System.Action<int> OnHotbarSlotPressed;
-        public event System.Action OnCancelPressed;
-        public event System.Action OnMenuTogglePressed;
+        public event Action<int> OnHotbarSlotPressed;
+        public event Action OnCancelPressed;
+        public event Action OnMenuTogglePressed;
 
         private bool isEnabled = true;
 

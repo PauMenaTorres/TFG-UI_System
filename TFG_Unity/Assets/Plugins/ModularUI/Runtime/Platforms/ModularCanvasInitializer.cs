@@ -2,61 +2,60 @@ using UnityEngine;
 
 namespace ModularUIRuntime
 {
-    [RequireComponent(typeof(Canvas))]
     [ExecuteAlways]
+    [RequireComponent(typeof(Canvas))]
     public class ModularCanvasInitializer : MonoBehaviour
     {
         public UIConfiguration config;
 
-        private UIConfiguration lastConfig;
-
         private void OnEnable()
         {
-            UpdateSubscription();
-            Refresh();
+            if (config != null)
+            {
+                config.OnConfigurationChanged += Initialize;
+            }
+
+            Initialize();
         }
 
         private void OnDisable()
         {
             if (config != null)
             {
-                config.OnConfigurationChanged -= Refresh;
+                config.OnConfigurationChanged -= Initialize;
             }
         }
 
-        private void OnValidate()
+        private void Initialize()
         {
-            UpdateSubscription();
-            Refresh();
-        }
-
-        private void UpdateSubscription()
-        {
-            if (lastConfig != null)
+            if (this == null || config == null)
             {
-                lastConfig.OnConfigurationChanged -= Refresh;
+                return;
             }
-
-            if (config != null)
-            {
-                config.OnConfigurationChanged += Refresh;
-            }
-
-            lastConfig = config;
-        }
-
-        public void Refresh()
-        {
-            if (config == null || this == null) return;
-
-#if UNITY_EDITOR
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
-#endif
 
             IPlatformFactory factory = new PlatformFactory(config);
             IPlatformUIAdapter adapter = factory.CreateAdapter();
 
-            adapter.SetupCanvas(GetComponent<Canvas>());
+            Canvas canvas = GetComponent<Canvas>();
+
+            if (canvas != null)
+            {
+                adapter.SetupCanvas(canvas);
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.EditorUtility.SetDirty(gameObject);
+
+                    UnityEngine.UI.CanvasScaler scaler = GetComponent<UnityEngine.UI.CanvasScaler>();
+
+                    if (scaler != null)
+                    {
+                        UnityEditor.EditorUtility.SetDirty(scaler);
+                    }
+                }
+#endif
+            }
         }
     }
 }

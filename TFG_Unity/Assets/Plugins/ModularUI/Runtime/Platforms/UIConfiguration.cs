@@ -41,12 +41,33 @@ namespace ModularUIRuntime
         public TargetPlatform selectedPlatform;
         public GameGenre selectedGenre;
 
+        public Vector2 designResolution = new Vector2(800, 600);
+
         public List<GenreThemeMap> genreThemes = new List<GenreThemeMap>();
 
         public event Action OnConfigurationChanged;
 
         private void OnValidate()
         {
+            if (selectedPlatform == TargetPlatform.MobilePortrait)
+            {
+                if (designResolution.x > designResolution.y)
+                {
+                    float temp = designResolution.x;
+                    designResolution.x = designResolution.y;
+                    designResolution.y = temp;
+                }
+            }
+            else
+            {
+                if (designResolution.y > designResolution.x)
+                {
+                    float temp = designResolution.x;
+                    designResolution.x = designResolution.y;
+                    designResolution.y = temp;
+                }
+            }
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.delayCall += () =>
             {
