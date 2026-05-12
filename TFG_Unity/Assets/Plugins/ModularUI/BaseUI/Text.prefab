@@ -58,6 +58,8 @@ MonoBehaviour:
   textContent: Text Content
   alignment: 514
   fontStyle: 0
+  useCustomFontSize: 0
+  customFontSize: 24
   overrideFont: {fileID: 0}
   overrideFontSize: 24
 --- !u!222 &2803207486069207011

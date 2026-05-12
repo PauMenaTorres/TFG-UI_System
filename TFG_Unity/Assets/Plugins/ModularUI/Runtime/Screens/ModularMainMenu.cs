@@ -1,53 +1,26 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace ModularUIRuntime
 {
-    [Serializable]
-    public class MenuButtonData
+    public class ModularMainMenu : ModularScreenBase
     {
-        public string buttonName = "New Button";
-        public ModularButton targetButton;
-        public UnityEvent OnClickAction;
-    }
-
-    public class ModularMainMenu : MonoBehaviour
-    {
-        public enum MenuLayoutType
-        {
-            Vertical,
-            Horizontal,
-            Grid
-        }
-
         [Header("Menu Content")]
         [SerializeField] private string titleText = "MAIN MENU";
         [SerializeField] private string versionText = "v.1.0.0";
 
-        [Header("References")]
-        [SerializeField] private Transform buttonsContainer;
+        [Header("Text References")]
         [SerializeField] private TextMeshProUGUI titleComponent;
         [SerializeField] private TextMeshProUGUI versionComponent;
 
-        [Header("Layout Settings")]
-        [SerializeField] private MenuLayoutType layoutType = MenuLayoutType.Vertical;
-        [SerializeField] private int gridColumns = 2;
-        [SerializeField] private Vector2 spacing = new Vector2(10f, 10f);
-        [SerializeField] private Vector2 cellSize = new Vector2(200f, 50f);
-
-        [SerializeField] private int paddingLeft = 0;
-        [SerializeField] private int paddingRight = 0;
-        [SerializeField] private int paddingTop = 0;
-        [SerializeField] private int paddingBottom = 0;
-
         [Header("Menu Buttons Setup")]
-        [SerializeField] private List<MenuButtonData> menuButtons = new List<MenuButtonData>();
+        [SerializeField] private List<ModularButtonData> menuButtons = new List<ModularButtonData>();
 
-        private GridLayoutGroup gridLayout;
+        protected override Transform GetButtonsContainer()
+        {
+            return buttonsContainer;
+        }
 
         private void Awake()
         {
@@ -56,21 +29,8 @@ namespace ModularUIRuntime
                 return;
             }
 
-            UpdateLayout();
-
-            foreach (MenuButtonData data in menuButtons)
-            {
-                if (data.targetButton != null)
-                {
-                    Button menuBtn = data.targetButton.GetComponent<Button>();
-
-                    if (menuBtn != null)
-                    {
-                        menuBtn.onClick.RemoveAllListeners();
-                        menuBtn.onClick.AddListener(() => data.OnClickAction?.Invoke());
-                    }
-                }
-            }
+            ApplyLayout();
+            WireButtonActions(menuButtons);
         }
 
         protected void OnValidate()
@@ -88,61 +48,10 @@ namespace ModularUIRuntime
                     return;
                 }
 
-                if (titleComponent != null)
-                {
-                    if (titleComponent.text != titleText)
-                    {
-                        titleComponent.text = titleText;
-                        titleComponent.SetAllDirty();
-
-                        ModularText modText = titleComponent.GetComponent<ModularText>();
-
-                        if (modText != null)
-                        {
-                            modText.UpdateTextFromExternal(titleText);
-                        }
-                    }
-                }
-
-                if (versionComponent != null)
-                {
-                    if (versionComponent.text != versionText)
-                    {
-                        versionComponent.text = versionText;
-                        versionComponent.SetAllDirty();
-
-                        ModularText modVersion = versionComponent.GetComponent<ModularText>();
-
-                        if (modVersion != null)
-                        {
-                            modVersion.UpdateTextFromExternal(versionText);
-                        }
-                    }
-                }
-
-                if (menuButtons != null)
-                {
-                    foreach (MenuButtonData data in menuButtons)
-                    {
-                        if (data.targetButton != null)
-                        {
-                            TextMeshProUGUI textComp = data.targetButton.GetComponentInChildren<TextMeshProUGUI>();
-                            string detectedName = data.targetButton.name;
-
-                            if (textComp != null)
-                            {
-                                detectedName = textComp.text;
-                            }
-
-                            if (data.buttonName != detectedName)
-                            {
-                                data.buttonName = detectedName;
-                            }
-                        }
-                    }
-                }
-
-                UpdateLayout();
+                SyncTitleText();
+                SyncVersionText();
+                EditorDetectButtonNames(menuButtons);
+                ApplyLayout();
             };
 #endif
         }
@@ -166,67 +75,39 @@ namespace ModularUIRuntime
             }
         }
 
-        public void UpdateLayout()
+        private void SyncTitleText()
         {
-            if (buttonsContainer == null)
+            if (titleComponent == null || titleComponent.text == titleText)
             {
                 return;
             }
 
-            if (gridLayout == null)
-            {
-                gridLayout = buttonsContainer.GetComponent<GridLayoutGroup>();
-            }
+            titleComponent.text = titleText;
+            titleComponent.SetAllDirty();
 
-            if (gridLayout == null)
+            ModularText modText = titleComponent.GetComponent<ModularText>();
+
+            if (modText != null)
+            {
+                modText.UpdateTextFromExternal(titleText);
+            }
+        }
+
+        private void SyncVersionText()
+        {
+            if (versionComponent == null || versionComponent.text == versionText)
             {
                 return;
             }
 
-            if (gridLayout.spacing != spacing)
-            {
-                gridLayout.spacing = spacing;
-            }
+            versionComponent.text = versionText;
+            versionComponent.SetAllDirty();
 
-            if (gridLayout.cellSize != cellSize)
-            {
-                gridLayout.cellSize = cellSize;
-            }
+            ModularText modVersion = versionComponent.GetComponent<ModularText>();
 
-            if (gridLayout.padding == null || gridLayout.padding.left != paddingLeft || gridLayout.padding.right != paddingRight || gridLayout.padding.top != paddingTop || gridLayout.padding.bottom != paddingBottom)
+            if (modVersion != null)
             {
-                gridLayout.padding = new RectOffset(paddingLeft, paddingRight, paddingTop, paddingBottom);
-            }
-
-            GridLayoutGroup.Constraint newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            int newCount = 1;
-
-            if (layoutType == MenuLayoutType.Vertical)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                newCount = 1;
-            }
-
-            if (layoutType == MenuLayoutType.Horizontal)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedRowCount;
-                newCount = 1;
-            }
-
-            if (layoutType == MenuLayoutType.Grid)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                newCount = gridColumns;
-            }
-
-            if (gridLayout.constraint != newConstraint)
-            {
-                gridLayout.constraint = newConstraint;
-            }
-
-            if (gridLayout.constraintCount != newCount)
-            {
-                gridLayout.constraintCount = newCount;
+                modVersion.UpdateTextFromExternal(versionText);
             }
         }
     }

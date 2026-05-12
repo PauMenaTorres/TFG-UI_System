@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace ModularUIRuntime
@@ -15,38 +14,29 @@ namespace ModularUIRuntime
         public GameObject sectionPanel;
     }
 
-    public class ModularOptionsMenu : MonoBehaviour
+    public class ModularOptionsMenu : ModularScreenBase
     {
-        public enum MenuLayoutType
-        {
-            Vertical,
-            Horizontal,
-            Grid
-        }
-
         [Header("Options Content")]
         [SerializeField] private string titleText = "OPTIONS";
 
-        [Header("References")]
+        [Header("Tab References")]
         [SerializeField] private GameObject tabButtonsContainer;
         [SerializeField] private TextMeshProUGUI titleComponent;
-
-        [Header("Layout Settings")]
-        [SerializeField] private MenuLayoutType layoutType = MenuLayoutType.Horizontal;
-        [SerializeField] private int gridColumns = 3;
-        [SerializeField] private Vector2 spacing = new Vector2(10f, 10f);
-        [SerializeField] private Vector2 cellSize = new Vector2(150f, 50f);
-
-        [SerializeField] private int paddingLeft = 0;
-        [SerializeField] private int paddingRight = 0;
-        [SerializeField] private int paddingTop = 0;
-        [SerializeField] private int paddingBottom = 0;
 
         [Header("Tabs Setup")]
         [SerializeField] private List<OptionTabButtonData> optionTabs = new List<OptionTabButtonData>();
 
-        private GridLayoutGroup gridLayout;
         private string defaultTitle;
+
+        protected override Transform GetButtonsContainer()
+        {
+            if (tabButtonsContainer != null)
+            {
+                return tabButtonsContainer.transform;
+            }
+
+            return null;
+        }
 
         private void Awake()
         {
@@ -56,21 +46,23 @@ namespace ModularUIRuntime
             }
 
             defaultTitle = titleText;
-            UpdateLayout();
+            ApplyLayout();
 
             for (int i = 0; i < optionTabs.Count; i++)
             {
                 OptionTabButtonData tabData = optionTabs[i];
 
-                if (tabData.tabButton != null && tabData.sectionPanel != null)
+                if (tabData.tabButton == null || tabData.sectionPanel == null)
                 {
-                    Button menuBtn = tabData.tabButton.GetComponent<Button>();
+                    continue;
+                }
 
-                    if (menuBtn != null)
-                    {
-                        menuBtn.onClick.RemoveAllListeners();
-                        menuBtn.onClick.AddListener(() => OpenTab(tabData.sectionPanel));
-                    }
+                Button menuBtn = tabData.tabButton.GetComponent<Button>();
+
+                if (menuBtn != null)
+                {
+                    menuBtn.onClick.RemoveAllListeners();
+                    menuBtn.onClick.AddListener(() => OpenTab(tabData.sectionPanel));
                 }
             }
 
@@ -94,15 +86,17 @@ namespace ModularUIRuntime
 
             foreach (OptionTabButtonData tab in optionTabs)
             {
-                if (tab.sectionPanel != null)
+                if (tab.sectionPanel == null)
                 {
-                    bool isOpen = tab.sectionPanel == panelToOpen;
-                    tab.sectionPanel.SetActive(isOpen);
+                    continue;
+                }
 
-                    if (isOpen)
-                    {
-                        UpdateTitleUI(tab.tabName.ToUpper());
-                    }
+                bool isOpen = tab.sectionPanel == panelToOpen;
+                tab.sectionPanel.SetActive(isOpen);
+
+                if (isOpen)
+                {
+                    UpdateTitleUI(tab.tabName.ToUpper());
                 }
             }
         }
@@ -130,19 +124,32 @@ namespace ModularUIRuntime
             UpdateTitleUI(newTitle);
         }
 
+        public void UpdateTextFromChild(ModularText child, string newText)
+        {
+            if (titleComponent != null && child.gameObject == titleComponent.gameObject)
+            {
+                if (titleText != newText)
+                {
+                    titleText = newText;
+                }
+            }
+        }
+
         private void UpdateTitleUI(string newTitle)
         {
-            if (titleComponent != null)
+            if (titleComponent == null)
             {
-                titleComponent.text = newTitle;
-                titleComponent.SetAllDirty();
+                return;
+            }
 
-                ModularText modText = titleComponent.GetComponent<ModularText>();
+            titleComponent.text = newTitle;
+            titleComponent.SetAllDirty();
 
-                if (modText != null)
-                {
-                    modText.UpdateTextFromExternal(newTitle);
-                }
+            ModularText modText = titleComponent.GetComponent<ModularText>();
+
+            if (modText != null)
+            {
+                modText.UpdateTextFromExternal(newTitle);
             }
         }
 
@@ -161,121 +168,57 @@ namespace ModularUIRuntime
                     return;
                 }
 
-                if (titleComponent != null)
-                {
-                    if (titleComponent.text != titleText)
-                    {
-                        titleComponent.text = titleText;
-                        titleComponent.SetAllDirty();
-
-                        ModularText modText = titleComponent.GetComponent<ModularText>();
-
-                        if (modText != null)
-                        {
-                            modText.UpdateTextFromExternal(titleText);
-                        }
-                    }
-                }
-
-                if (optionTabs != null)
-                {
-                    foreach (OptionTabButtonData data in optionTabs)
-                    {
-                        if (data.tabButton != null)
-                        {
-                            TextMeshProUGUI textComp = data.tabButton.GetComponentInChildren<TextMeshProUGUI>();
-                            string detectedName = data.tabButton.name;
-
-                            if (textComp != null)
-                            {
-                                detectedName = textComp.text;
-                            }
-
-                            if (data.tabName != detectedName)
-                            {
-                                data.tabName = detectedName;
-                            }
-                        }
-                    }
-                }
-
-                UpdateLayout();
+                SyncTitleText();
+                DetectTabNames();
+                ApplyLayout();
             };
 #endif
         }
 
-        public void UpdateTextFromChild(ModularText child, string newText)
+        private void SyncTitleText()
         {
-            if (titleComponent != null && child.gameObject == titleComponent.gameObject)
+            if (titleComponent == null || titleComponent.text == titleText)
             {
-                if (titleText != newText)
-                {
-                    titleText = newText;
-                }
+                return;
+            }
+
+            titleComponent.text = titleText;
+            titleComponent.SetAllDirty();
+
+            ModularText modText = titleComponent.GetComponent<ModularText>();
+
+            if (modText != null)
+            {
+                modText.UpdateTextFromExternal(titleText);
             }
         }
 
-        public void UpdateLayout()
+        private void DetectTabNames()
         {
-            if (tabButtonsContainer == null)
+            if (optionTabs == null)
             {
                 return;
             }
 
-            if (gridLayout == null)
+            foreach (OptionTabButtonData data in optionTabs)
             {
-                gridLayout = tabButtonsContainer.GetComponent<GridLayoutGroup>();
-            }
+                if (data.tabButton == null)
+                {
+                    continue;
+                }
 
-            if (gridLayout == null)
-            {
-                return;
-            }
+                TextMeshProUGUI textComp = data.tabButton.GetComponentInChildren<TextMeshProUGUI>();
+                string detectedName = data.tabButton.name;
 
-            if (gridLayout.spacing != spacing)
-            {
-                gridLayout.spacing = spacing;
-            }
+                if (textComp != null)
+                {
+                    detectedName = textComp.text;
+                }
 
-            if (gridLayout.cellSize != cellSize)
-            {
-                gridLayout.cellSize = cellSize;
-            }
-
-            if (gridLayout.padding == null || gridLayout.padding.left != paddingLeft || gridLayout.padding.right != paddingRight || gridLayout.padding.top != paddingTop || gridLayout.padding.bottom != paddingBottom)
-            {
-                gridLayout.padding = new RectOffset(paddingLeft, paddingRight, paddingTop, paddingBottom);
-            }
-
-            GridLayoutGroup.Constraint newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            int newCount = 1;
-
-            if (layoutType == MenuLayoutType.Vertical)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                newCount = 1;
-            }
-
-            if (layoutType == MenuLayoutType.Horizontal)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedRowCount;
-                newCount = 1;
-            }
-
-            if (layoutType == MenuLayoutType.Grid)
-            {
-                newConstraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                newCount = gridColumns;
-            }
-
-            if (gridLayout.constraint != newConstraint)
-            {
-                gridLayout.constraint = newConstraint;
-            }
-
-            if (gridLayout.constraintCount != newCount)
-            {
-                gridLayout.constraintCount = newCount;
+                if (data.tabName != detectedName)
+                {
+                    data.tabName = detectedName;
+                }
             }
         }
     }

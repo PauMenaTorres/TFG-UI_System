@@ -754,10 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c347613a7e1a34e97e3d32a929f704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularOptionsMenu
-  titleText: OPTIONS
-  tabButtonsContainer: {fileID: 8956621181452115085}
-  titleComponent: {fileID: 1136778629612851653}
-  layoutType: 2
+  layoutType: 0
   gridColumns: 0
   spacing: {x: 10, y: 50}
   cellSize: {x: 200, y: 50}
@@ -765,6 +762,10 @@ MonoBehaviour:
   paddingRight: 0
   paddingTop: 65
   paddingBottom: 0
+  buttonsContainer: {fileID: 5690424789482223074}
+  titleText: OPTIONS
+  tabButtonsContainer: {fileID: 8956621181452115085}
+  titleComponent: {fileID: 1136778629612851653}
   optionTabs:
   - tabName: Game
     tabButton: {fileID: 8791951605131986300}
@@ -2670,7 +2671,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2678,15 +2679,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2722,7 +2723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -257.55994
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3571,7 +3572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3579,15 +3580,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3623,7 +3624,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -157.55995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3888,7 +3889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontSize
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontAsset
@@ -3896,19 +3897,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontSizeBase
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_sharedMaterial
@@ -4069,6 +4070,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSize
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 0}
@@ -4083,6 +4088,10 @@ PrefabInstance:
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_sharedMaterial
@@ -4422,15 +4431,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6257904629782574730, guid: ef2c5c74df816ff418bcfa87ffa72a93, type: 3}
       propertyPath: m_PreserveAspect
@@ -6910,7 +6919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontSize
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontAsset
@@ -6918,19 +6927,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontColor.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_fontSizeBase
-      value: 36
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 1039426377689385409, guid: 5e1d673acaa21764b8d0ac2ceb26e90b, type: 3}
       propertyPath: m_sharedMaterial
@@ -7248,7 +7257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.x
@@ -7256,15 +7265,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7300,7 +7309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -357.55994
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5668774298756327985, guid: b88182b2e8c00e94891dff70810bfbb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

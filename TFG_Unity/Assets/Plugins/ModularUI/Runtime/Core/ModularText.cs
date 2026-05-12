@@ -24,7 +24,9 @@ namespace ModularUIRuntime
         [SerializeField] private TextColorRole colorRole = TextColorRole.Secondary;
         [SerializeField] private Color customColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
+        [TextArea(3, 10)]
         [SerializeField] private string textContent = "Text Content";
+
         [SerializeField] private TextAlignmentOptions alignment = TextAlignmentOptions.Center;
         [SerializeField] private FontStyles fontStyle = FontStyles.Normal;
 
@@ -191,7 +193,7 @@ namespace ModularUIRuntime
             {
                 textComponent.color = targetColor;
             }
-
+            
             textComponent.SetAllDirty();
         }
     }

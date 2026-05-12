@@ -14,7 +14,9 @@ namespace ModularUIRuntime
         }
 
         [Header("Button Content")]
+        [TextArea(3, 10)]
         [SerializeField] private string buttonText = "Modular Button";
+
         [SerializeField] private TextRole textFontRole = TextRole.Body;
         [SerializeField] private TextAlignmentOptions textAlignment = TextAlignmentOptions.Center;
         [SerializeField] private FontStyles fontStyle = FontStyles.Bold;
