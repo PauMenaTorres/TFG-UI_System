@@ -30,6 +30,7 @@ namespace ModularUIRuntime
                 Destroy(gameObject);
                 return;
             }
+            instance = this;
             DontDestroyOnLoad(gameObject);
             InitializePool();
         }
