@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace ModularUIRuntime
 {
-    public class DesktopUIAdapter : IPlatformUIAdapter
+    public class DesktopUIAdapter : BasePlatformUIAdapter
     {
         private readonly Vector2 referenceResolution;
         private readonly float matchWidthOrHeight;
@@ -14,8 +14,10 @@ namespace ModularUIRuntime
             this.matchWidthOrHeight = matchWidthOrHeight;
         }
 
-        public void SetupCanvas(Canvas targetCanvas)
+        public override void SetupCanvas(Canvas targetCanvas)
         {
+            CleanupVREnvironment(targetCanvas);
+
             targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             targetCanvas.transform.localScale = Vector3.one;
 

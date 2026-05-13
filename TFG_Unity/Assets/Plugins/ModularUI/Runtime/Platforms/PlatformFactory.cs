@@ -27,7 +27,7 @@ namespace ModularUIRuntime
 
             return _config.selectedPlatform switch
             {
-                UIConfiguration.TargetPlatform.VR => new VRUIAdapter(),
+                UIConfiguration.TargetPlatform.VR => new VRUIAdapter(_config.vrSettings),
                 UIConfiguration.TargetPlatform.MobilePortrait => new MobileUIAdapter(new Vector2(baseRes.y, baseRes.x), 1f),
                 UIConfiguration.TargetPlatform.MobileLandscape => new MobileUIAdapter(baseRes, 0f),
                 _ => new DesktopUIAdapter(baseRes, 0.5f)

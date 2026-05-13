@@ -41,6 +41,17 @@ namespace ModularUIRuntime
         public TargetPlatform selectedPlatform;
         public GameGenre selectedGenre;
 
+        [Serializable]
+        public struct VRPlatformSettings
+        {
+            public GameObject vrCameraRigPrefab;
+            public GameObject vrEventSystemPrefab;
+        }
+
+        [Header("VR Settings")]
+        public VRPlatformSettings vrSettings;
+
+        [Header("General Settings")]
         public Vector2 designResolution = new Vector2(800, 600);
 
         public List<GenreThemeMap> genreThemes = new List<GenreThemeMap>();

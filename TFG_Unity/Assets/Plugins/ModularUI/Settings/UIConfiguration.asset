@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.UIConfiguration
   selectedPlatform: 0
   selectedGenre: 0
+  vrSettings:
+    vrCameraRigPrefab: {fileID: 7301794028103589409, guid: 9aa42a937e89d5b44a07b028307163be, type: 3}
+    vrEventSystemPrefab: {fileID: 8302338912817809936, guid: 80e2dae0a5acca149ba946c9965eb467, type: 3}
   designResolution: {x: 800, y: 600}
   genreThemes: []
