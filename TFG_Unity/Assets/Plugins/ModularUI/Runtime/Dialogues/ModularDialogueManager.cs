@@ -150,18 +150,30 @@ namespace ModularUIRuntime
             }
         }
 
+        private System.Text.StringBuilder textBuilder = new System.Text.StringBuilder();
+        private ModularText bodyModTextCache;
+        private Stack<GameObject> choiceButtonPool = new Stack<GameObject>();
+
         private IEnumerator TypeText(string text)
         {
             isTyping = true;
             bodyTextComponent.text = "";
+            textBuilder.Clear();
+
+            if (bodyModTextCache == null)
+            {
+                bodyTextComponent.TryGetComponent(out bodyModTextCache);
+            }
 
             foreach (char letter in text)
             {
-                bodyTextComponent.text += letter;
+                textBuilder.Append(letter);
+                string currentText = textBuilder.ToString();
+                bodyTextComponent.text = currentText;
 
-                if (bodyTextComponent.TryGetComponent(out ModularText modText))
+                if (bodyModTextCache != null)
                 {
-                    modText.UpdateTextFromExternal(bodyTextComponent.text);
+                    bodyModTextCache.UpdateTextFromExternal(currentText);
                 }
 
                 yield return new WaitForSeconds(typingSpeed);
@@ -183,7 +195,11 @@ namespace ModularUIRuntime
             {
                 foreach (DialogueChoice choice in currentLine.choices)
                 {
-                    GameObject buttonObj = Instantiate(choiceButtonPrefab, choicesContainer);
+                    GameObject buttonObj = GetChoiceButton();
+                    buttonObj.transform.SetParent(choicesContainer, false);
+                    buttonObj.transform.SetAsLastSibling();
+                    buttonObj.SetActive(true);
+                    
                     activeChoiceButtons.Add(buttonObj);
 
                     if (buttonObj.TryGetComponent(out ModularButton modBtn))
@@ -193,11 +209,21 @@ namespace ModularUIRuntime
 
                     if (buttonObj.TryGetComponent(out Button btn))
                     {
+                        btn.onClick.RemoveAllListeners();
                         DialogueChoice capturedChoice = choice;
                         btn.onClick.AddListener(() => OnChoiceSelected(capturedChoice));
                     }
                 }
             }
+        }
+
+        private GameObject GetChoiceButton()
+        {
+            if (choiceButtonPool.Count > 0)
+            {
+                return choiceButtonPool.Pop();
+            }
+            return Instantiate(choiceButtonPrefab);
         }
 
         private void OnChoiceSelected(DialogueChoice choice)
@@ -273,7 +299,8 @@ namespace ModularUIRuntime
         {
             foreach (GameObject btn in activeChoiceButtons)
             {
-                Destroy(btn);
+                btn.SetActive(false);
+                choiceButtonPool.Push(btn);
             }
 
             activeChoiceButtons.Clear();

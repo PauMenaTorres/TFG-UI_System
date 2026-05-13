@@ -39,13 +39,20 @@ namespace ModularUIRuntime
         public AudioClip defaultClickSound;
 
         [Header("Typography")]
-        public Font textFont;
-        public Font titleFont;
+        public TMP_FontAsset textFont;
+        public TMP_FontAsset titleFont;
         public float textFontSize = 24.0f;
         public float titleFontSize = 36.0f;
 
-        private TMP_FontAsset generatedTMPTextFont;
-        private TMP_FontAsset generatedTMPTitleFont;
+        public TMP_FontAsset GetTextFont()
+        {
+            return textFont;
+        }
+
+        public TMP_FontAsset GetTitleFont()
+        {
+            return titleFont;
+        }
 
         [Header("Button States")]
         public ModularStyleBox buttonNormal = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
@@ -62,30 +69,12 @@ namespace ModularUIRuntime
         public ModularStyleBox toggleBackground = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
         public ModularStyleBox toggleCheckmark = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
 
-        public TMP_FontAsset GetTextFont()
-        {
-            if (generatedTMPTextFont == null && textFont != null)
-            {
-                generatedTMPTextFont = TMP_FontAsset.CreateFontAsset(textFont);
-            }
-
-            return generatedTMPTextFont;
-        }
-
-        public TMP_FontAsset GetTitleFont()
-        {
-            if (generatedTMPTitleFont == null && titleFont != null)
-            {
-                generatedTMPTitleFont = TMP_FontAsset.CreateFontAsset(titleFont);
-            }
-
-            return generatedTMPTitleFont;
-        }
-
         private void OnValidate()
         {
-            generatedTMPTextFont = null;
-            generatedTMPTitleFont = null;
+            #if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isUpdating || UnityEditor.EditorApplication.isCompiling) return;
+            #endif
+            
             OnThemeChanged?.Invoke();
         }
     }

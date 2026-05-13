@@ -28,7 +28,7 @@ namespace ModularUIRuntime
         [SerializeField] private ModularStyleBox overrideHoveredBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
         [SerializeField] private ModularStyleBox overridePressedBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
         [SerializeField] private ModularStyleBox overrideDisabledBG = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
-        [SerializeField] private Font overrideFont;
+        [SerializeField] private TMP_FontAsset overrideFont;
         [SerializeField] private float overrideFontSize = 24.0f;
 
         private Button targetButton;
@@ -141,9 +141,9 @@ namespace ModularUIRuntime
             {
                 if (overrideFont != null)
                 {
-                    if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
+                    if (textComponent.font != overrideFont)
                     {
-                        textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                        textComponent.font = overrideFont;
                     }
                 }
 
@@ -284,12 +284,7 @@ namespace ModularUIRuntime
 
             if (clip != null)
             {
-                GameObject audioObj = new GameObject("UI_Click_Audio");
-                AudioSource source = audioObj.AddComponent<AudioSource>();
-                source.clip = clip;
-                source.spatialBlend = 0f;
-                source.Play();
-                Destroy(audioObj, clip.length);
+                ModularAudioManager.Instance.PlaySound(clip);
             }
         }
     }

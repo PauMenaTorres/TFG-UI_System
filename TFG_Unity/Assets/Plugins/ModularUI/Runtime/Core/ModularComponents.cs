@@ -71,11 +71,17 @@ namespace ModularUIRuntime
             #endif
         }
 
+        private static ModularThemeData cachedDefaultTheme;
+
         public virtual void ApplyTheme()
         {
             if (currentTheme == null)
             {
-                currentTheme = Resources.Load<ModularThemeData>("DefaultTheme");
+                if (cachedDefaultTheme == null)
+                {
+                    cachedDefaultTheme = Resources.Load<ModularThemeData>("DefaultTheme");
+                }
+                currentTheme = cachedDefaultTheme;
             }
 
             if (currentTheme == null)
