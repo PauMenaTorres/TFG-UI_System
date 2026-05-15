@@ -96,11 +96,12 @@ namespace ModularUIRuntime
             {
                 if (map.genre == selectedGenre)
                 {
-                    return map.theme;
+                    if (map.theme != null)
+                        return map.theme;
                 }
             }
 
-            return null;
+            return Resources.Load<ModularThemeData>("DefaultTheme");
         }
     }
 }

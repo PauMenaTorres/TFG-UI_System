@@ -24,6 +24,12 @@ namespace ModularUIRuntime
             {
                 currentTheme.OnThemeChanged += HandleThemeChanged;
             }
+
+            // Subscribe to global theme changes
+            if (ModularThemeManager.Instance != null)
+            {
+                ModularThemeManager.Instance.OnThemeChanged += HandleThemeChanged;
+            }
         }
 
         protected virtual void OnDisable()
@@ -31,6 +37,11 @@ namespace ModularUIRuntime
             if (currentTheme != null)
             {
                 currentTheme.OnThemeChanged -= HandleThemeChanged;
+            }
+
+            if (ModularThemeManager.HasInstance)
+            {
+                ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
             }
         }
 
@@ -75,6 +86,25 @@ namespace ModularUIRuntime
 
         public virtual void ApplyTheme()
         {
+            if (!useOverride)
+            {
+                ModularThemeManager manager = ModularThemeManager.Instance;
+                if (manager != null)
+                {
+                    ModularThemeData activeTheme = manager.GetActiveTheme();
+                    if (activeTheme != null)
+                    {
+                        // If the theme changed, unsubscribe from old and subscribe to new
+                        if (currentTheme != activeTheme)
+                        {
+                            if (currentTheme != null) currentTheme.OnThemeChanged -= HandleThemeChanged;
+                            currentTheme = activeTheme;
+                            if (currentTheme != null) currentTheme.OnThemeChanged += HandleThemeChanged;
+                        }
+                    }
+                }
+            }
+
             if (currentTheme == null)
             {
                 if (cachedDefaultTheme == null)
