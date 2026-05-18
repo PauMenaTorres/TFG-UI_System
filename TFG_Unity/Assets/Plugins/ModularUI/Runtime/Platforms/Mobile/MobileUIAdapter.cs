@@ -35,6 +35,44 @@ namespace ModularUIRuntime
             {
                 targetCanvas.gameObject.AddComponent<GraphicRaycaster>();
             }
+
+            if (Application.isPlaying)
+            {
+                HandleAdaptiveControls(targetCanvas);
+            }
+        }
+
+        private void HandleAdaptiveControls(Canvas canvas)
+        {
+            MobileControlRequirement requirement = Object.FindObjectOfType<MobileControlRequirement>();
+            
+            if (requirement == null || requirement.mode == UIConfiguration.MobileControlMode.None)
+            {
+                return;
+            }
+
+            GameObject prefabToSpawn = requirement.customControlsPrefab != null 
+                ? requirement.customControlsPrefab 
+                : GetConfig()?.mobileControlsPrefab;
+
+            if (prefabToSpawn != null)
+            {
+                if (canvas.transform.Find(prefabToSpawn.name) != null) return;
+
+                GameObject controls = Object.Instantiate(prefabToSpawn, canvas.transform);
+                controls.name = prefabToSpawn.name;
+                
+                MobileTouchInput input = controls.GetComponent<MobileTouchInput>();
+                if (input != null)
+                {
+                    input.EnableInput();
+                }
+            }
+        }
+
+        private UIConfiguration GetConfig()
+        {
+            return Object.FindObjectOfType<ModularCanvasInitializer>()?.config;
         }
     }
-}
+}

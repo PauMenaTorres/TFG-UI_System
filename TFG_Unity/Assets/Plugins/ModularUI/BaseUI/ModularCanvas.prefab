@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7361835238138500092}
   - component: {fileID: 7285363850955975907}
   - component: {fileID: 408095335170352207}
+  - component: {fileID: 9165474148178020104}
   m_Layer: 5
   m_Name: ModularCanvas
   m_TagString: Untagged
@@ -77,7 +78,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
@@ -115,3 +116,16 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &9165474148178020104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530168417092008006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60135277468a9d8409b1ccc44169df6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularThemeManager
+  config: {fileID: 11400000, guid: edcdc47a63c7d1841bf9da42892b81e4, type: 2}

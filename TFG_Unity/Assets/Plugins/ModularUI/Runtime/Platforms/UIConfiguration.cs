@@ -38,8 +38,18 @@ namespace ModularUIRuntime
             public ModularThemeData theme;
         }
 
+        public enum MobileControlMode
+        {
+            None,
+            UIOnly,
+            StandardGameplay
+        }
+
         public TargetPlatform selectedPlatform;
         public GameGenre selectedGenre;
+
+        [Header("Mobile Settings")]
+        public GameObject mobileControlsPrefab;
 
         [Serializable]
         public struct VRPlatformSettings

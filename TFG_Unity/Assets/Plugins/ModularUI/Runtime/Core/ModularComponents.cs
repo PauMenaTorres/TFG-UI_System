@@ -39,7 +39,7 @@ namespace ModularUIRuntime
                 currentTheme.OnThemeChanged -= HandleThemeChanged;
             }
 
-            if (ModularThemeManager.HasInstance)
+            if (ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
             {
                 ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
             }
