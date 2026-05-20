@@ -64,3 +64,8 @@ MonoBehaviour:
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
     backgroundSprite: {fileID: 0}
     tintColor: {r: 1, g: 1, b: 1, a: 1}
+  background:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}

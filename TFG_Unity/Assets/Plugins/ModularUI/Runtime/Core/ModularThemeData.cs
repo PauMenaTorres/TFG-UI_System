@@ -36,13 +36,19 @@ namespace ModularUIRuntime
         [Header("Global Settings")]
         public Color primaryColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public Color secondaryColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        
         public AudioClip defaultClickSound;
+
+        [Header("Background Settings")]
+        public ModularStyleBox background = new ModularStyleBox(ModularStyleBox.StyleBoxType.SolidColor);
 
         [Header("Typography")]
         public TMP_FontAsset textFont;
         public TMP_FontAsset titleFont;
         public float textFontSize = 24.0f;
         public float titleFontSize = 36.0f;
+        public Color textColor = new Color(0.9f, 0.9f, 0.9f, 1.0f);
+        public Color titleColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         public TMP_FontAsset GetTextFont()
         {

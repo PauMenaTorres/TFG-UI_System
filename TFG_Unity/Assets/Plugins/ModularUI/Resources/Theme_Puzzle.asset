@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 888fae39e764e7945b35df30e74deef9, type: 3}
+  m_Name: Theme_Puzzle
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularThemeData
+  primaryColor: {r: 0.6, g: 0.6, b: 0.65, a: 1}
+  secondaryColor: {r: 0, g: 0, b: 0, a: 1}
+  defaultClickSound: {fileID: 8300000, guid: 768dd5a0b48d4244db875d62ca2d32c8, type: 3}
+  background:
+    backgroundType: 0
+    backgroundColor: {r: 0.95, g: 0.95, b: 0.95, a: 0.78431374}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 0}
+  textFont: {fileID: 11400000, guid: 440acc468f9cb1843940f92470bc7978, type: 2}
+  titleFont: {fileID: 11400000, guid: 5c2e521ca54e87442a0a8dfda2f1eb94, type: 2}
+  textFontSize: 24
+  titleFontSize: 36
+  textColor: {r: 0.12452829, g: 0.12452829, b: 0.12452829, a: 1}
+  titleColor: {r: 0, g: 0, b: 0, a: 1}
+  buttonNormal:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 95e23967b168469489d7e47cf4d29eb6, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonHovered:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: a9227d661a0c2f54a890487d8de6c9a7, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonPressed:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 95e23967b168469489d7e47cf4d29eb6, type: 3}
+    tintColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  buttonDisabled:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 95e23967b168469489d7e47cf4d29eb6, type: 3}
+    tintColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  sliderBackground:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 22dca92fdce05074d8e2ace219b7c384, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  sliderFill:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 22dca92fdce05074d8e2ace219b7c384, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  sliderHandle:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: bf513a6f7ca3773449cf93bfaff4f030, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleBackground:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: 22dca92fdce05074d8e2ace219b7c384, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
+  toggleCheckmark:
+    backgroundType: 1
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 21300000, guid: b7068339a4995bd49a8397c6e1932640, type: 3}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}

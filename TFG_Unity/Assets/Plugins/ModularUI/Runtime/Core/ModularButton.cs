@@ -132,13 +132,13 @@ namespace ModularUIRuntime
                 textComponent.fontStyle = fontStyle;
             }
 
-            if (textComponent.color != textColor)
-            {
-                textComponent.color = textColor;
-            }
-
             if (useOverride)
             {
+                if (textComponent.color != textColor)
+                {
+                    textComponent.color = textColor;
+                }
+
                 if (overrideFont != null)
                 {
                     if (textComponent.font != overrideFont)
@@ -152,16 +152,17 @@ namespace ModularUIRuntime
                     textComponent.fontSize = overrideFontSize;
                 }
             }
-
-            if (!useOverride)
+            else
             {
                 TMP_FontAsset targetFont = currentTheme.GetTextFont();
                 float targetSize = currentTheme.textFontSize;
+                Color targetColor = currentTheme.textColor;
 
                 if (textFontRole == TextRole.Title)
                 {
                     targetFont = currentTheme.GetTitleFont();
                     targetSize = currentTheme.titleFontSize;
+                    targetColor = currentTheme.titleColor;
                 }
 
                 if (textComponent.font != targetFont)
@@ -172,6 +173,11 @@ namespace ModularUIRuntime
                 if (textComponent.fontSize != targetSize)
                 {
                     textComponent.fontSize = targetSize;
+                }
+
+                if (textComponent.color != targetColor)
+                {
+                    textComponent.color = targetColor;
                 }
             }
         }

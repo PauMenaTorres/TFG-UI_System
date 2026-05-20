@@ -15,6 +15,11 @@ MonoBehaviour:
   primaryColor: {r: 1, g: 1, b: 1, a: 1}
   secondaryColor: {r: 0, g: 0, b: 0, a: 1}
   defaultClickSound: {fileID: 8300000, guid: 768dd5a0b48d4244db875d62ca2d32c8, type: 3}
+  background:
+    backgroundType: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
   textFont: {fileID: 11400000, guid: 6bb7e7fd29a863a4ab054758b52aa98b, type: 2}
   titleFont: {fileID: 11400000, guid: 3b0dcca19dc50de45ad1e8dbc1246751, type: 2}
   textFontSize: 24

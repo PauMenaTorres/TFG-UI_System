@@ -16,12 +16,13 @@ namespace ModularUIRuntime
         {
             Custom,
             Primary,
-            Secondary
+            Secondary,
+            ThemeDefault
         }
 
         [Header("Text Settings")]
         [SerializeField] private TextRole textRole = TextRole.Body;
-        [SerializeField] private TextColorRole colorRole = TextColorRole.Secondary;
+        [SerializeField] private TextColorRole colorRole = TextColorRole.ThemeDefault;
         [SerializeField] private Color customColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         [TextArea(3, 10)]
@@ -177,16 +178,23 @@ namespace ModularUIRuntime
                 }
             }
 
-            Color targetColor = customColor;
+            Color targetColor = (textRole == TextRole.Title) ? currentTheme.titleColor : currentTheme.textColor;
 
             if (colorRole == TextColorRole.Primary)
             {
                 targetColor = currentTheme.primaryColor;
             }
-
-            if (colorRole == TextColorRole.Secondary)
+            else if (colorRole == TextColorRole.Secondary)
             {
                 targetColor = currentTheme.secondaryColor;
+            }
+            else if (colorRole == TextColorRole.Custom)
+            {
+                targetColor = (textRole == TextRole.Title) ? currentTheme.titleColor : currentTheme.textColor;
+            }
+            else if (colorRole == TextColorRole.ThemeDefault)
+            {
+                targetColor = (textRole == TextRole.Title) ? currentTheme.titleColor : currentTheme.textColor;
             }
 
             if (textComponent.color != targetColor)

@@ -14,8 +14,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.UIConfiguration
   selectedPlatform: 0
   selectedGenre: 0
+  mobileControlsPrefab: {fileID: 3876897544830518928, guid: 160a5c5b01a41a34681d41121eeb7dd8, type: 3}
   vrSettings:
     vrCameraRigPrefab: {fileID: 7301794028103589409, guid: 9aa42a937e89d5b44a07b028307163be, type: 3}
     vrEventSystemPrefab: {fileID: 8302338912817809936, guid: 80e2dae0a5acca149ba946c9965eb467, type: 3}
   designResolution: {x: 800, y: 600}
-  genreThemes: []
+  genreThemes:
+  - genre: 0
+    theme: {fileID: 11400000, guid: e01a7e210e11054da58516649232a201, type: 2}
+  - genre: 1
+    theme: {fileID: 11400000, guid: e02a7e210e11054da58516649232a202, type: 2}
+  - genre: 2
+    theme: {fileID: 11400000, guid: e03a7e210e11054da58516649232a203, type: 2}
+  - genre: 3
+    theme: {fileID: 11400000, guid: e04a7e210e11054da58516649232a204, type: 2}
+  - genre: 4
+    theme: {fileID: 11400000, guid: e05a7e210e11054da58516649232a205, type: 2}
+  - genre: 5
+    theme: {fileID: 11400000, guid: e06a7e210e11054da58516649232a206, type: 2}
+  - genre: 6
+    theme: {fileID: 11400000, guid: e07a7e210e11054da58516649232a207, type: 2}
+  - genre: 7
+    theme: {fileID: 11400000, guid: e08a7e210e11054da58516649232a208, type: 2}
+  - genre: 8
+    theme: {fileID: 11400000, guid: e09a7e210e11054da58516649232a209, type: 2}
+  - genre: 9
+    theme: {fileID: 11400000, guid: e10a7e210e11054da58516649232a210, type: 2}
+  - genre: 10
+    theme: {fileID: 11400000, guid: e11a7e210e11054da58516649232a211, type: 2}
+  - genre: 11
+    theme: {fileID: 11400000, guid: e12a7e210e11054da58516649232a212, type: 2}

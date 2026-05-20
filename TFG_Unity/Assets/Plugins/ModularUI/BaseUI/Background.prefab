@@ -47,16 +47,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2420325992924567484}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a8a6410cf552154aaccc6f343e349d9, type: 3}
+  m_Script: {fileID: 11500000, guid: b86f1ca823df40a6b7d59828e1d529a6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularImage
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularBackground
   currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
   useOverride: 0
-  baseSprite: {fileID: 0}
-  preserveAspect: 1
-  colorRole: 0
-  customColor: {r: 1, g: 1, b: 1, a: 1}
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideBackground:
+    backgroundType: 0
+    backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    backgroundSprite: {fileID: 0}
+    tintColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!222 &5089799513052943420
 CanvasRenderer:
   m_ObjectHideFlags: 0
