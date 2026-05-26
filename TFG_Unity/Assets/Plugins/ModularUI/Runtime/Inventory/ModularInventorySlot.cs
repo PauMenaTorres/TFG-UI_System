@@ -1,10 +1,63 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace ModularUIRuntime
 {
-    public class ModularInventorySlot : MonoBehaviour, IDropHandler
+    [ExecuteAlways]
+    [RequireComponent(typeof(Image))]
+    public class ModularInventorySlot : ModularComponents, IDropHandler
     {
+        private Image slotImage;
+
+        protected override void Awake()
+        {
+            slotImage = GetComponent<Image>();
+            base.Awake();
+        }
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+        }
+
+        public override void ApplyTheme()
+        {
+            base.ApplyTheme();
+
+            if (slotImage == null)
+            {
+                slotImage = GetComponent<Image>();
+            }
+
+            if (slotImage != null && currentTheme != null)
+            {
+                Color targetColor;
+                
+                if (currentTheme.background.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
+                {
+                    targetColor = currentTheme.background.backgroundColor;
+                }
+                else if (currentTheme.background.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+                {
+                    targetColor = currentTheme.background.tintColor;
+                }
+                else
+                {
+                    targetColor = currentTheme.primaryColor;
+                }
+
+                targetColor.a = 1.0f;
+
+                if (slotImage.color != targetColor)
+                {
+                    slotImage.color = targetColor;
+                    MarkAsDirty(slotImage);
+                    MarkAsDirty(this);
+                }
+            }
+        }
+
         public void OnDrop(PointerEventData eventData)
         {
             GameObject dropped = eventData.pointerDrag;

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8842505487336979644}
   - component: {fileID: 1544446673299255615}
-  - component: {fileID: 3151704083783793676}
   - component: {fileID: 2517753849348902775}
   - component: {fileID: 1008631345062173106}
   - component: {fileID: 6827933432539645780}
@@ -52,25 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb19e3d196fc6474c8231a2b8d7bf33a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularInventorySlot
---- !u!114 &3151704083783793676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6393498004818343455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a8a6410cf552154aaccc6f343e349d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularImage
-  currentTheme: {fileID: 11400000, guid: e05a7e210e11054da58516649232a205, type: 2}
-  useOverride: 0
-  baseSprite: {fileID: 0}
-  preserveAspect: 1
-  colorRole: 3
-  customColor: {r: 0.2981131, g: 0, b: 0, a: 1}
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+
 --- !u!222 &2517753849348902775
 CanvasRenderer:
   m_ObjectHideFlags: 0

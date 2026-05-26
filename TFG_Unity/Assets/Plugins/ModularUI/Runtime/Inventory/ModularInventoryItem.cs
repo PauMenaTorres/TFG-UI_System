@@ -21,6 +21,17 @@ namespace ModularUIRuntime
         {
             canvasGroup = GetComponent<CanvasGroup>();
             rectTransform = GetComponent<RectTransform>();
+
+            // Adjust size in mobile portrait dynamically to prevent items from being too large for the slots
+            if (rectTransform != null && ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
+            {
+                var config = ModularThemeManager.Instance.Config;
+                if (config != null && config.selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
+                {
+                    rectTransform.sizeDelta = new Vector2(32f, 32f);
+                }
+            }
+
             RefreshVisual();
         }
 
