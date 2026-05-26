@@ -50,6 +50,7 @@ namespace ModularUIRuntime
 
         [Header("Configuration")]
         [SerializeField] private UIConfiguration config;
+        public UIConfiguration Config => config;
 
         public event Action OnThemeChanged;
 
@@ -92,6 +93,13 @@ namespace ModularUIRuntime
             {
                 config = Resources.Load<UIConfiguration>("UIConfiguration");
             }
+
+#if UNITY_EDITOR
+            if (config == null)
+            {
+                config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+            }
+#endif
 
             if (config != null)
             {

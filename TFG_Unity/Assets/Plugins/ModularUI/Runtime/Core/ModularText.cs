@@ -159,7 +159,7 @@ namespace ModularUIRuntime
             if (!useOverride)
             {
                 TMP_FontAsset targetFont = currentTheme.GetTextFont();
-                float targetSize = useCustomFontSize ? customFontSize : currentTheme.textFontSize;
+                float targetSize = useCustomFontSize ? customFontSize : currentTheme.TextFontSize;
 
                 if (textRole == TextRole.Title)
                 {

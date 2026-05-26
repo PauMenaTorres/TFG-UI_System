@@ -45,7 +45,23 @@ namespace ModularUIRuntime
         [Header("Typography")]
         public TMP_FontAsset textFont;
         public TMP_FontAsset titleFont;
-        public float textFontSize = 24.0f;
+        [SerializeField] private float textFontSize = 24.0f;
+        public float TextFontSize
+        {
+            get
+            {
+                if (ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
+                {
+                    var config = ModularThemeManager.Instance.Config;
+                    if (config != null && config.selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
+                    {
+                        return 18.0f;
+                    }
+                }
+                return textFontSize;
+            }
+            set => textFontSize = value;
+        }
         public float titleFontSize = 36.0f;
         public Color textColor = new Color(0.9f, 0.9f, 0.9f, 1.0f);
         public Color titleColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);

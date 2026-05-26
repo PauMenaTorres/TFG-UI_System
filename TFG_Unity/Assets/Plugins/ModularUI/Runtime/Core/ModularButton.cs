@@ -155,7 +155,7 @@ namespace ModularUIRuntime
             else
             {
                 TMP_FontAsset targetFont = currentTheme.GetTextFont();
-                float targetSize = currentTheme.textFontSize;
+                float targetSize = currentTheme.TextFontSize;
                 Color targetColor = currentTheme.textColor;
 
                 if (textFontRole == TextRole.Title)

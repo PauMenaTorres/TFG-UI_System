@@ -8,9 +8,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1636744325893306591, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -60
+      objectReference: {fileID: 0}
+    - target: {fileID: 2033512028534519240, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_Spacing.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2033512028534519240, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_CellSize.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 2033512028534519240, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_CellSize.y
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2033512028534519240, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_Padding.m_Top
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371535555874605292, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371535555874605292, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456594605337573248, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: spacing.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456594605337573248, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: cellSize.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456594605337573248, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: cellSize.y
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456594605337573248, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: paddingTop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4685859272291368324, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      propertyPath: m_Spacing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5638827717925917558, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
       propertyPath: m_Name
-      value: MainMenu_Base
+      value: MainMenu_Portrait
       objectReference: {fileID: 0}
     - target: {fileID: 8700523540153113538, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
       propertyPath: m_Pivot.x
@@ -92,8 +140,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3405107411750051949, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5638827717925917558, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3540997222325345596}
   m_SourcePrefab: {fileID: 100100000, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+--- !u!1 &6624457158375700408 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5638827717925917558, guid: 280d4a726717bd4479f6c315d0b930f8, type: 3}
+  m_PrefabInstance: {fileID: 1562730787262899406}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3540997222325345596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6624457158375700408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3efeb44725bb9a469b3d5265a4965e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularPanelFitter
