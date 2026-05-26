@@ -9,20 +9,37 @@ namespace ModularUIRuntime
         private static bool _isQuitting = false;
         private static ModularThemeManager _instance;
 
+#if UNITY_EDITOR
+        static ModularThemeManager()
+        {
+            UnityEditor.EditorApplication.playModeStateChanged += (state) =>
+            {
+                if (state == UnityEditor.PlayModeStateChange.EnteredEditMode)
+                {
+                    _isQuitting = false;
+                }
+            };
+        }
+#endif
+
         public static bool HasInstance => _instance != null;
 
         public static ModularThemeManager Instance
         {
             get
             {
-                if (_isQuitting) return null;
+                if (_isQuitting && Application.isPlaying) return null;
 
                 if (_instance == null)
                 {
                     _instance = FindFirstObjectByType<ModularThemeManager>();
-                    if (_instance == null && !_isQuitting)
+                    if (_instance == null && !(_isQuitting && Application.isPlaying))
                     {
                         GameObject go = new GameObject("ModularThemeManager");
+                        if (!Application.isPlaying)
+                        {
+                            go.hideFlags = HideFlags.HideAndDontSave;
+                        }
                         _instance = go.AddComponent<ModularThemeManager>();
                         
                         if (Application.isPlaying)
@@ -121,7 +138,17 @@ namespace ModularUIRuntime
                 foreach (var component in components)
                 {
                     component.ApplyTheme();
-                    UnityEditor.EditorUtility.SetDirty(component);
+                }
+
+                // Also find in open prefab stage if any
+                var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null && prefabStage.prefabContentsRoot != null)
+                {
+                    ModularComponents[] prefabComponents = prefabStage.prefabContentsRoot.GetComponentsInChildren<ModularComponents>(true);
+                    foreach (var component in prefabComponents)
+                    {
+                        component.ApplyTheme();
+                    }
                 }
             }
             #endif

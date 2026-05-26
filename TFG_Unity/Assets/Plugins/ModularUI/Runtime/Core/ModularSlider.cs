@@ -37,20 +37,32 @@ namespace ModularUIRuntime
             {
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
-                    if (this != null && rectTransform != null)
+                    if (this == null) return;
+                    bool changed = false;
+
+                    if (rectTransform != null)
                     {
                         if (rectTransform.sizeDelta != size)
                         {
                             rectTransform.sizeDelta = size;
+                            changed = true;
                         }
                     }
 
-                    if (this != null && targetSlider != null)
+                    if (targetSlider != null)
                     {
                         if (targetSlider.value != sliderValue)
                         {
                             targetSlider.value = sliderValue;
+                            changed = true;
                         }
+                    }
+
+                    if (changed)
+                    {
+                        MarkAsDirty(rectTransform);
+                        MarkAsDirty(targetSlider);
+                        MarkAsDirty(this);
                     }
                 };
             }

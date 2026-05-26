@@ -50,14 +50,18 @@ namespace ModularUIRuntime
                 return;
             }
 
+            bool changed = false;
+
             if (targetImage.sprite != baseSprite)
             {
                 targetImage.sprite = baseSprite;
+                changed = true;
             }
 
             if (targetImage.preserveAspect != preserveAspect)
             {
                 targetImage.preserveAspect = preserveAspect;
+                changed = true;
             }
 
             if (useOverride)
@@ -65,6 +69,7 @@ namespace ModularUIRuntime
                 if (targetImage.color != overrideColor)
                 {
                     targetImage.color = overrideColor;
+                    changed = true;
                 }
             }
 
@@ -90,7 +95,14 @@ namespace ModularUIRuntime
                 if (targetImage.color != targetColor)
                 {
                     targetImage.color = targetColor;
+                    changed = true;
                 }
+            }
+
+            if (changed)
+            {
+                MarkAsDirty(targetImage);
+                MarkAsDirty(this);
             }
         }
     }

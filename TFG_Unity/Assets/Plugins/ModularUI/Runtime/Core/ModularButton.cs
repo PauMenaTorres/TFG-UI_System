@@ -88,8 +88,13 @@ namespace ModularUIRuntime
             ModularStyleBox activePressed = useOverride ? overridePressedBG : currentTheme.buttonPressed;
             ModularStyleBox activeDisabled = useOverride ? overrideDisabledBG : currentTheme.buttonDisabled;
 
-            ApplyBackgroundTransitions(activeNormal, activeHovered, activePressed, activeDisabled);
-            ApplyTextStyles();
+            bool bgChanged = ApplyBackgroundTransitions(activeNormal, activeHovered, activePressed, activeDisabled);
+            bool textChanged = ApplyTextStyles();
+
+            if (bgChanged || textChanged)
+            {
+                MarkAsDirty(this);
+            }
         }
 
         private void FetchReferences()
@@ -110,26 +115,31 @@ namespace ModularUIRuntime
             }
         }
 
-        private void ApplyTextStyles()
+        private bool ApplyTextStyles()
         {
             if (textComponent == null)
             {
-                return;
+                return false;
             }
+
+            bool changed = false;
 
             if (textComponent.text != buttonText)
             {
                 textComponent.text = buttonText;
+                changed = true;
             }
 
             if (textComponent.alignment != textAlignment)
             {
                 textComponent.alignment = textAlignment;
+                changed = true;
             }
 
             if (textComponent.fontStyle != fontStyle)
             {
                 textComponent.fontStyle = fontStyle;
+                changed = true;
             }
 
             if (useOverride)
@@ -137,6 +147,7 @@ namespace ModularUIRuntime
                 if (textComponent.color != textColor)
                 {
                     textComponent.color = textColor;
+                    changed = true;
                 }
 
                 if (overrideFont != null)
@@ -144,12 +155,14 @@ namespace ModularUIRuntime
                     if (textComponent.font != overrideFont)
                     {
                         textComponent.font = overrideFont;
+                        changed = true;
                     }
                 }
 
                 if (textComponent.fontSize != overrideFontSize)
                 {
                     textComponent.fontSize = overrideFontSize;
+                    changed = true;
                 }
             }
             else
@@ -168,48 +181,67 @@ namespace ModularUIRuntime
                 if (textComponent.font != targetFont)
                 {
                     textComponent.font = targetFont;
+                    changed = true;
                 }
 
                 if (textComponent.fontSize != targetSize)
                 {
                     textComponent.fontSize = targetSize;
+                    changed = true;
                 }
 
                 if (textComponent.color != targetColor)
                 {
                     textComponent.color = targetColor;
+                    changed = true;
                 }
             }
+
+            if (changed)
+            {
+                MarkAsDirty(textComponent);
+            }
+
+            return changed;
         }
 
-        private void ApplyBackgroundTransitions(ModularStyleBox normal, ModularStyleBox hovered, ModularStyleBox pressed, ModularStyleBox disabled)
+        private bool ApplyBackgroundTransitions(ModularStyleBox normal, ModularStyleBox hovered, ModularStyleBox pressed, ModularStyleBox disabled)
         {
             if (buttonImage == null || targetButton == null)
             {
-                return;
+                return false;
             }
+
+            bool changed = false;
 
             if (normal.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
             {
                 if (buttonImage.sprite != null)
                 {
                     buttonImage.sprite = null;
+                    changed = true;
                 }
 
                 if (buttonImage.color != normal.backgroundColor)
                 {
                     buttonImage.color = normal.backgroundColor;
+                    changed = true;
                 }
 
                 if (targetButton.transition != Selectable.Transition.ColorTint)
                 {
                     targetButton.transition = Selectable.Transition.ColorTint;
+                    changed = true;
                 }
 
                 ColorBlock colorBlock = targetButton.colors;
                 bool colorsChanged = false;
 
-                if (colorBlock.normalColor != normal.backgroundColor || colorBlock.highlightedColor != hovered.backgroundColor || colorBlock.pressedColor != pressed.backgroundColor || colorBlock.disabledColor != disabled.backgroundColor || colorBlock.selectedColor != normal.backgroundColor)
+                if (colorBlock.normalColor != normal.backgroundColor || 
+                    colorBlock.highlightedColor != hovered.backgroundColor || 
+                    colorBlock.pressedColor != pressed.backgroundColor || 
+                    colorBlock.disabledColor != disabled.backgroundColor || 
+                    colorBlock.selectedColor != normal.backgroundColor)
                 {
                     colorsChanged = true;
                 }
@@ -222,6 +254,7 @@ namespace ModularUIRuntime
                     colorBlock.disabledColor = disabled.backgroundColor;
                     colorBlock.selectedColor = normal.backgroundColor;
                     targetButton.colors = colorBlock;
+                    changed = true;
                 }
             }
 
@@ -230,22 +263,28 @@ namespace ModularUIRuntime
                 if (buttonImage.sprite != normal.backgroundSprite)
                 {
                     buttonImage.sprite = normal.backgroundSprite;
+                    changed = true;
                 }
 
                 if (buttonImage.color != new Color(1.0f, 1.0f, 1.0f, 1.0f))
                 {
                     buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    changed = true;
                 }
 
                 if (targetButton.transition != Selectable.Transition.SpriteSwap)
                 {
                     targetButton.transition = Selectable.Transition.SpriteSwap;
+                    changed = true;
                 }
 
                 SpriteState spriteState = targetButton.spriteState;
                 bool spritesChanged = false;
 
-                if (spriteState.highlightedSprite != hovered.backgroundSprite || spriteState.pressedSprite != pressed.backgroundSprite || spriteState.disabledSprite != disabled.backgroundSprite || spriteState.selectedSprite != normal.backgroundSprite)
+                if (spriteState.highlightedSprite != hovered.backgroundSprite || 
+                    spriteState.pressedSprite != pressed.backgroundSprite || 
+                    spriteState.disabledSprite != disabled.backgroundSprite || 
+                    spriteState.selectedSprite != normal.backgroundSprite)
                 {
                     spritesChanged = true;
                 }
@@ -257,6 +296,7 @@ namespace ModularUIRuntime
                     spriteState.disabledSprite = disabled.backgroundSprite;
                     spriteState.selectedSprite = normal.backgroundSprite;
                     targetButton.spriteState = spriteState;
+                    changed = true;
                 }
             }
 
@@ -265,13 +305,23 @@ namespace ModularUIRuntime
                 if (targetButton.transition != Selectable.Transition.None)
                 {
                     targetButton.transition = Selectable.Transition.None;
+                    changed = true;
                 }
 
                 if (buttonImage.color != new Color(0.0f, 0.0f, 0.0f, 0.0f))
                 {
                     buttonImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                    changed = true;
                 }
             }
+
+            if (changed)
+            {
+                MarkAsDirty(buttonImage);
+                MarkAsDirty(targetButton);
+            }
+
+            return changed;
         }
 
         private void PlayClickSound()

@@ -128,14 +128,18 @@ namespace ModularUIRuntime
                 return;
             }
 
+            bool changed = false;
+
             if (textComponent.alignment != alignment)
             {
                 textComponent.alignment = alignment;
+                changed = true;
             }
 
             if (textComponent.fontStyle != fontStyle)
             {
                 textComponent.fontStyle = fontStyle;
+                changed = true;
             }
 
             if (useOverride)
@@ -145,6 +149,7 @@ namespace ModularUIRuntime
                     if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
                     {
                         textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                        changed = true;
                     }
                 }
 
@@ -153,6 +158,7 @@ namespace ModularUIRuntime
                 if (textComponent.fontSize != targetSize)
                 {
                     textComponent.fontSize = targetSize;
+                    changed = true;
                 }
             }
 
@@ -170,11 +176,13 @@ namespace ModularUIRuntime
                 if (textComponent.font != targetFont)
                 {
                     textComponent.font = targetFont;
+                    changed = true;
                 }
 
                 if (textComponent.fontSize != targetSize)
                 {
                     textComponent.fontSize = targetSize;
+                    changed = true;
                 }
             }
 
@@ -200,9 +208,16 @@ namespace ModularUIRuntime
             if (textComponent.color != targetColor)
             {
                 textComponent.color = targetColor;
+                changed = true;
             }
             
             textComponent.SetAllDirty();
+
+            if (changed)
+            {
+                MarkAsDirty(textComponent);
+                MarkAsDirty(this);
+            }
         }
     }
 }

@@ -88,9 +88,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243888648897130035, guid: 2933797009db68b40add57646c807a0d, type: 3}
+      propertyPath: m_text
+      value: x5
+      objectReference: {fileID: 0}
     - target: {fileID: 7868296861640229483, guid: 2933797009db68b40add57646c807a0d, type: 3}
       propertyPath: m_Name
-      value: InventoryPanel_Base
+      value: InventoryPanel_Portrait
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

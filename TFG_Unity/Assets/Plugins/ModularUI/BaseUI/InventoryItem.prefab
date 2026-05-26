@@ -52,10 +52,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularInventoryItem
   data: {fileID: 11400000, guid: 48250ee375f7cc843a2b6e10faa23c58, type: 2}
+  currentQuantity: 1
   iconImage: {fileID: 1047300517325321393}
   quantityText: {fileID: 6863004237778943026}
   parentAfterDrag: {fileID: 0}
-  currentQuantity: 1
 --- !u!225 &4967390748864031885
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -312,7 +312,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_text
-      value: x1
+      value: x0
       objectReference: {fileID: 0}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSize
@@ -321,7 +321,7 @@ PrefabInstance:
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: e1dcd4c4e3940614fafc7026c52be3c2, type: 2}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_fontSizeBase
       value: 16
@@ -329,7 +329,7 @@ PrefabInstance:
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -7372716623029210493, guid: e1dcd4c4e3940614fafc7026c52be3c2, type: 2}
     - target: {fileID: 6042567437726333402, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: m_VerticalAlignment
       value: 256

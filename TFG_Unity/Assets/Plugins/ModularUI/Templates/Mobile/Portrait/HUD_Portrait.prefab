@@ -8,9 +8,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 580748406035992451, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 580748406035992451, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1162431626041488326, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1162431626041488326, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2187318781009116230, guid: 099141bdc54090749bd00100da4e795f, type: 3}
       propertyPath: m_Name
-      value: HUD_Base
+      value: HUD_Portrait
       objectReference: {fileID: 0}
     - target: {fileID: 2618934376953426733, guid: 099141bdc54090749bd00100da4e795f, type: 3}
       propertyPath: m_Pivot.x
@@ -91,6 +107,14 @@ PrefabInstance:
     - target: {fileID: 2618934376953426733, guid: 099141bdc54090749bd00100da4e795f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8156970603462470346, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8156970603462470346, guid: 099141bdc54090749bd00100da4e795f, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

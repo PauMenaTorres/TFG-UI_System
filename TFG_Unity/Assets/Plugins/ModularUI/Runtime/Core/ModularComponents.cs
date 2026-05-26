@@ -20,20 +20,44 @@ namespace ModularUIRuntime
 
         protected virtual void OnEnable()
         {
+            #if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+            #endif
+
+            // Unsubscribe first to avoid duplicate events
             if (currentTheme != null)
             {
+                currentTheme.OnThemeChanged -= HandleThemeChanged;
+            }
+
+            ApplyTheme();
+
+            if (currentTheme != null)
+            {
+                currentTheme.OnThemeChanged -= HandleThemeChanged;
                 currentTheme.OnThemeChanged += HandleThemeChanged;
             }
 
             // Subscribe to global theme changes
             if (ModularThemeManager.Instance != null)
             {
+                ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
                 ModularThemeManager.Instance.OnThemeChanged += HandleThemeChanged;
             }
         }
 
         protected virtual void OnDisable()
         {
+            #if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+            #endif
+
             if (currentTheme != null)
             {
                 currentTheme.OnThemeChanged -= HandleThemeChanged;
@@ -61,6 +85,11 @@ namespace ModularUIRuntime
         protected virtual void OnValidate()
         {
             #if UNITY_EDITOR
+                if (UnityEditor.EditorUtility.IsPersistent(this))
+                {
+                    return;
+                }
+
                 if (Application.isPlaying)
                 {
                     return;
@@ -86,6 +115,13 @@ namespace ModularUIRuntime
 
         public virtual void ApplyTheme()
         {
+            #if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+            #endif
+
             if (!useOverride)
             {
                 ModularThemeManager manager = ModularThemeManager.Instance;
@@ -127,26 +163,55 @@ namespace ModularUIRuntime
                 return;
             }
 
+            bool changed = false;
+
             if (style.backgroundType == ModularStyleBox.StyleBoxType.SolidColor)
             {
-                image.sprite = null;
-                image.color = style.backgroundColor;
+                if (image.sprite != null)
+                {
+                    image.sprite = null;
+                    changed = true;
+                }
+                if (image.color != style.backgroundColor)
+                {
+                    image.color = style.backgroundColor;
+                    changed = true;
+                }
             }
-
-            if (style.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
+            else if (style.backgroundType == ModularStyleBox.StyleBoxType.Sprite)
             {
-                image.sprite = style.backgroundSprite;
-                image.color = style.tintColor;
+                if (image.sprite != style.backgroundSprite)
+                {
+                    image.sprite = style.backgroundSprite;
+                    changed = true;
+                }
 
+                Color targetColor = style.tintColor;
                 if (image.sprite == null)
                 {
-                    image.color = new Color(0, 0, 0, 0);
+                    targetColor = new Color(0, 0, 0, 0);
+                }
+
+                if (image.color != targetColor)
+                {
+                    image.color = targetColor;
+                    changed = true;
+                }
+            }
+            else if (style.backgroundType == ModularStyleBox.StyleBoxType.None)
+            {
+                Color targetColor = new Color(0, 0, 0, 0);
+                if (image.color != targetColor)
+                {
+                    image.color = targetColor;
+                    changed = true;
                 }
             }
 
-            if (style.backgroundType == ModularStyleBox.StyleBoxType.None)
+            if (changed)
             {
-                image.color = new Color(0, 0, 0, 0);
+                MarkAsDirty(image);
+                MarkAsDirty(this);
             }
         }
 

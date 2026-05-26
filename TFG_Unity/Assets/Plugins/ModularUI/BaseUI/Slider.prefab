@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 22dca92fdce05074d8e2ace219b7c384, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a871225fe561f3548941faeebaf28337, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b8032c535b0f23e44a73a846a59755fd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9594f23360d1014fa260ebe522fe84a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -267,7 +267,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4008c57c905da474aae849f5410dd05c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 95001ce7e61bf4e4eb7c5c471d38de1a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc3c8616518d9346a4d60e336503928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularSlider
-  currentTheme: {fileID: 11400000, guid: e01a7e210e11054da58516649232a201, type: 2}
+  currentTheme: {fileID: 11400000, guid: e05a7e210e11054da58516649232a205, type: 2}
   useOverride: 0
   sliderValue: 1
   size: {x: 160, y: 20}

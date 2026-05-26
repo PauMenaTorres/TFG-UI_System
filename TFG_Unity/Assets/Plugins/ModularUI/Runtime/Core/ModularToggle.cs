@@ -29,11 +29,14 @@ namespace ModularUIRuntime
         {
             FetchReferences();
 
+            bool changed = false;
+
             if (targetToggle != null)
             {
                 if (targetToggle.isOn != isOn)
                 {
                     targetToggle.isOn = isOn;
+                    changed = true;
                 }
             }
 
@@ -42,12 +45,21 @@ namespace ModularUIRuntime
                 if (labelComponent.gameObject.activeSelf != showLabel)
                 {
                     labelComponent.gameObject.SetActive(showLabel);
+                    changed = true;
                 }
 
                 if (labelComponent.text != labelText)
                 {
                     labelComponent.text = labelText;
+                    changed = true;
                 }
+            }
+
+            if (changed)
+            {
+                MarkAsDirty(targetToggle);
+                MarkAsDirty(labelComponent);
+                MarkAsDirty(this);
             }
 
             base.OnValidate();
@@ -71,21 +83,25 @@ namespace ModularUIRuntime
 
             if (labelComponent != null)
             {
+                bool labelChanged = false;
                 if (useOverride == false)
                 {
                     if (labelComponent.font != currentTheme.GetTextFont())
                     {
                         labelComponent.font = currentTheme.GetTextFont();
+                        labelChanged = true;
                     }
 
                     if (labelComponent.fontSize != labelFontSize)
                     {
                         labelComponent.fontSize = labelFontSize;
+                        labelChanged = true;
                     }
 
                     if (labelComponent.color != labelColor)
                     {
                         labelComponent.color = labelColor;
+                        labelChanged = true;
                     }
                 }
 
@@ -94,12 +110,20 @@ namespace ModularUIRuntime
                     if (labelComponent.fontSize != overrideFontSize)
                     {
                         labelComponent.fontSize = overrideFontSize;
+                        labelChanged = true;
                     }
 
                     if (labelComponent.color != overrideColor)
                     {
                         labelComponent.color = overrideColor;
+                        labelChanged = true;
                     }
+                }
+
+                if (labelChanged)
+                {
+                    MarkAsDirty(labelComponent);
+                    MarkAsDirty(this);
                 }
             }
         }

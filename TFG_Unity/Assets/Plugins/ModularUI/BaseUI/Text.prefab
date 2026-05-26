@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fdd6e4ee6e1ca40afb7b05fc0e266f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularText
-  currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
+  currentTheme: {fileID: 11400000, guid: e05a7e210e11054da58516649232a205, type: 2}
   useOverride: 0
   textRole: 0
   colorRole: 0
@@ -92,8 +92,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Text Content
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

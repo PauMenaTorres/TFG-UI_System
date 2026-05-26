@@ -90,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6129193315514573214, guid: 702398ab09e300f47ba568e6b4195742, type: 3}
       propertyPath: m_Name
-      value: PauseMenu_Base
+      value: PauseMenu_Portrait
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
