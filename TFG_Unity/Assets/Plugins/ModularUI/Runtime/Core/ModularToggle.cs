@@ -25,48 +25,69 @@ namespace ModularUIRuntime
         private Image checkmarkImage;
         private TextMeshProUGUI labelComponent;
 
+        private bool Approximately(float a, float b)
+        {
+            return Mathf.Abs(a - b) < 0.005f;
+        }
+
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         protected override void OnValidate()
         {
-            FetchReferences();
-
-            bool changed = false;
-
-            if (targetToggle != null)
-            {
-                if (targetToggle.isOn != isOn)
-                {
-                    targetToggle.isOn = isOn;
-                    changed = true;
-                }
-            }
-
-            if (labelComponent != null)
-            {
-                if (labelComponent.gameObject.activeSelf != showLabel)
-                {
-                    labelComponent.gameObject.SetActive(showLabel);
-                    changed = true;
-                }
-
-                if (labelComponent.text != labelText)
-                {
-                    labelComponent.text = labelText;
-                    changed = true;
-                }
-            }
-
-            if (changed)
-            {
-                MarkAsDirty(targetToggle);
-                MarkAsDirty(labelComponent);
-                MarkAsDirty(this);
-            }
-
             base.OnValidate();
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (this == null) return;
+                    FetchReferences();
+
+                    if (targetToggle != null)
+                    {
+                        if (targetToggle.isOn != isOn)
+                        {
+                            targetToggle.isOn = isOn;
+                        }
+                    }
+
+                    if (labelComponent != null)
+                    {
+                        if (labelComponent.gameObject.activeSelf != showLabel)
+                        {
+                            labelComponent.gameObject.SetActive(showLabel);
+                        }
+
+                        if (labelComponent.text != labelText)
+                        {
+                            labelComponent.text = labelText;
+                        }
+                    }
+                };
+            }
+#endif
         }
 
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
             FetchReferences();
 
@@ -86,34 +107,34 @@ namespace ModularUIRuntime
                 bool labelChanged = false;
                 if (useOverride == false)
                 {
-                    if (labelComponent.font != currentTheme.GetTextFont())
+                    var targetFont = currentTheme.GetTextFont();
+                    if (targetFont != null && labelComponent.font != targetFont)
                     {
-                        labelComponent.font = currentTheme.GetTextFont();
+                        labelComponent.font = targetFont;
                         labelChanged = true;
                     }
 
-                    if (labelComponent.fontSize != labelFontSize)
+                    if (!Approximately(labelComponent.fontSize, labelFontSize))
                     {
                         labelComponent.fontSize = labelFontSize;
                         labelChanged = true;
                     }
 
-                    if (labelComponent.color != labelColor)
+                    if (!Approximately(labelComponent.color, labelColor))
                     {
                         labelComponent.color = labelColor;
                         labelChanged = true;
                     }
                 }
-
-                if (useOverride == true)
+                else
                 {
-                    if (labelComponent.fontSize != overrideFontSize)
+                    if (!Approximately(labelComponent.fontSize, overrideFontSize))
                     {
                         labelComponent.fontSize = overrideFontSize;
                         labelChanged = true;
                     }
 
-                    if (labelComponent.color != overrideColor)
+                    if (!Approximately(labelComponent.color, overrideColor))
                     {
                         labelComponent.color = overrideColor;
                         labelChanged = true;

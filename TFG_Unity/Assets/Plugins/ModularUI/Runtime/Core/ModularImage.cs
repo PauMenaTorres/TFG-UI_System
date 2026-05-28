@@ -36,8 +36,27 @@ namespace ModularUIRuntime
             base.OnValidate();
         }
 
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
 
             if (targetImage == null)
@@ -45,7 +64,7 @@ namespace ModularUIRuntime
                 targetImage = GetComponent<Image>();
             }
 
-            if (currentTheme == null)
+            if (targetImage == null || currentTheme == null)
             {
                 return;
             }
@@ -66,14 +85,13 @@ namespace ModularUIRuntime
 
             if (useOverride)
             {
-                if (targetImage.color != overrideColor)
+                if (!Approximately(targetImage.color, overrideColor))
                 {
                     targetImage.color = overrideColor;
                     changed = true;
                 }
             }
-
-            if (!useOverride)
+            else
             {
                 Color targetColor = Color.white;
 
@@ -81,18 +99,16 @@ namespace ModularUIRuntime
                 {
                     targetColor = currentTheme.primaryColor;
                 }
-
-                if (colorRole == ImageColorRole.Secondary)
+                else if (colorRole == ImageColorRole.Secondary)
                 {
                     targetColor = currentTheme.secondaryColor;
                 }
-
-                if (colorRole == ImageColorRole.Custom)
+                else if (colorRole == ImageColorRole.Custom)
                 {
                     targetColor = customColor;
                 }
 
-                if (targetImage.color != targetColor)
+                if (!Approximately(targetImage.color, targetColor))
                 {
                     targetImage.color = targetColor;
                     changed = true;

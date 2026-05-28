@@ -8,8 +8,30 @@ namespace ModularUIRuntime
     {
         public abstract void SetupCanvas(Canvas targetCanvas);
 
+        protected bool IsPrefabStageOrAsset(GameObject go)
+        {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(go))
+            {
+                return true;
+            }
+            if (UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(go) != null)
+            {
+                return true;
+            }
+#endif
+            return false;
+        }
+
         protected void CleanupVREnvironment(Canvas targetCanvas)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying && IsPrefabStageOrAsset(targetCanvas.gameObject))
+            {
+                return;
+            }
+#endif
+
             Component ovrRaycaster = targetCanvas.GetComponent("OVRRaycaster");
             if (ovrRaycaster != null)
             {
@@ -33,21 +55,31 @@ namespace ModularUIRuntime
                 }
             }
 
-            Camera mainCam = Object.FindObjectOfType<Camera>();
-            if (mainCam == null)
+            if (Application.isPlaying)
             {
-                GameObject camObj = new GameObject("Main Camera");
-                camObj.tag = "MainCamera";
-                camObj.AddComponent<Camera>();
-                camObj.AddComponent<AudioListener>();
-                camObj.transform.position = new Vector3(0, 1, -10);
+                Camera mainCam = Object.FindObjectOfType<Camera>();
+                if (mainCam == null)
+                {
+                    GameObject camObj = new GameObject("Main Camera");
+                    camObj.tag = "MainCamera";
+                    camObj.AddComponent<Camera>();
+                    camObj.AddComponent<AudioListener>();
+                    camObj.transform.position = new Vector3(0, 1, -10);
+                }
             }
 
-            EnsureStandardEventSystem();
+            EnsureStandardEventSystem(targetCanvas.gameObject);
         }
 
-        protected void EnsureStandardEventSystem()
+        protected void EnsureStandardEventSystem(GameObject canvasGo)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying && IsPrefabStageOrAsset(canvasGo))
+            {
+                return;
+            }
+#endif
+
             EventSystem currentES = Object.FindObjectOfType<EventSystem>();
             
             if (currentES != null)
@@ -64,7 +96,7 @@ namespace ModularUIRuntime
                     AddStandardInputModule(currentES.gameObject);
                 }
             }
-            else
+            else if (Application.isPlaying)
             {
                 GameObject esObj = new GameObject("EventSystem");
                 esObj.AddComponent<EventSystem>();

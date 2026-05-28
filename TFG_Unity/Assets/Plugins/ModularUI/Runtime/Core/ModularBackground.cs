@@ -19,6 +19,17 @@ namespace ModularUIRuntime
 
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
 
             if (targetImage == null)
@@ -26,7 +37,7 @@ namespace ModularUIRuntime
                 targetImage = GetComponent<Image>();
             }
 
-            if (currentTheme == null)
+            if (targetImage == null || currentTheme == null)
             {
                 return;
             }

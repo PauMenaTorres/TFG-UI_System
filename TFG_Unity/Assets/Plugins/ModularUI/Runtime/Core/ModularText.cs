@@ -36,6 +36,8 @@ namespace ModularUIRuntime
         [SerializeField] private float customFontSize = 24.0f;
 
         [Header("Full Override Settings")]
+        [SerializeField] private TMP_FontAsset overrideFontAsset;
+        [System.Obsolete("Use overrideFontAsset instead of overrideFont to avoid asset dirtying.")]
         [SerializeField] private Font overrideFont;
         [SerializeField] private float overrideFontSize = 24.0f;
 
@@ -114,8 +116,32 @@ namespace ModularUIRuntime
             }
         }
 
+        private bool Approximately(float a, float b)
+        {
+            return Mathf.Abs(a - b) < 0.005f;
+        }
+
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
 
             if (textComponent == null)
@@ -123,7 +149,7 @@ namespace ModularUIRuntime
                 textComponent = GetComponent<TextMeshProUGUI>();
             }
 
-            if (currentTheme == null)
+            if (textComponent == null || currentTheme == null)
             {
                 return;
             }
@@ -144,25 +170,42 @@ namespace ModularUIRuntime
 
             if (useOverride)
             {
-                if (overrideFont != null)
+                if (overrideFontAsset != null)
                 {
-                    if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
+                    if (textComponent.font != overrideFontAsset)
                     {
-                        textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                        textComponent.font = overrideFontAsset;
                         changed = true;
+                    }
+                }
+                else if (overrideFont != null)
+                {
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                    {
+                        // In edit mode, do not dynamically generate font assets as this dirties the asset.
+                        // We will show a warning in the inspector instead.
+                    }
+                    else
+#endif
+                    {
+                        if (textComponent.font == null || textComponent.font.sourceFontFile != overrideFont)
+                        {
+                            textComponent.font = TMP_FontAsset.CreateFontAsset(overrideFont);
+                            changed = true;
+                        }
                     }
                 }
 
                 float targetSize = useCustomFontSize ? customFontSize : overrideFontSize;
 
-                if (textComponent.fontSize != targetSize)
+                if (!Approximately(textComponent.fontSize, targetSize))
                 {
                     textComponent.fontSize = targetSize;
                     changed = true;
                 }
             }
-
-            if (!useOverride)
+            else
             {
                 TMP_FontAsset targetFont = currentTheme.GetTextFont();
                 float targetSize = useCustomFontSize ? customFontSize : currentTheme.TextFontSize;
@@ -173,13 +216,13 @@ namespace ModularUIRuntime
                     targetSize = useCustomFontSize ? customFontSize : currentTheme.titleFontSize;
                 }
 
-                if (textComponent.font != targetFont)
+                if (targetFont != null && textComponent.font != targetFont)
                 {
                     textComponent.font = targetFont;
                     changed = true;
                 }
 
-                if (textComponent.fontSize != targetSize)
+                if (!Approximately(textComponent.fontSize, targetSize))
                 {
                     textComponent.fontSize = targetSize;
                     changed = true;
@@ -198,23 +241,22 @@ namespace ModularUIRuntime
             }
             else if (colorRole == TextColorRole.Custom)
             {
-                targetColor = (textRole == TextRole.Title) ? currentTheme.titleColor : currentTheme.textColor;
+                targetColor = customColor;
             }
             else if (colorRole == TextColorRole.ThemeDefault)
             {
                 targetColor = (textRole == TextRole.Title) ? currentTheme.titleColor : currentTheme.textColor;
             }
 
-            if (textComponent.color != targetColor)
+            if (!Approximately(textComponent.color, targetColor))
             {
                 textComponent.color = targetColor;
                 changed = true;
             }
-            
-            textComponent.SetAllDirty();
 
             if (changed)
             {
+                textComponent.SetAllDirty();
                 MarkAsDirty(textComponent);
                 MarkAsDirty(this);
             }

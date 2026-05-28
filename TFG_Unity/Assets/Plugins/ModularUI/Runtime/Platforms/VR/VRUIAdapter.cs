@@ -36,6 +36,12 @@ namespace ModularUIRuntime
 
         private void SetupVREnvironment(Canvas canvas)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying && IsPrefabStageOrAsset(canvas.gameObject))
+            {
+                return;
+            }
+#endif
             Camera vrCamera = null;
 
             Camera[] allCameras = Object.FindObjectsOfType<Camera>();

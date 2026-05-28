@@ -11,6 +11,18 @@ namespace ModularUIEditor
         {
             serializedObject.Update();
 
+            // Display warning for legacy overrideFont
+            if (target is ModularUIRuntime.ModularText)
+            {
+                SerializedProperty overrideFontProp = serializedObject.FindProperty("overrideFont");
+                SerializedProperty overrideFontAssetProp = serializedObject.FindProperty("overrideFontAsset");
+                if (overrideFontProp != null && overrideFontProp.objectReferenceValue != null && 
+                    (overrideFontAssetProp == null || overrideFontAssetProp.objectReferenceValue == null))
+                {
+                    EditorGUILayout.HelpBox("Warning: 'overrideFont' (standard Font) is assigned but deprecated. In Edit Mode it won't apply to avoid auto-dirtying prefabs.\n\nPlease assign a TextMeshPro font asset to 'overrideFontAsset' instead.", MessageType.Warning);
+                }
+            }
+
             SerializedProperty currentTheme = serializedObject.FindProperty("currentTheme");
             SerializedProperty useOverride = serializedObject.FindProperty("useOverride");
 
@@ -53,6 +65,72 @@ namespace ModularUIEditor
             }
 
             serializedObject.ApplyModifiedProperties();
+
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Apply Active Theme Preview", GUILayout.Height(30)))
+            {
+                foreach (var t in targets)
+                {
+                    if (t is ModularUIRuntime.ModularComponents modularComponent)
+                    {
+                        Undo.RecordObject(modularComponent, "Apply Active Theme Preview");
+
+                        var textComponent = modularComponent.GetComponent<TMPro.TextMeshProUGUI>();
+                        if (textComponent != null)
+                        {
+                            Undo.RecordObject(textComponent, "Apply Active Theme Preview");
+                        }
+
+                        var imageComponents = modularComponent.GetComponents<UnityEngine.UI.Image>();
+                        foreach (var image in imageComponents)
+                        {
+                            Undo.RecordObject(image, "Apply Active Theme Preview");
+                        }
+
+                        var sliderComponent = modularComponent.GetComponent<UnityEngine.UI.Slider>();
+                        if (sliderComponent != null)
+                        {
+                            Undo.RecordObject(sliderComponent, "Apply Active Theme Preview");
+                        }
+
+                        var toggleComponent = modularComponent.GetComponent<UnityEngine.UI.Toggle>();
+                        if (toggleComponent != null)
+                        {
+                            Undo.RecordObject(toggleComponent, "Apply Active Theme Preview");
+                        }
+
+                        var selectableComponent = modularComponent.GetComponent<UnityEngine.UI.Selectable>();
+                        if (selectableComponent != null)
+                        {
+                            Undo.RecordObject(selectableComponent, "Apply Active Theme Preview");
+                        }
+
+                        modularComponent.ApplyThemeInEditor();
+
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(modularComponent);
+                        if (textComponent != null)
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(textComponent);
+                        }
+                        foreach (var image in imageComponents)
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(image);
+                        }
+                        if (sliderComponent != null)
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(sliderComponent);
+                        }
+                        if (toggleComponent != null)
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(toggleComponent);
+                        }
+                        if (selectableComponent != null)
+                        {
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(selectableComponent);
+                        }
+                    }
+                }
+            }
         }
 
         private void DrawOverridesSection()

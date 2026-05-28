@@ -21,8 +21,27 @@ namespace ModularUIRuntime
             base.OnValidate();
         }
 
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
 
             if (slotImage == null)
@@ -49,7 +68,7 @@ namespace ModularUIRuntime
 
                 targetColor.a = 1.0f;
 
-                if (slotImage.color != targetColor)
+                if (!Approximately(slotImage.color, targetColor))
                 {
                     slotImage.color = targetColor;
                     MarkAsDirty(slotImage);

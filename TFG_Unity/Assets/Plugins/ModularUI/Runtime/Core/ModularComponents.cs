@@ -42,7 +42,7 @@ namespace ModularUIRuntime
             }
 
             // Subscribe to global theme changes
-            if (ModularThemeManager.Instance != null)
+            if (Application.isPlaying && ModularThemeManager.Instance != null)
             {
                 ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
                 ModularThemeManager.Instance.OnThemeChanged += HandleThemeChanged;
@@ -63,7 +63,7 @@ namespace ModularUIRuntime
                 currentTheme.OnThemeChanged -= HandleThemeChanged;
             }
 
-            if (ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
+            if (Application.isPlaying && ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
             {
                 ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
             }
@@ -100,7 +100,7 @@ namespace ModularUIRuntime
                     if (this != null && !isApplyingTheme)
                     {
                         isApplyingTheme = true;
-                        shouldMarkDirty = true;
+                        shouldMarkDirty = false;
 
                         ApplyTheme();
 
@@ -113,6 +113,14 @@ namespace ModularUIRuntime
 
         private static ModularThemeData cachedDefaultTheme;
 
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         public virtual void ApplyTheme()
         {
             #if UNITY_EDITOR
@@ -120,23 +128,52 @@ namespace ModularUIRuntime
             {
                 return;
             }
+
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
             #endif
 
             if (!useOverride)
             {
-                ModularThemeManager manager = ModularThemeManager.Instance;
-                if (manager != null)
+                ModularThemeData activeTheme = null;
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
                 {
-                    ModularThemeData activeTheme = manager.GetActiveTheme();
-                    if (activeTheme != null)
+                    UIConfiguration config = Resources.Load<UIConfiguration>("UIConfiguration");
+                    if (config == null)
                     {
-                        // If the theme changed, unsubscribe from old and subscribe to new
-                        if (currentTheme != activeTheme)
-                        {
-                            if (currentTheme != null) currentTheme.OnThemeChanged -= HandleThemeChanged;
-                            currentTheme = activeTheme;
-                            if (currentTheme != null) currentTheme.OnThemeChanged += HandleThemeChanged;
-                        }
+                        config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+                    }
+                    if (config != null)
+                    {
+                        activeTheme = config.GetActiveTheme();
+                    }
+                }
+                else
+#endif
+                {
+                    ModularThemeManager manager = ModularThemeManager.Instance;
+                    if (manager != null)
+                    {
+                        activeTheme = manager.GetActiveTheme();
+                    }
+                }
+
+                if (activeTheme != null)
+                {
+                    // If the theme changed, unsubscribe from old and subscribe to new
+                    if (currentTheme != activeTheme)
+                    {
+                        if (currentTheme != null && Application.isPlaying) currentTheme.OnThemeChanged -= HandleThemeChanged;
+                        currentTheme = activeTheme;
+                        if (currentTheme != null && Application.isPlaying) currentTheme.OnThemeChanged += HandleThemeChanged;
                     }
                 }
             }
@@ -156,6 +193,16 @@ namespace ModularUIRuntime
             }
         }
 
+        public void ApplyThemeInEditor()
+        {
+#if UNITY_EDITOR
+            bool oldMarkDirty = shouldMarkDirty;
+            shouldMarkDirty = true;
+            ApplyTheme();
+            shouldMarkDirty = oldMarkDirty;
+#endif
+        }
+
         protected void ApplyStyle(Image image, ModularStyleBox style)
         {
             if (image == null)
@@ -172,7 +219,7 @@ namespace ModularUIRuntime
                     image.sprite = null;
                     changed = true;
                 }
-                if (image.color != style.backgroundColor)
+                if (!Approximately(image.color, style.backgroundColor))
                 {
                     image.color = style.backgroundColor;
                     changed = true;
@@ -192,7 +239,7 @@ namespace ModularUIRuntime
                     targetColor = new Color(0, 0, 0, 0);
                 }
 
-                if (image.color != targetColor)
+                if (!Approximately(image.color, targetColor))
                 {
                     image.color = targetColor;
                     changed = true;
@@ -201,7 +248,7 @@ namespace ModularUIRuntime
             else if (style.backgroundType == ModularStyleBox.StyleBoxType.None)
             {
                 Color targetColor = new Color(0, 0, 0, 0);
-                if (image.color != targetColor)
+                if (!Approximately(image.color, targetColor))
                 {
                     image.color = targetColor;
                     changed = true;

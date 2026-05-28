@@ -2,7 +2,8 @@
     "name": "ModularUIEditor",
     "rootNamespace": "ModularUIEditor",
     "references": [
-        "GUID:d44550298eb82e8458d3d7a792f5802c"
+        "GUID:d44550298eb82e8458d3d7a792f5802c",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

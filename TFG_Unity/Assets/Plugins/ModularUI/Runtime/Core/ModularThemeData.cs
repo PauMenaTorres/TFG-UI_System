@@ -50,6 +50,22 @@ namespace ModularUIRuntime
         {
             get
             {
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UIConfiguration config = Resources.Load<UIConfiguration>("UIConfiguration");
+                    if (config == null)
+                    {
+                        config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+                    }
+                    if (config != null && config.selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
+                    {
+                        return 18.0f;
+                    }
+                    return textFontSize;
+                }
+#endif
+
                 if (ModularThemeManager.HasInstance && ModularThemeManager.Instance != null)
                 {
                     var config = ModularThemeManager.Instance.Config;

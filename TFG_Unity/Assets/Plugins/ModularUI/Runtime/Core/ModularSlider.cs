@@ -18,6 +18,17 @@ namespace ModularUIRuntime
         private Slider targetSlider;
         private RectTransform rectTransform;
 
+        private bool Approximately(float a, float b)
+        {
+            return Mathf.Abs(a - b) < 0.005f;
+        }
+
+        private bool Approximately(Vector2 a, Vector2 b)
+        {
+            return Mathf.Abs(a.x - b.x) < 0.005f &&
+                   Mathf.Abs(a.y - b.y) < 0.005f;
+        }
+
         protected override void OnValidate()
         {
             if (rectTransform == null)
@@ -38,31 +49,21 @@ namespace ModularUIRuntime
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
                     if (this == null) return;
-                    bool changed = false;
 
                     if (rectTransform != null)
                     {
-                        if (rectTransform.sizeDelta != size)
+                        if (!Approximately(rectTransform.sizeDelta, size))
                         {
                             rectTransform.sizeDelta = size;
-                            changed = true;
                         }
                     }
 
                     if (targetSlider != null)
                     {
-                        if (targetSlider.value != sliderValue)
+                        if (!Approximately(targetSlider.value, sliderValue))
                         {
                             targetSlider.value = sliderValue;
-                            changed = true;
                         }
-                    }
-
-                    if (changed)
-                    {
-                        MarkAsDirty(rectTransform);
-                        MarkAsDirty(targetSlider);
-                        MarkAsDirty(this);
                     }
                 };
             }
@@ -71,6 +72,17 @@ namespace ModularUIRuntime
 
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
 
             if (targetSlider == null)
@@ -78,7 +90,7 @@ namespace ModularUIRuntime
                 targetSlider = GetComponent<Slider>();
             }
 
-            if (currentTheme == null)
+            if (targetSlider == null || currentTheme == null)
             {
                 return;
             }

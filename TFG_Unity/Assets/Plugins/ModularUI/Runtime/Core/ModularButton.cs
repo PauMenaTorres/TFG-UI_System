@@ -73,8 +73,32 @@ namespace ModularUIRuntime
             }
         }
 
+        private bool Approximately(float a, float b)
+        {
+            return Mathf.Abs(a - b) < 0.005f;
+        }
+
+        private bool Approximately(Color a, Color b)
+        {
+            return Mathf.Abs(a.r - b.r) < 0.005f &&
+                   Mathf.Abs(a.g - b.g) < 0.005f &&
+                   Mathf.Abs(a.b - b.b) < 0.005f &&
+                   Mathf.Abs(a.a - b.a) < 0.005f;
+        }
+
         public override void ApplyTheme()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             base.ApplyTheme();
             FetchReferences();
 
@@ -144,7 +168,7 @@ namespace ModularUIRuntime
 
             if (useOverride)
             {
-                if (textComponent.color != textColor)
+                if (!Approximately(textComponent.color, textColor))
                 {
                     textComponent.color = textColor;
                     changed = true;
@@ -159,7 +183,7 @@ namespace ModularUIRuntime
                     }
                 }
 
-                if (textComponent.fontSize != overrideFontSize)
+                if (!Approximately(textComponent.fontSize, overrideFontSize))
                 {
                     textComponent.fontSize = overrideFontSize;
                     changed = true;
@@ -167,33 +191,36 @@ namespace ModularUIRuntime
             }
             else
             {
-                TMP_FontAsset targetFont = currentTheme.GetTextFont();
-                float targetSize = currentTheme.TextFontSize;
-                Color targetColor = currentTheme.textColor;
-
-                if (textFontRole == TextRole.Title)
+                if (currentTheme != null)
                 {
-                    targetFont = currentTheme.GetTitleFont();
-                    targetSize = currentTheme.titleFontSize;
-                    targetColor = currentTheme.titleColor;
-                }
+                    TMP_FontAsset targetFont = currentTheme.GetTextFont();
+                    float targetSize = currentTheme.TextFontSize;
+                    Color targetColor = currentTheme.textColor;
 
-                if (textComponent.font != targetFont)
-                {
-                    textComponent.font = targetFont;
-                    changed = true;
-                }
+                    if (textFontRole == TextRole.Title)
+                    {
+                        targetFont = currentTheme.GetTitleFont();
+                        targetSize = currentTheme.titleFontSize;
+                        targetColor = currentTheme.titleColor;
+                    }
 
-                if (textComponent.fontSize != targetSize)
-                {
-                    textComponent.fontSize = targetSize;
-                    changed = true;
-                }
+                    if (targetFont != null && textComponent.font != targetFont)
+                    {
+                        textComponent.font = targetFont;
+                        changed = true;
+                    }
 
-                if (textComponent.color != targetColor)
-                {
-                    textComponent.color = targetColor;
-                    changed = true;
+                    if (!Approximately(textComponent.fontSize, targetSize))
+                    {
+                        textComponent.fontSize = targetSize;
+                        changed = true;
+                    }
+
+                    if (!Approximately(textComponent.color, targetColor))
+                    {
+                        textComponent.color = targetColor;
+                        changed = true;
+                    }
                 }
             }
 
@@ -222,7 +249,7 @@ namespace ModularUIRuntime
                     changed = true;
                 }
 
-                if (buttonImage.color != normal.backgroundColor)
+                if (!Approximately(buttonImage.color, normal.backgroundColor))
                 {
                     buttonImage.color = normal.backgroundColor;
                     changed = true;
@@ -237,11 +264,11 @@ namespace ModularUIRuntime
                 ColorBlock colorBlock = targetButton.colors;
                 bool colorsChanged = false;
 
-                if (colorBlock.normalColor != normal.backgroundColor || 
-                    colorBlock.highlightedColor != hovered.backgroundColor || 
-                    colorBlock.pressedColor != pressed.backgroundColor || 
-                    colorBlock.disabledColor != disabled.backgroundColor || 
-                    colorBlock.selectedColor != normal.backgroundColor)
+                if (!Approximately(colorBlock.normalColor, normal.backgroundColor) || 
+                    !Approximately(colorBlock.highlightedColor, hovered.backgroundColor) || 
+                    !Approximately(colorBlock.pressedColor, pressed.backgroundColor) || 
+                    !Approximately(colorBlock.disabledColor, disabled.backgroundColor) || 
+                    !Approximately(colorBlock.selectedColor, normal.backgroundColor))
                 {
                     colorsChanged = true;
                 }
@@ -266,9 +293,10 @@ namespace ModularUIRuntime
                     changed = true;
                 }
 
-                if (buttonImage.color != new Color(1.0f, 1.0f, 1.0f, 1.0f))
+                Color whiteColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                if (!Approximately(buttonImage.color, whiteColor))
                 {
-                    buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    buttonImage.color = whiteColor;
                     changed = true;
                 }
 
@@ -308,9 +336,10 @@ namespace ModularUIRuntime
                     changed = true;
                 }
 
-                if (buttonImage.color != new Color(0.0f, 0.0f, 0.0f, 0.0f))
+                Color transparentColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                if (!Approximately(buttonImage.color, transparentColor))
                 {
-                    buttonImage.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+                    buttonImage.color = transparentColor;
                     changed = true;
                 }
             }

@@ -8,12 +8,23 @@ namespace ModularUIRuntime
     {
         public UIConfiguration config;
 
+        [Header("Editor Settings")]
+        public bool autoAdaptInEditor = false;
+
         private void OnEnable()
         {
             if (config != null)
             {
+                config.OnConfigurationChanged -= Initialize;
                 config.OnConfigurationChanged += Initialize;
             }
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying && !autoAdaptInEditor)
+            {
+                return;
+            }
+#endif
 
             Initialize();
         }
@@ -26,12 +37,29 @@ namespace ModularUIRuntime
             }
         }
 
+        public void ForceInitialize()
+        {
+            InitializeInternal(true);
+        }
+
         private void Initialize()
+        {
+            InitializeInternal(false);
+        }
+
+        private void InitializeInternal(bool force)
         {
             if (this == null || config == null)
             {
                 return;
             }
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying && !autoAdaptInEditor && !force)
+            {
+                return;
+            }
+#endif
 
             IPlatformFactory factory = new PlatformFactory(config);
             IPlatformUIAdapter adapter = factory.CreateAdapter();

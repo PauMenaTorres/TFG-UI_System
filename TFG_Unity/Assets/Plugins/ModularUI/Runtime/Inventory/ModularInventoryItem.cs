@@ -35,10 +35,18 @@ namespace ModularUIRuntime
             RefreshVisual();
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            RefreshVisual();
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this != null)
+                {
+                    RefreshVisual();
+                }
+            };
         }
+#endif
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -55,20 +63,39 @@ namespace ModularUIRuntime
 
         public void RefreshVisual()
         {
+#if UNITY_EDITOR
+            if (!gameObject.scene.IsValid())
+            {
+                var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject);
+                if (stage == null)
+                {
+                    return;
+                }
+            }
+#endif
+
             if (data != null && iconImage != null)
             {
-                iconImage.sprite = data.itemIcon;
+                if (iconImage.sprite != data.itemIcon)
+                {
+                    iconImage.sprite = data.itemIcon;
+                }
 
                 if (quantityText != null)
                 {
-                    if (data.isStackable && currentQuantity > 1)
+                    bool targetActive = data.isStackable && currentQuantity > 1;
+                    if (quantityText.gameObject.activeSelf != targetActive)
                     {
-                        quantityText.gameObject.SetActive(true);
-                        quantityText.text = "x" + currentQuantity;
+                        quantityText.gameObject.SetActive(targetActive);
                     }
-                    else
+
+                    if (targetActive)
                     {
-                        quantityText.gameObject.SetActive(false);
+                        string targetText = "x" + currentQuantity;
+                        if (quantityText.text != targetText)
+                        {
+                            quantityText.text = targetText;
+                        }
                     }
                 }
             }
