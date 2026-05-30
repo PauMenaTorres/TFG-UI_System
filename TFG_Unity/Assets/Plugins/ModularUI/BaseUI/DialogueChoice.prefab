@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ModularButton
   currentTheme: {fileID: 11400000, guid: a02a7ee210e11054da58516649232a20, type: 2}
-  useOverride: 1
+  useOverride: 0
   buttonText: Button Text
   textFontRole: 0
   textAlignment: 514

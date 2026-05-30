@@ -92,7 +92,7 @@ MonoBehaviour:
   nameTextComponent: {fileID: 4992646299403598501}
   bodyTextComponent: {fileID: 2508868195231375047}
   portraitImageComponent: {fileID: 5079461433170150032}
-  choicesContainer: {fileID: 2666435832306059254}
+  choicesContainer: {fileID: 0}
   choiceButtonPrefab: {fileID: 8564888453822002243, guid: a2f21dfc7f27f414a95af2fe9addd48d, type: 3}
 --- !u!1 &8634279707324748290
 GameObject:
@@ -270,6 +270,10 @@ PrefabInstance:
     - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: alignment
       value: 513
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: colorRole
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: fontStyle
@@ -632,6 +636,10 @@ PrefabInstance:
     - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: alignment
       value: 257
+      objectReference: {fileID: 0}
+    - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
+      propertyPath: colorRole
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5280066784124579742, guid: 8de9ec16c6eb1354a95feeb46daa8947, type: 3}
       propertyPath: textContent
