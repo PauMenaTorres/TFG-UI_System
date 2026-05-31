@@ -52,9 +52,10 @@ namespace ModularUIRuntime
 
                     if (rectTransform != null)
                     {
-                        if (!Approximately(rectTransform.sizeDelta, size))
+                        if (!Approximately(size, rectTransform.sizeDelta))
                         {
-                            rectTransform.sizeDelta = size;
+                            size = rectTransform.sizeDelta;
+                            UnityEditor.EditorUtility.SetDirty(this);
                         }
                     }
 

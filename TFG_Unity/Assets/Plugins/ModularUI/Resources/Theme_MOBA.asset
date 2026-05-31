@@ -49,22 +49,22 @@ MonoBehaviour:
   sliderBackground:
     backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: a871225fe561f3548941faeebaf28337, type: 3}
+    backgroundSprite: {fileID: 21300000, guid: 4ee9285c72ea8c548ab9cae6560a5fb1, type: 3}
     tintColor: {r: 1, g: 1, b: 1, a: 1}
   sliderFill:
     backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: 95001ce7e61bf4e4eb7c5c471d38de1a, type: 3}
+    backgroundSprite: {fileID: 21300000, guid: 9443f53f0d171d842981038998245d01, type: 3}
     tintColor: {r: 1, g: 1, b: 1, a: 1}
   sliderHandle:
     backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: e9594f23360d1014fa260ebe522fe84a, type: 3}
+    backgroundSprite: {fileID: 21300000, guid: 2a9fca1138c3264419e7a9d2a7d9535f, type: 3}
     tintColor: {r: 1, g: 1, b: 1, a: 1}
   toggleBackground:
     backgroundType: 1
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    backgroundSprite: {fileID: 21300000, guid: a871225fe561f3548941faeebaf28337, type: 3}
+    backgroundSprite: {fileID: 21300000, guid: 4ee9285c72ea8c548ab9cae6560a5fb1, type: 3}
     tintColor: {r: 1, g: 1, b: 1, a: 1}
   toggleCheckmark:
     backgroundType: 1

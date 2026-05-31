@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7aed789495e3cc40911b0551226e608, type: 3}
   m_Name: UIConfiguration
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.UIConfiguration
-  selectedPlatform: 1
+  selectedPlatform: 0
   selectedGenre: 2
   mobileControlsPrefab: {fileID: 3876897544830518928, guid: 160a5c5b01a41a34681d41121eeb7dd8, type: 3}
   vrSettings:
     vrCameraRigPrefab: {fileID: 7301794028103589409, guid: 9aa42a937e89d5b44a07b028307163be, type: 3}
     vrEventSystemPrefab: {fileID: 8302338912817809936, guid: 80e2dae0a5acca149ba946c9965eb467, type: 3}
-  designResolution: {x: 600, y: 800}
+  designResolution: {x: 800, y: 600}
   genreThemes:
   - genre: 0
     theme: {fileID: 11400000, guid: e01a7e210e11054da58516649232a201, type: 2}

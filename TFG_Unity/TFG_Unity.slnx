@@ -1,7 +1,7 @@
 ﻿<Solution>
   <Project Path="ModularUIEditor.csproj" />
   <Project Path="ModularUIRuntime.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
 </Solution>

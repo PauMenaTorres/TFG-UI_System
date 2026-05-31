@@ -18,6 +18,9 @@ namespace ModularUIRuntime
 
         private bool isPaused;
 
+        public bool IsPaused => isPaused;
+        public bool IsPanelActive => pausePanel != null && pausePanel.activeSelf;
+
         protected override Transform GetButtonsContainer()
         {
             return buttonsContainer;

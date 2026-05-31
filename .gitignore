@@ -192,3 +192,5 @@ InitTestScene*.unity*
 /TFG_Unity/Library
 /TFG_Unity/Temp
 /TFG_Unity/UserSettings
+/TFG_Unity/Assets/_Recovery
+TFG_Unity/Assets/_Recovery.meta

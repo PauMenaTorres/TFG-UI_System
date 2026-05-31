@@ -233,6 +233,15 @@ namespace ModularUIRuntime
                     changed = true;
                 }
 
+                if (image.sprite != null && image.sprite.border != Vector4.zero)
+                {
+                    if (image.type != Image.Type.Sliced)
+                    {
+                        image.type = Image.Type.Sliced;
+                        changed = true;
+                    }
+                }
+
                 Color targetColor = style.tintColor;
                 if (image.sprite == null)
                 {

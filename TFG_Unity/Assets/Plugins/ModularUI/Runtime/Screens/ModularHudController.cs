@@ -78,8 +78,32 @@ namespace ModularUIRuntime
 
         private void InitializeVitals()
         {
+            if (healthBar == null)
+            {
+                healthBar = new VitalBarReference();
+            }
+            if (secondaryBar == null)
+            {
+                secondaryBar = new VitalBarReference();
+            }
+
+            if (healthBar.vitalSlider == null || secondaryBar.vitalSlider == null)
+            {
+                Slider[] sliders = GetComponentsInChildren<Slider>(true);
+                if (healthBar.vitalSlider == null && sliders.Length > 0)
+                {
+                    healthBar.vitalSlider = sliders[0];
+                }
+                if (secondaryBar.vitalSlider == null && sliders.Length > 1)
+                {
+                    secondaryBar.vitalSlider = sliders[1];
+                }
+            }
+
             if (healthBar.vitalSlider != null)
             {
+                healthBar.vitalSlider.minValue = 0f;
+                healthBar.vitalSlider.maxValue = 1f;
                 healthBar.currentPercentage = healthBar.startingValue;
                 healthBar.targetPercentage = healthBar.startingValue;
                 healthBar.vitalSlider.value = healthBar.startingValue;
@@ -88,6 +112,8 @@ namespace ModularUIRuntime
 
             if (secondaryBar.vitalSlider != null)
             {
+                secondaryBar.vitalSlider.minValue = 0f;
+                secondaryBar.vitalSlider.maxValue = 1f;
                 secondaryBar.currentPercentage = secondaryBar.startingValue;
                 secondaryBar.targetPercentage = secondaryBar.startingValue;
                 secondaryBar.vitalSlider.value = secondaryBar.startingValue;
@@ -146,6 +172,11 @@ namespace ModularUIRuntime
                 return;
             }
 
+            if (barLerpSpeed <= 0f)
+            {
+                barLerpSpeed = 5.0f;
+            }
+
             if (vital.currentPercentage != vital.targetPercentage)
             {
                 vital.currentPercentage = Mathf.MoveTowards(vital.currentPercentage, vital.targetPercentage, barLerpSpeed * Time.deltaTime);
@@ -187,21 +218,26 @@ namespace ModularUIRuntime
 
         public void SetupMinimap(RenderTexture externalTexture = null)
         {
-            if (minimapDisplay == null)
+            if (minimapDisplay == null || minimapCamera == null)
             {
                 return;
             }
 
             if (externalTexture != null)
             {
+                minimapCamera.targetTexture = externalTexture;
                 minimapDisplay.texture = externalTexture;
                 return;
             }
 
-            if (minimapCamera != null && minimapCamera.targetTexture != null)
+            if (minimapCamera.targetTexture == null)
             {
-                minimapDisplay.texture = minimapCamera.targetTexture;
+                RenderTexture rt = new RenderTexture(256, 256, 16);
+                rt.name = "RuntimeMinimapTexture";
+                minimapCamera.targetTexture = rt;
             }
+
+            minimapDisplay.texture = minimapCamera.targetTexture;
         }
 
         public void SetHotbarObjectName(string name)
@@ -214,6 +250,11 @@ namespace ModularUIRuntime
 
         public void ShowSimplePopUp(string message, float displayTime = 3f)
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
             if (simplePopupCoroutine != null)
             {
                 StopCoroutine(simplePopupCoroutine);
@@ -239,6 +280,11 @@ namespace ModularUIRuntime
 
         public void ShowImportantPopUp(string message, float displayTime = 5f)
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
             if (importantPopupCoroutine != null)
             {
                 StopCoroutine(importantPopupCoroutine);
