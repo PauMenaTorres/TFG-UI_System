@@ -37,7 +37,7 @@ namespace ModularUIEditor
         private bool importMinimap = true;
         private bool importSamples = true;
 
-        private string targetPath = "Assets/ModularUI";
+        private string targetPath = "Assets/Plugins/ModularUI";
 
         [MenuItem("Tools/Modular UI/Setup Wizard")]
         public static void ShowWindow()
@@ -126,6 +126,17 @@ namespace ModularUIEditor
 
             config.selectedPlatform = selectedPlatform;
             config.selectedGenre = selectedGenre;
+
+            if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+            {
+                string mobileControlsPath = targetPath + "/Templates/Mobile/MobileControls.prefab";
+                GameObject mobileControlsPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(mobileControlsPath);
+                if (mobileControlsPrefab != null)
+                {
+                    config.mobileControlsPrefab = mobileControlsPrefab;
+                }
+            }
+
             EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssets();
 
@@ -155,7 +166,7 @@ namespace ModularUIEditor
         {
             if (!AssetDatabase.IsValidFolder(targetPath))
             {
-                AssetDatabase.CreateFolder("Assets", "ModularUI");
+                EnsureFolderExists(targetPath + "/dummy.txt");
             }
 
             if (currentScope == ImportScope.FULL_SYSTEM)
@@ -228,6 +239,11 @@ namespace ModularUIEditor
                 if (importSamples)
                 {
                     CopyAssetItem("Samples", "Samples");
+                }
+
+                if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+                {
+                    CopyAssetItem("Templates/Mobile/MobileControls.prefab", "Templates/Mobile/MobileControls.prefab");
                 }
             }
 
