@@ -38,12 +38,24 @@ namespace ModularUIEditor
         private bool importSamples = true;
 
         private string targetPath = "Assets/Plugins/ModularUI";
+        private Vector2 scrollPosition;
+
+        private GUIStyle headerStyle;
+        private GUIStyle sectionHeaderStyle;
+        private GUIStyle boxStyle;
+        private GUIStyle buttonStyle;
+        private GUIStyle toggleStyle;
+
+        private Texture2D headerTex;
+        private Texture2D boxTex;
+        private Texture2D buttonTex;
+        private Texture2D buttonHoverTex;
 
         [MenuItem("Tools/Modular UI/Setup Wizard")]
         public static void ShowWindow()
         {
             ModularUIWizard window = GetWindow<ModularUIWizard>("UI Wizard");
-            window.minSize = new Vector2(400, 700);
+            window.minSize = new Vector2(420, 680);
             window.Show();
         }
 
@@ -57,53 +69,206 @@ namespace ModularUIEditor
             return "Assets/Plugins/ModularUI";
         }
 
+        private void OnDestroy()
+        {
+            if (headerTex != null) DestroyImmediate(headerTex);
+            if (boxTex != null) DestroyImmediate(boxTex);
+            if (buttonTex != null) DestroyImmediate(buttonTex);
+            if (buttonHoverTex != null) DestroyImmediate(buttonHoverTex);
+        }
+
+        private void InitializeStyles()
+        {
+            if (headerStyle != null) return;
+
+            // Colors
+            Color headerColor = new Color(0.12f, 0.16f, 0.22f); // Dark Slate Blue
+            Color boxColor = new Color(0.18f, 0.18f, 0.18f); // Dark Charcoal
+            Color accentColor = new Color(0f, 0.67f, 0.71f); // Vibrant Teal
+            Color accentHoverColor = new Color(0f, 0.8f, 0.85f); // Lighter Teal for Hover
+
+            headerTex = MakeTex(2, 2, headerColor);
+            boxTex = MakeTex(2, 2, boxColor);
+            buttonTex = MakeTex(2, 2, accentColor);
+            buttonHoverTex = MakeTex(2, 2, accentHoverColor);
+
+            headerStyle = new GUIStyle();
+            headerStyle.normal.background = headerTex;
+            headerStyle.padding = new RectOffset(10, 10, 15, 15);
+            headerStyle.margin = new RectOffset(0, 0, 0, 0);
+
+            sectionHeaderStyle = new GUIStyle(EditorStyles.boldLabel);
+            sectionHeaderStyle.normal.textColor = new Color(0f, 0.85f, 0.9f); // Cyan
+            sectionHeaderStyle.fontSize = 13;
+            sectionHeaderStyle.margin = new RectOffset(0, 0, 10, 5);
+
+            boxStyle = new GUIStyle();
+            boxStyle.normal.background = boxTex;
+            boxStyle.padding = new RectOffset(15, 15, 15, 15);
+            boxStyle.margin = new RectOffset(0, 0, 5, 15);
+
+            buttonStyle = new GUIStyle();
+            buttonStyle.normal.background = buttonTex;
+            buttonStyle.hover.background = buttonHoverTex;
+            buttonStyle.normal.textColor = Color.white;
+            buttonStyle.hover.textColor = Color.white;
+            buttonStyle.fontSize = 13;
+            buttonStyle.fontStyle = FontStyle.Bold;
+            buttonStyle.alignment = TextAnchor.MiddleCenter;
+            buttonStyle.padding = new RectOffset(10, 10, 12, 12);
+            
+            toggleStyle = new GUIStyle(EditorStyles.toggle);
+            toggleStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
+            toggleStyle.fontSize = 11;
+        }
+
+        private Texture2D MakeTex(int width, int height, Color col)
+        {
+            Color[] pix = new Color[width * height];
+            for (int i = 0; i < pix.Length; ++i)
+            {
+                pix[i] = col;
+            }
+            Texture2D result = new Texture2D(width, height);
+            result.SetPixels(pix);
+            result.Apply();
+            return result;
+        }
+
+        private void DrawPlatformHelpBox()
+        {
+            string helpTitle = "";
+            string helpText = "";
+
+            switch (selectedPlatform)
+            {
+                case UIConfiguration.TargetPlatform.Desktop:
+                    helpTitle = "Desktop UI Mode Activated";
+                    helpText = "• Uses Keyboard & Mouse adapters.\n• Cursor auto-locks during gameplay.\n• Resolution standard 1920x1080 scales.";
+                    break;
+                case UIConfiguration.TargetPlatform.MobilePortrait:
+                    helpTitle = "Mobile Portrait Mode Activated";
+                    helpText = "• Aspect ratios auto-fitted vertically.\n• Safe Area padding enabled for notch displays.\n• Mobile controls overlay instantiated automatically.";
+                    break;
+                case UIConfiguration.TargetPlatform.MobileLandscape:
+                    helpTitle = "Mobile Landscape Mode Activated";
+                    helpText = "• Wide aspect fit.\n• Left/Right virtual joysticks layout.\n• Safe Area horizontal margins applied.";
+                    break;
+                case UIConfiguration.TargetPlatform.VR:
+                    helpTitle = "Virtual Reality UI Mode Activated";
+                    helpText = "• Canvas switched to World Space automatically.\n• Uses OVRRaycaster & laserpointer inputs.\n• Configures standard event system to support VR pointers.";
+                    break;
+            }
+
+            EditorGUILayout.LabelField("ARCHITECTURE INFO", sectionHeaderStyle);
+            GUILayout.BeginVertical(boxStyle);
+            
+            GUIStyle helpTitleStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 12, normal = { textColor = new Color(0.9f, 0.9f, 0.9f) } };
+            GUIStyle helpTextStyle = new GUIStyle(EditorStyles.miniLabel) { fontSize = 10, wordWrap = true, normal = { textColor = new Color(0.7f, 0.7f, 0.7f) } };
+
+            EditorGUILayout.LabelField(helpTitle, helpTitleStyle);
+            EditorGUILayout.LabelField(helpText, helpTextStyle);
+            
+            GUILayout.EndVertical();
+        }
+
         private void OnGUI()
         {
-            EditorGUILayout.Space(10);
-            GUIStyle titleStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 18, alignment = TextAnchor.MiddleCenter };
-            EditorGUILayout.LabelField("MODULAR UI SYSTEM SETUP", titleStyle);
-            EditorGUILayout.Space(20);
+            InitializeStyles();
 
-            EditorGUILayout.LabelField("1. Integration Settings", EditorStyles.boldLabel);
-            EditorGUILayout.BeginVertical("box");
+            // Header Banner
+            GUILayout.BeginHorizontal(headerStyle);
+            GUILayout.Label("MODULAR UI SYSTEM", new GUIStyle(EditorStyles.boldLabel) { fontSize = 18, alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } });
+            GUILayout.EndHorizontal();
+
+            // Main scrollable area
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
+            
+            GUILayout.BeginVertical(new GUIStyle { padding = new RectOffset(15, 15, 15, 15) });
+
+            // Section 1: Integration
+            EditorGUILayout.LabelField("1. INTEGRATION SETTINGS", sectionHeaderStyle);
+            GUILayout.BeginVertical(boxStyle);
+            
             currentStatus = (ProjectStatus)EditorGUILayout.EnumPopup("Project Status:", currentStatus);
             currentScope = (ImportScope)EditorGUILayout.EnumPopup("Import Scope:", currentScope);
 
             if (currentScope == ImportScope.SPECIFIC_MODULES)
             {
-                EditorGUILayout.Space(5);
-                EditorGUI.indentLevel++;
-                importBaseUI = EditorGUILayout.Toggle("Base UI (Required)", importBaseUI);
-                importMainMenu = EditorGUILayout.Toggle("Main Menu Template", importMainMenu);
-                importHUD = EditorGUILayout.Toggle("HUD Template", importHUD);
-                importInventory = EditorGUILayout.Toggle("Inventory System", importInventory);
-                importOptions = EditorGUILayout.Toggle("Options Menu", importOptions);
-                importPauseMenu = EditorGUILayout.Toggle("Pause Menu", importPauseMenu);
-                importCredits = EditorGUILayout.Toggle("Credits Screen", importCredits);
-                importWinLose = EditorGUILayout.Toggle("Win/Lose Screens", importWinLose);
-                importDialogues = EditorGUILayout.Toggle("Dialogue System", importDialogues);
-                importSettings = EditorGUILayout.Toggle("Themes (Resources)", importSettings);
-                importMinimap = EditorGUILayout.Toggle("Minimap System", importMinimap);
-                importSamples = EditorGUILayout.Toggle("Demo Samples", importSamples);
-                EditorGUI.indentLevel--;
+                EditorGUILayout.Space(10);
+                
+                // Draw a nice separator line
+                Rect lineRect = EditorGUILayout.GetControlRect(false, 1);
+                EditorGUI.DrawRect(lineRect, new Color(0.3f, 0.3f, 0.3f));
+                EditorGUILayout.Space(10);
+
+                // Grid layout (2 columns)
+                EditorGUILayout.BeginHorizontal();
+                importBaseUI = EditorGUILayout.ToggleLeft(" Base UI (Required)", importBaseUI, toggleStyle, GUILayout.Width(180));
+                importMainMenu = EditorGUILayout.ToggleLeft(" Main Menu Template", importMainMenu, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+                importHUD = EditorGUILayout.ToggleLeft(" HUD Template", importHUD, toggleStyle, GUILayout.Width(180));
+                importInventory = EditorGUILayout.ToggleLeft(" Inventory System", importInventory, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+                importOptions = EditorGUILayout.ToggleLeft(" Options Menu", importOptions, toggleStyle, GUILayout.Width(180));
+                importPauseMenu = EditorGUILayout.ToggleLeft(" Pause Menu", importPauseMenu, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+                importCredits = EditorGUILayout.ToggleLeft(" Credits Screen", importCredits, toggleStyle, GUILayout.Width(180));
+                importWinLose = EditorGUILayout.ToggleLeft(" Win/Lose Screens", importWinLose, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+                importDialogues = EditorGUILayout.ToggleLeft(" Dialogue System", importDialogues, toggleStyle, GUILayout.Width(180));
+                importSettings = EditorGUILayout.ToggleLeft(" Themes (Resources)", importSettings, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+                importMinimap = EditorGUILayout.ToggleLeft(" Minimap System", importMinimap, toggleStyle, GUILayout.Width(180));
+                importSamples = EditorGUILayout.ToggleLeft(" Demo Samples", importSamples, toggleStyle, GUILayout.Width(180));
+                EditorGUILayout.EndHorizontal();
             }
 
-            EditorGUILayout.EndVertical();
+            GUILayout.EndVertical();
 
-            EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("2. Architecture Configuration", EditorStyles.boldLabel);
-            EditorGUILayout.BeginVertical("box");
+            // Section 2: Architecture
+            EditorGUILayout.LabelField("2. ARCHITECTURE CONFIGURATION", sectionHeaderStyle);
+            GUILayout.BeginVertical(boxStyle);
+            
             selectedPlatform = (UIConfiguration.TargetPlatform)EditorGUILayout.EnumPopup("Target Platform:", selectedPlatform);
             selectedGenre = (UIConfiguration.GameGenre)EditorGUILayout.EnumPopup("Game Genre:", selectedGenre);
-            EditorGUILayout.EndVertical();
+            
+            GUILayout.EndVertical();
 
-            EditorGUILayout.Space(20);
+            // Help Panel depending on platform
+            DrawPlatformHelpBox();
 
-            if (GUILayout.Button("Import & Configure UI System", GUILayout.Height(50)))
+            GUILayout.EndVertical();
+            EditorGUILayout.EndScrollView();
+
+            // Bottom CTA Button Area
+            GUILayout.BeginVertical(new GUIStyle { padding = new RectOffset(15, 15, 15, 15) });
+            if (GUILayout.Button("IMPORT & CONFIGURE SYSTEM", buttonStyle, GUILayout.Height(45)))
             {
                 ExecuteImport();
                 CreateAndApplyConfiguration();
             }
+            GUILayout.EndVertical();
         }
 
         private void CreateAndApplyConfiguration()
