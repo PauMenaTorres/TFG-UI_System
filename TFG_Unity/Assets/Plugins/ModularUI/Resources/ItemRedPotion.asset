@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ItemRedPotion
   m_EditorClassIdentifier: ModularUIRuntime::ModularUIRuntime.ItemData
   itemName: Red Potion
-  itemIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  itemIcon: {fileID: 21300000, guid: 7635555038f06774a877c81e5312ec4e, type: 3}
   itemDescription: A potion that restores health.
   type: 0
   isStackable: 1
