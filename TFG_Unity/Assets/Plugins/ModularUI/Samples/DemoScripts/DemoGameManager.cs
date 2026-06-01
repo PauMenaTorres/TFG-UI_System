@@ -78,6 +78,15 @@ namespace ModularUIRuntime.Demo
             }
 #endif
 
+            if (playerTransform == null)
+            {
+                GameObject playerGo = GameObject.Find("Player");
+                if (playerGo != null)
+                {
+                    playerTransform = playerGo.transform;
+                }
+            }
+
             if (playerTransform != null)
             {
                 groundY = playerTransform.position.y;

@@ -241,6 +241,15 @@ namespace ModularUIRuntime.Demo
         {
             if (Application.isPlaying) return;
 
+            if (playerTransform == null)
+            {
+                GameObject playerGo = GameObject.Find("Player");
+                if (playerGo != null)
+                {
+                    playerTransform = playerGo.transform;
+                }
+            }
+
             SetupPlayerPhysics();
             SetupPlayerCamera();
             SetupMapColorChanger();
