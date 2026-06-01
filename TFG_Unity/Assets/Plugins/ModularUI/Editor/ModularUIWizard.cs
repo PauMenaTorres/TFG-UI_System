@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.IO;
 using ModularUIRuntime;
@@ -866,17 +866,30 @@ namespace ModularUIEditor
                                         {
                                             FixButtonOpenPanelArgument(buttonDataProp, menuActions, optionsMenu.gameObject, mainMenu.gameObject);
                                             isModified = true;
-                                            
                                         }
                                         else if (btnName == "Credits" && creditsMenu != null)
                                         {
                                             FixButtonOpenPanelArgument(buttonDataProp, menuActions, creditsMenu.gameObject, mainMenu.gameObject);
                                             isModified = true;
-                                            
                                         }
                                     }
                                 }
                                 so.ApplyModifiedProperties();
+                            }
+                        }
+
+                        if (creditsMenu != null)
+                        {
+                            var creditsMenuActions = creditsMenu.GetComponent<ModularMenuActions>();
+                            if (creditsMenuActions == null)
+                            {
+                                creditsMenuActions = creditsMenu.gameObject.AddComponent<ModularMenuActions>();
+                            }
+
+                            if (creditsMenuActions != null)
+                            {
+                                FixCreditsFinishedEvent(creditsMenu, creditsMenuActions, mainMenu.gameObject);
+                                isModified = true;
                             }
                         }
                     }
@@ -1082,6 +1095,51 @@ namespace ModularUIEditor
                     }
                 }
             }
+        }
+
+        private void FixCreditsFinishedEvent(ModularCredits creditsMenu, ModularMenuActions menuActions, GameObject mainMenuGameObject)
+        {
+            SerializedObject so = new SerializedObject(creditsMenu);
+            SerializedProperty onFinishedProp = so.FindProperty("OnCreditsFinished");
+            if (onFinishedProp == null) return;
+
+            SerializedProperty persistentCallsProp = onFinishedProp.FindPropertyRelative("m_PersistentCalls");
+            if (persistentCallsProp == null) return;
+
+            SerializedProperty callsProp = persistentCallsProp.FindPropertyRelative("m_Calls");
+            if (callsProp == null || !callsProp.isArray) return;
+
+            if (callsProp.arraySize < 2)
+            {
+                callsProp.arraySize = 2;
+            }
+
+            SerializedProperty call0 = callsProp.GetArrayElementAtIndex(0);
+            call0.FindPropertyRelative("m_MethodName").stringValue = "OpenPanel";
+            call0.FindPropertyRelative("m_Target").objectReferenceValue = menuActions;
+            call0.FindPropertyRelative("m_Mode").intValue = 2;
+
+            SerializedProperty args0 = call0.FindPropertyRelative("m_Arguments");
+            if (args0 != null)
+            {
+                args0.FindPropertyRelative("m_ObjectArgument").objectReferenceValue = mainMenuGameObject;
+                args0.FindPropertyRelative("m_ObjectArgumentAssemblyTypeName").stringValue = "UnityEngine.GameObject, UnityEngine";
+            }
+
+            SerializedProperty call1 = callsProp.GetArrayElementAtIndex(1);
+            call1.FindPropertyRelative("m_MethodName").stringValue = "ClosePanel";
+            call1.FindPropertyRelative("m_Target").objectReferenceValue = menuActions;
+            call1.FindPropertyRelative("m_Mode").intValue = 2;
+
+            SerializedProperty args1 = call1.FindPropertyRelative("m_Arguments");
+            if (args1 != null)
+            {
+                args1.FindPropertyRelative("m_ObjectArgument").objectReferenceValue = creditsMenu.gameObject;
+                args1.FindPropertyRelative("m_ObjectArgumentAssemblyTypeName").stringValue = "UnityEngine.GameObject, UnityEngine";
+            }
+
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(creditsMenu);
         }
     }
 }

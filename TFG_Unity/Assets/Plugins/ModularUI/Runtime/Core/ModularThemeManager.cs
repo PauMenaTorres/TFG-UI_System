@@ -106,21 +106,27 @@ namespace ModularUIRuntime
 
         private void InitializeConfig()
         {
-            if (config == null)
+            if (Application.isPlaying)
             {
                 config = Resources.Load<UIConfiguration>("UIConfiguration");
             }
+            else
+            {
+                if (config == null)
+                {
+                    config = Resources.Load<UIConfiguration>("UIConfiguration");
+                }
 
 #if UNITY_EDITOR
-            if (config == null)
-            {
-                config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
-            }
+                if (config == null)
+                {
+                    config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+                }
 #endif
+            }
 
             if (config != null)
             {
-                
                 config.OnConfigurationChanged -= HandleConfigChanged;
                 config.OnConfigurationChanged += HandleConfigChanged;
             }
@@ -149,7 +155,7 @@ namespace ModularUIRuntime
                     }
                 }
             }
-            #endif
+#endif
         }
 
         public ModularThemeData GetActiveTheme()
