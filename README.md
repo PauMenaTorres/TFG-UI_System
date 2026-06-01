@@ -16,6 +16,7 @@ You can install ModularUI directly into your Unity project using the **Unity Pac
 ### Prerequisites
 * Unity **6000.0 (Unity 6)** or newer.
 * **Git** installed on your system.
+* **TextMesh Pro Essentials** imported in your project (navigate to **Window > TextMeshPro > Import TMP Essential Resources**).
 
 ### Setup Instructions
 1. Open your Unity project.
