@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -217,7 +217,7 @@ namespace ModularUI.Editor
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (prefab == null)
             {
-                Debug.LogError($"[ModularUI] Could not find prefab at path: {path}");
+                
                 return;
             }
 

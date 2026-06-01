@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModularUIRuntime.Demo
 {
@@ -267,7 +267,7 @@ namespace ModularUIRuntime.Demo
                 var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var r in renderers)
                 {
-                    // Avoid changing UI or UI text materials (Layer 5 is UI)
+                    
                     if (r != null && r.gameObject.layer == 5)
                     {
                         continue;

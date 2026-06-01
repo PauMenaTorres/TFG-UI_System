@@ -29,7 +29,6 @@ namespace ModularUIRuntime
             WireButtonActions(actionButtons);
         }
 
-
         public void ShowResult(bool isWin, string stats = "")
         {
             if (mainPanel != null)

@@ -183,8 +183,6 @@ namespace ModularUIRuntime
 #if UNITY_EDITOR
                     if (!Application.isPlaying)
                     {
-                        // In edit mode, do not dynamically generate font assets as this dirties the asset.
-                        // We will show a warning in the inspector instead.
                     }
                     else
 #endif

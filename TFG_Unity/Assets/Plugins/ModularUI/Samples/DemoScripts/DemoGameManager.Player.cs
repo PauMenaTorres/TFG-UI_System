@@ -97,7 +97,6 @@ namespace ModularUIRuntime.Demo
             right.y = 0;
             right.Normalize();
 
-            // Simulated gravity & Jump physics
             if (playerTransform.position.y > groundY + 0.05f)
             {
                 verticalVelocity += gravity * Time.deltaTime;

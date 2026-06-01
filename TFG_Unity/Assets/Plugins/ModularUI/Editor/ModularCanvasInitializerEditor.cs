@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using ModularUIRuntime;
 
@@ -12,7 +12,6 @@ namespace ModularUIEditor
         {
             serializedObject.Update();
 
-            // Draw default inspector
             DrawDefaultInspector();
 
             if (serializedObject.ApplyModifiedProperties())
@@ -22,7 +21,7 @@ namespace ModularUIEditor
                     if (t is ModularCanvasInitializer ci)
                     {
                         ci.ForceInitialize();
-                        // Mark target as dirty since this is an inspector change
+                        
                         EditorUtility.SetDirty(ci.gameObject);
                         var scaler = ci.GetComponent<UnityEngine.UI.CanvasScaler>();
                         if (scaler != null)

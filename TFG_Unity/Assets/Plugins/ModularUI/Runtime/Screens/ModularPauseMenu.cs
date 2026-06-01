@@ -31,7 +31,6 @@ namespace ModularUIRuntime
             WireButtonActions(menuButtons);
         }
 
-
         public void TogglePause()
         {
             isPaused = !isPaused;

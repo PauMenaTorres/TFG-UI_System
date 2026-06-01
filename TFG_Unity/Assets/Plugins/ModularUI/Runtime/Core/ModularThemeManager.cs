@@ -120,7 +120,7 @@ namespace ModularUIRuntime
 
             if (config != null)
             {
-                // Remove existing listener to avoid duplicates
+                
                 config.OnConfigurationChanged -= HandleConfigChanged;
                 config.OnConfigurationChanged += HandleConfigChanged;
             }
@@ -129,9 +129,8 @@ namespace ModularUIRuntime
         private void HandleConfigChanged()
         {
             OnThemeChanged?.Invoke();
-            
-            // Notify all components in the scene to update
-            #if UNITY_EDITOR
+
+#if UNITY_EDITOR
             if (!Application.isPlaying)
             {
                 ModularComponents[] components = FindObjectsByType<ModularComponents>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -140,7 +139,6 @@ namespace ModularUIRuntime
                     component.ApplyThemeInEditor();
                 }
 
-                // Also find in open prefab stage if any
                 var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
                 if (prefabStage != null && prefabStage.prefabContentsRoot != null)
                 {

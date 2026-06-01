@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
 using ModularUIRuntime;
@@ -65,7 +65,7 @@ namespace ModularUIEditor
             ModularUIWizard wizard = CreateInstance<ModularUIWizard>();
             wizard.AdaptSampleScenesToPlatform();
             DestroyImmediate(wizard);
-            Debug.Log("[ModularUI] Completed cleaning and fixing all sample scenes.");
+            
         }
 
         private string GetRootPath()
@@ -90,11 +90,10 @@ namespace ModularUIEditor
         {
             if (headerStyle != null) return;
 
-            // Colors
-            Color headerColor = new Color(0.12f, 0.16f, 0.22f); // Dark Slate Blue
-            Color boxColor = new Color(0.18f, 0.18f, 0.18f); // Dark Charcoal
-            Color accentColor = new Color(0f, 0.67f, 0.71f); // Vibrant Teal
-            Color accentHoverColor = new Color(0f, 0.8f, 0.85f); // Lighter Teal for Hover
+            Color headerColor = new Color(0.12f, 0.16f, 0.22f); 
+            Color boxColor = new Color(0.18f, 0.18f, 0.18f); 
+            Color accentColor = new Color(0f, 0.67f, 0.71f); 
+            Color accentHoverColor = new Color(0f, 0.8f, 0.85f); 
 
             headerTex = MakeTex(2, 2, headerColor);
             boxTex = MakeTex(2, 2, boxColor);
@@ -107,7 +106,7 @@ namespace ModularUIEditor
             headerStyle.margin = new RectOffset(0, 0, 0, 0);
 
             sectionHeaderStyle = new GUIStyle(EditorStyles.boldLabel);
-            sectionHeaderStyle.normal.textColor = new Color(0f, 0.85f, 0.9f); // Cyan
+            sectionHeaderStyle.normal.textColor = new Color(0f, 0.85f, 0.9f); 
             sectionHeaderStyle.fontSize = 13;
             sectionHeaderStyle.margin = new RectOffset(0, 0, 10, 5);
 
@@ -185,17 +184,14 @@ namespace ModularUIEditor
         {
             InitializeStyles();
 
-            // Header Banner
             GUILayout.BeginHorizontal(headerStyle);
             GUILayout.Label("MODULAR UI SYSTEM", new GUIStyle(EditorStyles.boldLabel) { fontSize = 18, alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } });
             GUILayout.EndHorizontal();
 
-            // Main scrollable area
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
             
             GUILayout.BeginVertical(new GUIStyle { padding = new RectOffset(15, 15, 15, 15) });
 
-            // Section 1: Integration
             EditorGUILayout.LabelField("1. INTEGRATION SETTINGS", sectionHeaderStyle);
             GUILayout.BeginVertical(boxStyle);
             
@@ -205,13 +201,11 @@ namespace ModularUIEditor
             if (currentScope == ImportScope.SPECIFIC_MODULES)
             {
                 EditorGUILayout.Space(10);
-                
-                // Draw a nice separator line
+
                 Rect lineRect = EditorGUILayout.GetControlRect(false, 1);
                 EditorGUI.DrawRect(lineRect, new Color(0.3f, 0.3f, 0.3f));
                 EditorGUILayout.Space(10);
 
-                // Grid layout (2 columns)
                 EditorGUILayout.BeginHorizontal();
                 importBaseUI = EditorGUILayout.ToggleLeft(" Base UI (Required)", importBaseUI, toggleStyle, GUILayout.Width(180));
                 importMainMenu = EditorGUILayout.ToggleLeft(" Main Menu Template", importMainMenu, toggleStyle, GUILayout.Width(180));
@@ -255,7 +249,6 @@ namespace ModularUIEditor
 
             GUILayout.EndVertical();
 
-            // Section 2: Architecture
             EditorGUILayout.LabelField("2. ARCHITECTURE CONFIGURATION", sectionHeaderStyle);
             GUILayout.BeginVertical(boxStyle);
             
@@ -264,13 +257,11 @@ namespace ModularUIEditor
             
             GUILayout.EndVertical();
 
-            // Help Panel depending on platform
             DrawPlatformHelpBox();
 
             GUILayout.EndVertical();
             EditorGUILayout.EndScrollView();
 
-            // Bottom CTA Button Area
             GUILayout.BeginVertical(new GUIStyle { padding = new RectOffset(15, 15, 15, 15) });
             if (GUILayout.Button("IMPORT & CONFIGURE SYSTEM", buttonStyle, GUILayout.Height(45)))
             {
@@ -284,7 +275,7 @@ namespace ModularUIEditor
 
         private void CreateAndApplyConfiguration()
         {
-            // Delete old configuration file if it exists
+            
             string oldConfigPath = targetPath + "/Settings/UIConfiguration.asset";
             if (AssetDatabase.LoadAssetAtPath<UIConfiguration>(oldConfigPath) != null)
             {
@@ -319,7 +310,6 @@ namespace ModularUIEditor
             config.selectedPlatform = selectedPlatform;
             config.selectedGenre = selectedGenre;
 
-            // Clear and bind genre themes by code
             config.genreThemes.Clear();
             foreach (UIConfiguration.GameGenre genre in System.Enum.GetValues(typeof(UIConfiguration.GameGenre)))
             {
@@ -379,7 +369,7 @@ namespace ModularUIEditor
             }
 
             AssetDatabase.Refresh();
-            Debug.Log($"[ModularUI] Configuration applied: {selectedPlatform} for {selectedGenre}");
+            
         }
 
         private void ExecuteImport()
@@ -528,7 +518,7 @@ namespace ModularUIEditor
                 }
                 else
                 {
-                    // Fallback to System.IO for hidden folders (ending in ~)
+                    
                     if (Directory.Exists(source))
                     {
                         CopyDirectoryIO(source, destination);
@@ -620,21 +610,21 @@ namespace ModularUIEditor
 
         private static readonly TemplateGuids[] AllTemplates = new TemplateGuids[]
         {
-            // WinLoseMenu
+            
             new TemplateGuids("e3afe0e0415f5ba458544930bee5e004", "dec0a1e36b707a642b31b52286f051f0", "df40bc6f858a13a4ba9ba5e891112264", "e1fdd4c627b80614a87403a184b63049", "9353380678cc3184986c119d051853e4"),
-            // PauseMenu
+            
             new TemplateGuids("702398ab09e300f47ba568e6b4195742", "e823d7a97257a7f49a5f273cbde8a441", "200bb68c930bb7d49905e3ec89a580ad", "39a77a1c7213d024a990f70fe89fc545", "913ec37a587702148a97e4ca5039d799"),
-            // Options
+            
             new TemplateGuids("1664fdb73fce08d438bff449f1af0220", "ad278d46559f3c6458f8e6ec2ad55b53", "4ac02dbf33a86e341b191ac32da197f4", "075ee29682b3688499750a61d5ffd0fb", "b3db1b8be2b62ee48b7757926c484af3"),
-            // MainMenu
+            
             new TemplateGuids("280d4a726717bd4479f6c315d0b930f8", "a84a063bee5ced548b5aa022a0c0b16a", "504e6f55592b25540bb0432954ff199c", "4d547bddf8f2fab47a3d349e2bd6e438", "4e6e570e0baba9a4b972aa1bec044e6c"),
-            // InventoryPanel
+            
             new TemplateGuids("2933797009db68b40add57646c807a0d", "e787e55ab78a0c84faa54ebac8634ea2", "0b00912e1035fed47bbcfde78d866ee4", "49df74fb8385f804fb8fe5b47f2832c5", "d4738b07df292344c87ac10bbcd9d79a"),
-            // HUD
+            
             new TemplateGuids("099141bdc54090749bd00100da4e795f", "a0a7d573907e6944e89e9a4035204a34", "ab13962dfc683b749908065c4ce4467a", "840983b5871f609469a4e2b5d5a14730", "6bd84b1247604014fb75dd5bd5071cb2"),
-            // DialoguePanel
+            
             new TemplateGuids("cb47e69543f031b4ab7794cf87273783", "97b13ae1613e1eb448eff8b2184263b5", "6dfc2e2f554f1c943b6f85c46e57d403", "0c0f43bacacf9d6498031ad9a4b7ecb4", "6cbc9461b960b6944a2a8b2c4dbd9c23"),
-            // Credits
+            
             new TemplateGuids("4d186dd1d003b07428131f324345ef8a", "f752d32f51b315c4ab46d658c614ca0b", "9f77067a6d9aff14082cc74762a8bef7", "6e60e00bd8d0c3a429ff2b44e85f934b", "b1a9daba7191b654a8871f51baee148f")
         };
 
@@ -644,8 +634,7 @@ namespace ModularUIEditor
             if (!Directory.Exists(samplesPath)) return;
 
             string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
-            
-            // 1. First adapt GUIDs of prefabs in all scenes via fast text replacement
+
             foreach (string scenePath in unityScenes)
             {
                 try
@@ -669,19 +658,17 @@ namespace ModularUIEditor
                     if (modified)
                     {
                         File.WriteAllText(scenePath, content);
-                        Debug.Log($"[ModularUI] Adapted scene prefabs to {selectedPlatform}: {Path.GetFileName(scenePath)}");
+                        
                     }
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogError($"[ModularUI] Failed to adapt scene {scenePath}: {e.Message}");
+                    
                 }
             }
 
-            // 2. Open each scene, fix hierarchy (parenting), configuration reference, EventSystem, and pre-render themes
             string originalScenePath = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().path;
-            
-            // Ask user to save modified scenes first, if they want
+
             UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
             foreach (string scenePath in unityScenes)
@@ -689,7 +676,6 @@ namespace ModularUIEditor
                 CleanAndParentSceneObjects(scenePath);
             }
 
-            // Restore the original active scene if it was valid
             if (!string.IsNullOrEmpty(originalScenePath) && File.Exists(originalScenePath))
             {
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(originalScenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
@@ -700,14 +686,13 @@ namespace ModularUIEditor
         {
             try
             {
-                // Open the scene
+                
                 var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(scenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
                 if (!scene.IsValid()) return;
 
                 bool isModified = false;
                 GameObject[] rootObjects = scene.GetRootGameObjects();
 
-                // 1. Find the ModularCanvas
                 GameObject canvasObj = null;
                 foreach (var obj in rootObjects)
                 {
@@ -718,11 +703,9 @@ namespace ModularUIEditor
                     }
                 }
 
-                // Load the configuration asset to link it
                 string configPath = targetPath + "/Resources/UIConfiguration.asset";
                 UIConfiguration configAsset = AssetDatabase.LoadAssetAtPath<UIConfiguration>(configPath);
 
-                // 2. Link configuration to Canvas Initializer
                 if (canvasObj != null && configAsset != null)
                 {
                     var initializer = canvasObj.GetComponent<ModularCanvasInitializer>();
@@ -732,33 +715,31 @@ namespace ModularUIEditor
                         {
                             initializer.config = configAsset;
                             isModified = true;
-                            Debug.Log($"[ModularUI] Set UIConfiguration on ModularCanvasInitializer in {Path.GetFileName(scenePath)}");
+                            
                         }
                     }
                 }
 
-                // 3. Reparent any root UI templates (containing RectTransform) under the Canvas
                 if (canvasObj != null)
                 {
-                    // Refresh rootObjects because it may have changed
+                    
                     rootObjects = scene.GetRootGameObjects();
                     foreach (var obj in rootObjects)
                     {
                         if (obj != null && obj != canvasObj)
                         {
-                            // If it has a RectTransform and is not a Canvas itself, reparent it
+                            
                             if (obj.GetComponent<RectTransform>() != null && obj.GetComponent<Canvas>() == null)
                             {
-                                // Set its parent to the ModularCanvas
+                                
                                 obj.transform.SetParent(canvasObj.transform, false);
                                 isModified = true;
-                                Debug.Log($"[ModularUI] Reparented root UI element {obj.name} under ModularCanvas in {Path.GetFileName(scenePath)}");
+                                
                             }
                         }
                     }
                 }
 
-                // 4. Destroy the stale VR EventSystem
                 rootObjects = scene.GetRootGameObjects();
                 foreach (var obj in rootObjects)
                 {
@@ -766,11 +747,10 @@ namespace ModularUIEditor
                     {
                         Undo.DestroyObjectImmediate(obj);
                         isModified = true;
-                        Debug.Log($"[ModularUI] Removed VR EventSystem from {Path.GetFileName(scenePath)}");
+                        
                     }
                 }
 
-                // 5. Ensure a standard EventSystem is present
 #if UNITY_2023_1_OR_NEWER
                 var eventSystem = Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>();
 #else
@@ -781,7 +761,6 @@ namespace ModularUIEditor
                     GameObject eventSystemObj = new GameObject("EventSystem");
                     eventSystemObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
 
-                    // Use reflection to check for InputSystemUIInputModule to avoid compile-time dependency
                     System.Type inputSystemModuleType = System.Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
                     if (inputSystemModuleType != null)
                     {
@@ -794,10 +773,9 @@ namespace ModularUIEditor
 
                     Undo.RegisterCreatedObjectUndo(eventSystemObj, "Create standard EventSystem");
                     isModified = true;
-                    Debug.Log($"[ModularUI] Created standard EventSystem in {Path.GetFileName(scenePath)}");
+                    
                 }
 
-                // 6. Link Input Actions to DemoGameManager in Demo_Scene using reflection to avoid direct type dependencies
                 if (Path.GetFileNameWithoutExtension(scenePath) == "Demo_Scene")
                 {
                     MonoBehaviour gameManager = null;
@@ -826,7 +804,7 @@ namespace ModularUIEditor
                                     fieldInfo.SetValue(gameManager, actionsAsset);
                                     EditorUtility.SetDirty(gameManager);
                                     isModified = true;
-                                    Debug.Log($"[ModularUI] Assigned InputSystem_Actions to DemoGameManager in {Path.GetFileName(scenePath)}");
+                                    
                                 }
                             }
                         }
@@ -835,12 +813,11 @@ namespace ModularUIEditor
                         {
                             fixMethod.Invoke(gameManager, null);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Triggered FixRenderPipelineShaders on DemoGameManager in {Path.GetFileName(scenePath)}");
+                            
                         }
                     }
                 }
 
-                // 7. Force all ModularComponents in the scene to pre-render the active theme and mark them dirty
                 var modularComponents = Object.FindObjectsByType<ModularComponents>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var comp in modularComponents)
                 {
@@ -851,12 +828,59 @@ namespace ModularUIEditor
                     }
                 }
 
-                // 8. Deactivate specific overlay panels that should not start active
                 string sceneName = Path.GetFileNameWithoutExtension(scenePath);
 
                 if (sceneName == "MainMenu_Scene")
                 {
+#if UNITY_2023_1_OR_NEWER
+                    var mainMenus = Object.FindObjectsByType<ModularMainMenu>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     var optionsMenus = Object.FindObjectsByType<ModularOptionsMenu>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    var creditsMenus = Object.FindObjectsByType<ModularCredits>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+                    var mainMenus = Object.FindObjectsOfType<ModularMainMenu>(true);
+                    var optionsMenus = Object.FindObjectsOfType<ModularOptionsMenu>(true);
+                    var creditsMenus = Object.FindObjectsOfType<ModularCredits>(true);
+#endif
+
+                    ModularMainMenu mainMenu = mainMenus.Length > 0 ? mainMenus[0] : null;
+                    ModularOptionsMenu optionsMenu = optionsMenus.Length > 0 ? optionsMenus[0] : null;
+                    ModularCredits creditsMenu = creditsMenus.Length > 0 ? creditsMenus[0] : null;
+
+                    if (mainMenu != null)
+                    {
+                        var menuActions = mainMenu.GetComponent<ModularMenuActions>();
+                        if (menuActions != null)
+                        {
+                            SerializedObject so = new SerializedObject(mainMenu);
+                            SerializedProperty menuButtonsProp = so.FindProperty("menuButtons");
+                            if (menuButtonsProp != null && menuButtonsProp.isArray)
+                            {
+                                for (int i = 0; i < menuButtonsProp.arraySize; i++)
+                                {
+                                    SerializedProperty buttonDataProp = menuButtonsProp.GetArrayElementAtIndex(i);
+                                    SerializedProperty nameProp = buttonDataProp.FindPropertyRelative("buttonName");
+                                    if (nameProp != null)
+                                    {
+                                        string btnName = nameProp.stringValue;
+                                        if (btnName == "Options" && optionsMenu != null)
+                                        {
+                                            FixButtonOpenPanelArgument(buttonDataProp, menuActions, optionsMenu.gameObject, mainMenu.gameObject);
+                                            isModified = true;
+                                            
+                                        }
+                                        else if (btnName == "Credits" && creditsMenu != null)
+                                        {
+                                            FixButtonOpenPanelArgument(buttonDataProp, menuActions, creditsMenu.gameObject, mainMenu.gameObject);
+                                            isModified = true;
+                                            
+                                        }
+                                    }
+                                }
+                                so.ApplyModifiedProperties();
+                            }
+                        }
+                    }
+
                     foreach (var opt in optionsMenus)
                     {
                         if (opt != null && opt.gameObject.activeSelf)
@@ -864,11 +888,10 @@ namespace ModularUIEditor
                             opt.gameObject.SetActive(false);
                             EditorUtility.SetDirty(opt.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated options menu {opt.name} in {sceneName}");
+                            
                         }
                     }
 
-                    var creditsMenus = Object.FindObjectsByType<ModularCredits>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                     foreach (var cred in creditsMenus)
                     {
                         if (cred != null && cred.gameObject.activeSelf)
@@ -876,7 +899,7 @@ namespace ModularUIEditor
                             cred.gameObject.SetActive(false);
                             EditorUtility.SetDirty(cred.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated credits menu {cred.name} in {sceneName}");
+                            
                         }
                     }
                 }
@@ -890,7 +913,7 @@ namespace ModularUIEditor
                             pm.gameObject.SetActive(false);
                             EditorUtility.SetDirty(pm.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated pause menu {pm.name} in {sceneName}");
+                            
                         }
                     }
                 }
@@ -904,7 +927,7 @@ namespace ModularUIEditor
                             pm.gameObject.SetActive(false);
                             EditorUtility.SetDirty(pm.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated pause menu {pm.name} in {sceneName}");
+                            
                         }
                     }
 
@@ -916,12 +939,11 @@ namespace ModularUIEditor
                             inv.gameObject.SetActive(false);
                             EditorUtility.SetDirty(inv.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated inventory manager {inv.name} in {sceneName}");
+                            
                         }
                     }
                 }
 
-                // Double check direct child objects of the ModularCanvas by name to ensure completeness
                 if (canvasObj != null)
                 {
                     int childCount = canvasObj.transform.childCount;
@@ -963,7 +985,7 @@ namespace ModularUIEditor
                             child.gameObject.SetActive(false);
                             EditorUtility.SetDirty(child.gameObject);
                             isModified = true;
-                            Debug.Log($"[ModularUI] Deactivated Canvas child {child.name} in {sceneName}");
+                            
                         }
                     }
                 }
@@ -976,7 +998,89 @@ namespace ModularUIEditor
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[ModularUI] Error cleaning and parenting scene {scenePath}: {e.Message}");
+                
+            }
+        }
+
+        private void FixButtonOpenPanelArgument(SerializedProperty buttonDataProp, ModularMenuActions menuActions, GameObject panelGameObject, GameObject mainMenuGameObject)
+        {
+            SerializedProperty onClickProp = buttonDataProp.FindPropertyRelative("OnClick");
+            if (onClickProp == null) return;
+
+            SerializedProperty persistentCallsProp = onClickProp.FindPropertyRelative("m_PersistentCalls");
+            if (persistentCallsProp == null) return;
+
+            SerializedProperty callsProp = persistentCallsProp.FindPropertyRelative("m_Calls");
+            if (callsProp == null || !callsProp.isArray) return;
+
+            for (int j = 0; j < callsProp.arraySize; j++)
+            {
+                SerializedProperty callProp = callsProp.GetArrayElementAtIndex(j);
+                SerializedProperty methodNameProp = callProp.FindPropertyRelative("m_MethodName");
+                if (methodNameProp != null)
+                {
+                    string methodName = methodNameProp.stringValue;
+                    if (methodName == "OpenPanel")
+                    {
+                        SerializedProperty targetProp = callProp.FindPropertyRelative("m_Target");
+                        if (targetProp != null)
+                        {
+                            targetProp.objectReferenceValue = menuActions;
+                        }
+
+                        SerializedProperty argumentsProp = callProp.FindPropertyRelative("m_Arguments");
+                        if (argumentsProp != null)
+                        {
+                            SerializedProperty objectArgProp = argumentsProp.FindPropertyRelative("m_ObjectArgument");
+                            if (objectArgProp != null)
+                            {
+                                objectArgProp.objectReferenceValue = panelGameObject;
+                            }
+
+                            SerializedProperty objectArgTypeProp = argumentsProp.FindPropertyRelative("m_ObjectArgumentAssemblyTypeName");
+                            if (objectArgTypeProp != null)
+                            {
+                                objectArgTypeProp.stringValue = "UnityEngine.GameObject, UnityEngine";
+                            }
+                        }
+
+                        SerializedProperty modeProp = callProp.FindPropertyRelative("m_Mode");
+                        if (modeProp != null)
+                        {
+                            modeProp.intValue = 2; 
+                        }
+                    }
+                    else if (methodName == "ClosePanel")
+                    {
+                        SerializedProperty targetProp = callProp.FindPropertyRelative("m_Target");
+                        if (targetProp != null)
+                        {
+                            targetProp.objectReferenceValue = menuActions;
+                        }
+
+                        SerializedProperty argumentsProp = callProp.FindPropertyRelative("m_Arguments");
+                        if (argumentsProp != null)
+                        {
+                            SerializedProperty objectArgProp = argumentsProp.FindPropertyRelative("m_ObjectArgument");
+                            if (objectArgProp != null)
+                            {
+                                objectArgProp.objectReferenceValue = mainMenuGameObject;
+                            }
+
+                            SerializedProperty objectArgTypeProp = argumentsProp.FindPropertyRelative("m_ObjectArgumentAssemblyTypeName");
+                            if (objectArgTypeProp != null)
+                            {
+                                objectArgTypeProp.stringValue = "UnityEngine.GameObject, UnityEngine";
+                            }
+                        }
+
+                        SerializedProperty modeProp = callProp.FindPropertyRelative("m_Mode");
+                        if (modeProp != null)
+                        {
+                            modeProp.intValue = 2; 
+                        }
+                    }
+                }
             }
         }
     }

@@ -58,7 +58,6 @@ namespace ModularUIRuntime
                 dialoguePanel.SetActive(false);
             }
         }
-        
 
         private void Update()
         {

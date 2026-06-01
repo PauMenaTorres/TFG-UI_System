@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using System.IO;
 
@@ -9,7 +9,7 @@ namespace ModularUIEditor
     {
         private static string GetPrefsKey()
         {
-            // Replace backslashes and make a stable key based on the absolute project path
+            
             string projectPath = Path.GetFullPath(Application.dataPath).Replace('\\', '/');
             return "ModularUI_WizardShown_" + projectPath;
         }
@@ -31,7 +31,7 @@ namespace ModularUIEditor
             string key = GetPrefsKey();
             if (!EditorPrefs.GetBool(key, false))
             {
-                // Double delayCall ensures the Unity Editor is fully ready to draw new windows
+                
                 EditorApplication.delayCall += () =>
                 {
                     EditorApplication.delayCall += () =>
@@ -47,7 +47,7 @@ namespace ModularUIEditor
         public static void ResetFirstLoad()
         {
             EditorPrefs.DeleteKey(GetPrefsKey());
-            Debug.Log("[ModularUI] Startup popup state reset. The wizard will show on next reload.");
+            
         }
     }
 }

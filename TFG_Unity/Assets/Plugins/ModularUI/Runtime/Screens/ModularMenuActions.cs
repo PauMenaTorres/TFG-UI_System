@@ -26,7 +26,6 @@ namespace ModularUIRuntime
             }
         }
 
-
         public void ClosePanel(GameObject panelToClose)
         {
             if (panelToClose != null)

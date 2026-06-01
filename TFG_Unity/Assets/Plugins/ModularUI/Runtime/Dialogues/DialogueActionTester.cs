@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModularUIRuntime
 {
@@ -6,17 +6,17 @@ namespace ModularUIRuntime
     {
         public void TeleportToPueblo()
         {
-            Debug.Log("ACCIÓN DISPARADA: ¡Te has teletransportado al pueblo!");
+            
         }
 
         public void GiveSword()
         {
-            Debug.Log("ACCIÓN DISPARADA: ¡Has recibido una Espada Larga!");
+            
         }
 
         public void TakeDamage()
         {
-            Debug.Log("ACCIÓN DISPARADA: ¡Pierdes 10 puntos de vida!");
+            
         }
     }
 }

@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using ModularUIRuntime;
 
@@ -11,7 +11,6 @@ namespace ModularUIEditor
         {
             serializedObject.Update();
 
-            // Display warning for legacy overrideFont
             if (target is ModularUIRuntime.ModularText)
             {
                 SerializedProperty overrideFontProp = serializedObject.FindProperty("overrideFont");
