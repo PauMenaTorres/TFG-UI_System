@@ -125,7 +125,7 @@ namespace ModularUIEditor
             buttonStyle.alignment = TextAnchor.MiddleCenter;
             buttonStyle.padding = new RectOffset(10, 10, 12, 12);
             
-            toggleStyle = new GUIStyle(EditorStyles.toggle);
+            toggleStyle = new GUIStyle(EditorStyles.label);
             toggleStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
             toggleStyle.fontSize = 11;
         }

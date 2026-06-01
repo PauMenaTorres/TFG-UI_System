@@ -422,7 +422,7 @@ namespace ModularUIRuntime.Demo
 
         UIConfiguration.TargetPlatform GetPlatform()
         {
-            if (ModularThemeManager.HasInstance && ModularThemeManager.Instance?.Config != null)
+            if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
             {
                 return ModularThemeManager.Instance.Config.selectedPlatform;
             }

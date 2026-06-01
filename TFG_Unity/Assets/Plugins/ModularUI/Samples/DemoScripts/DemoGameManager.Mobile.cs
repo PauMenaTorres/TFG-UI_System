@@ -27,7 +27,7 @@ namespace ModularUIRuntime.Demo
             if (mobileInput == null)
             {
                 UIConfiguration config = null;
-                if (ModularThemeManager.HasInstance && ModularThemeManager.Instance?.Config != null)
+                if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
                 {
                     config = ModularThemeManager.Instance.Config;
                 }
@@ -154,7 +154,7 @@ namespace ModularUIRuntime.Demo
                 if (existing == null)
                 {
                     UIConfiguration config = null;
-                    if (ModularThemeManager.HasInstance && ModularThemeManager.Instance?.Config != null)
+                    if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
                     {
                         config = ModularThemeManager.Instance.Config;
                     }
