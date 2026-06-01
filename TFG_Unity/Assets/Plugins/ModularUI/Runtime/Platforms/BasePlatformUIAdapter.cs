@@ -23,6 +23,34 @@ namespace ModularUIRuntime
             return false;
         }
 
+        protected bool IsVRCamera(Camera cam)
+        {
+            if (cam == null) return false;
+            
+            // Check root name first (case-insensitive)
+            string rootName = cam.transform.root.name.ToLower();
+            if (rootName.Contains("ovrcamerarig") || rootName.Contains("vrrig") || rootName.Contains("xr-rig") || rootName.Contains("xrrig"))
+            {
+                return true;
+            }
+
+            // Check if any component in the camera's root has "OVR", "Oculus", "Locomotor", "XRRig" in its type name
+            Component[] allComponents = cam.transform.root.GetComponentsInChildren<Component>(true);
+            foreach (var comp in allComponents)
+            {
+                if (comp == null) continue;
+                string typeName = comp.GetType().FullName;
+                if (string.IsNullOrEmpty(typeName)) continue;
+
+                if (typeName.Contains("OVR") || typeName.Contains("Oculus") || typeName.Contains("Locomotor") || typeName.Contains("XRRig") || typeName.Contains("XROrigin"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         protected void CleanupVREnvironment(Canvas targetCanvas)
         {
 #if UNITY_EDITOR
@@ -39,33 +67,58 @@ namespace ModularUIRuntime
                 else Object.DestroyImmediate(ovrRaycaster, true);
             }
 
-            if (targetCanvas.worldCamera != null && (targetCanvas.worldCamera.transform.root.name.Contains("OVRCameraRig") || targetCanvas.worldCamera.transform.root.name.Contains("VR")))
+            Component ovrOverlay = targetCanvas.GetComponent("OVROverlayCanvas");
+            if (ovrOverlay == null) ovrOverlay = targetCanvas.GetComponent("Oculus.Interaction.OVROverlayCanvas");
+            if (ovrOverlay != null)
+            {
+                if (Application.isPlaying) Object.Destroy(ovrOverlay);
+                else Object.DestroyImmediate(ovrOverlay, true);
+            }
+
+            // Clean up any child or orphaned VR interaction objects in the scene
+            var allGOs = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var go in allGOs)
+            {
+                if (go != null && (go.name == "ISDK_RayCanvasInteraction" || go.name == "ISDK_PokeCanvasInteraction"))
+                {
+                    if (go.transform.parent == targetCanvas.transform || go.transform.parent == null)
+                    {
+                        if (Application.isPlaying) Object.Destroy(go);
+                        else Object.DestroyImmediate(go, true);
+                    }
+                }
+            }
+
+            if (targetCanvas.worldCamera != null && IsVRCamera(targetCanvas.worldCamera))
             {
                 targetCanvas.worldCamera = null;
             }
             
-            Camera[] allCameras = Object.FindObjectsOfType<Camera>();
+            Camera[] allCameras = Object.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Camera cam in allCameras)
             {
-                if (cam.transform.root.name.Contains("OVRCameraRig") || cam.transform.root.name.Contains("VR"))
+                if (IsVRCamera(cam))
                 {
                     if (Application.isPlaying) Object.Destroy(cam.transform.root.gameObject);
                     else Object.DestroyImmediate(cam.transform.root.gameObject, true);
-                    break;
                 }
             }
 
-            if (Application.isPlaying)
+            Camera mainCam = Object.FindFirstObjectByType<Camera>();
+            if (mainCam == null)
             {
-                Camera mainCam = Object.FindObjectOfType<Camera>();
-                if (mainCam == null)
+                GameObject camObj = new GameObject("Main Camera");
+                camObj.tag = "MainCamera";
+                camObj.AddComponent<Camera>();
+                camObj.AddComponent<AudioListener>();
+                camObj.transform.position = new Vector3(0, 1, -10);
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
                 {
-                    GameObject camObj = new GameObject("Main Camera");
-                    camObj.tag = "MainCamera";
-                    camObj.AddComponent<Camera>();
-                    camObj.AddComponent<AudioListener>();
-                    camObj.transform.position = new Vector3(0, 1, -10);
+                    UnityEditor.Undo.RegisterCreatedObjectUndo(camObj, "Create Main Camera");
                 }
+#endif
             }
 
             EnsureStandardEventSystem(targetCanvas.gameObject);
@@ -80,27 +133,46 @@ namespace ModularUIRuntime
             }
 #endif
 
-            EventSystem currentES = Object.FindObjectOfType<EventSystem>();
+            EventSystem currentES = Object.FindFirstObjectByType<EventSystem>();
             
             if (currentES != null)
             {
-                Component ovrInput = currentES.GetComponent("OVRInputModule");
-                if (ovrInput != null)
+                // We do NOT destroy any VR components (like OVRInputModule or PointableCanvasModule)
+                // to leave the event system exactly as it is, as requested, and prevent scene/prefab dirtying.
+                System.Type standardInputType = System.Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
+                bool hasStandardInput = false;
+                if (standardInputType != null && currentES.GetComponent(standardInputType) != null)
                 {
-                    if (Application.isPlaying) Object.Destroy(ovrInput);
-                    else Object.DestroyImmediate(ovrInput, true);
+                    hasStandardInput = true;
+                }
+                else if (currentES.GetComponent<StandaloneInputModule>() != null)
+                {
+                    hasStandardInput = true;
                 }
 
-                if (currentES.GetComponent<BaseInputModule>() == null)
+                if (!hasStandardInput)
                 {
                     AddStandardInputModule(currentES.gameObject);
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                    {
+                        UnityEditor.EditorUtility.SetDirty(currentES.gameObject);
+                    }
+#endif
                 }
             }
-            else if (Application.isPlaying)
+            else
             {
                 GameObject esObj = new GameObject("EventSystem");
                 esObj.AddComponent<EventSystem>();
                 AddStandardInputModule(esObj);
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.Undo.RegisterCreatedObjectUndo(esObj, "Create EventSystem");
+                }
+#endif
             }
         }
 

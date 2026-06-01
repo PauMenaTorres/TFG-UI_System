@@ -64,7 +64,16 @@ namespace ModularUIEditor
                 DrawOverridesSection();
             }
 
-            serializedObject.ApplyModifiedProperties();
+            if (serializedObject.ApplyModifiedProperties())
+            {
+                foreach (var t in targets)
+                {
+                    if (t is ModularUIRuntime.ModularComponents modularComponent)
+                    {
+                        modularComponent.ApplyThemeInEditor();
+                    }
+                }
+            }
 
             EditorGUILayout.Space();
             if (GUILayout.Button("Apply Active Theme Preview", GUILayout.Height(30)))

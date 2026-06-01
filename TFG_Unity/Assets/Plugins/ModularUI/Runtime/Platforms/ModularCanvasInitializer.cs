@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 
 namespace ModularUIRuntime
 {
@@ -8,43 +8,62 @@ namespace ModularUIRuntime
     {
         public UIConfiguration config;
 
-        [Header("Editor Settings")]
-        public bool autoAdaptInEditor = false;
-
         private void OnEnable()
         {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+#endif
             if (config != null)
             {
                 config.OnConfigurationChanged -= Initialize;
                 config.OnConfigurationChanged += Initialize;
             }
 
-#if UNITY_EDITOR
-            if (!Application.isPlaying && !autoAdaptInEditor)
-            {
-                return;
-            }
-#endif
-
             Initialize();
         }
 
         private void OnDisable()
         {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+#endif
             if (config != null)
             {
                 config.OnConfigurationChanged -= Initialize;
             }
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (UnityEditor.EditorUtility.IsPersistent(this))
+            {
+                return;
+            }
+            if (config != null)
+            {
+                config.OnConfigurationChanged -= Initialize;
+                config.OnConfigurationChanged += Initialize;
+            }
+            UnityEditor.EditorApplication.delayCall -= Initialize;
+            UnityEditor.EditorApplication.delayCall += Initialize;
+        }
+#endif
+
         public void ForceInitialize()
         {
-            InitializeInternal(true);
+            Initialize();
         }
 
         private void Initialize()
         {
-            InitializeInternal(false);
+            InitializeInternal(true);
         }
 
         private void InitializeInternal(bool force)
@@ -54,18 +73,10 @@ namespace ModularUIRuntime
                 return;
             }
 
-#if UNITY_EDITOR
-            if (!Application.isPlaying && !autoAdaptInEditor && !force)
-            {
-                return;
-            }
-#endif
-
             IPlatformFactory factory = new PlatformFactory(config);
             IPlatformUIAdapter adapter = factory.CreateAdapter();
 
             Canvas canvas = GetComponent<Canvas>();
-
             if (canvas == null)
             {
                 return;
@@ -75,26 +86,35 @@ namespace ModularUIRuntime
             if (!Application.isPlaying)
             {
                 UnityEngine.UI.CanvasScaler scaler = GetComponent<UnityEngine.UI.CanvasScaler>();
-
                 int canvasHash = GetCanvasHash(canvas, scaler);
                 adapter.SetupCanvas(canvas);
                 int newHash = GetCanvasHash(canvas, scaler);
 
-                if (canvasHash != newHash)
+                if (canvasHash != newHash && force)
                 {
                     UnityEditor.EditorUtility.SetDirty(gameObject);
-
                     if (scaler != null)
                     {
                         UnityEditor.EditorUtility.SetDirty(scaler);
                     }
                 }
 
+                RefreshChildComponentsTheme();
                 return;
             }
 #endif
 
             adapter.SetupCanvas(canvas);
+            RefreshChildComponentsTheme();
+        }
+
+        private void RefreshChildComponentsTheme()
+        {
+            var components = GetComponentsInChildren<ModularComponents>(true);
+            foreach (var comp in components)
+            {
+                comp.ApplyTheme();
+            }
         }
 
 #if UNITY_EDITOR

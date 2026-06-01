@@ -18,17 +18,27 @@ namespace ModularUIRuntime
         {
             CleanupVREnvironment(targetCanvas);
 
-            targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            targetCanvas.transform.localScale = Vector3.one;
+            if (targetCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            {
+                targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            }
+            if (targetCanvas.transform.localScale != Vector3.one)
+            {
+                targetCanvas.transform.localScale = Vector3.one;
+            }
 
             CanvasScaler scaler = targetCanvas.GetComponent<CanvasScaler>();
 
             if (scaler != null)
             {
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = referenceResolution;
-                scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-                scaler.matchWidthOrHeight = matchWidthOrHeight;
+                if (scaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize)
+                    scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                if (scaler.referenceResolution != referenceResolution)
+                    scaler.referenceResolution = referenceResolution;
+                if (scaler.screenMatchMode != CanvasScaler.ScreenMatchMode.MatchWidthOrHeight)
+                    scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+                if (scaler.matchWidthOrHeight != matchWidthOrHeight)
+                    scaler.matchWidthOrHeight = matchWidthOrHeight;
             }
 
             if (targetCanvas.GetComponent<GraphicRaycaster>() == null)
