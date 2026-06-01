@@ -9,6 +9,26 @@ ModularUI is a highly modular, scalable, and automated User Interface system des
 
 ---
 
+## 📦 Installation (Unity Package Manager)
+
+You can install ModularUI directly into your Unity project using the **Unity Package Manager** and this GitHub repository URL.
+
+### Prerequisites
+* Unity **6000.0 (Unity 6)** or newer.
+* **Git** installed on your system.
+
+### Setup Instructions
+1. Open your Unity project.
+2. Navigate to the top menu and open **Window > Package Manager**.
+3. Click the **+** button in the top-left corner and select **Add package from git URL...**.
+4. Paste the following URL:
+   ```text
+   https://github.com/PauMenaTorres/TFG-UI_System.git?path=/TFG_Unity/Assets/Plugins/ModularUI
+   ```
+5. Click **Add**. Unity will automatically download, resolve dependencies (UGUI & Input System), and import the package.
+
+---
+
 ## 🎬 Showcase Scenes
 
 The best way to understand ModularUI is to experience it. The `Samples/` folder contains fully functional scenes that demonstrate the framework's capabilities out of the box:
