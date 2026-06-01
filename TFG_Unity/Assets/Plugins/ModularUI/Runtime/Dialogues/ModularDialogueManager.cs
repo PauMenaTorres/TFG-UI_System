@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System;
+using UnityEngine.InputSystem;
 
 namespace ModularUIRuntime
 {
@@ -57,10 +58,11 @@ namespace ModularUIRuntime
                 dialoguePanel.SetActive(false);
             }
         }
+        
 
         private void Update()
         {
-            if (isDialogueActive && Input.GetKeyDown(KeyCode.Space))
+            if (isDialogueActive && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 HandleInput();
             }

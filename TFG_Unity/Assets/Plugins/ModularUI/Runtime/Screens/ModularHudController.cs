@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 namespace ModularUIRuntime
 {
@@ -144,11 +145,16 @@ namespace ModularUIRuntime
 
         private void CheckHotbarInputs()
         {
-            for (int i = 0; i < hotbarBindings.Count; i++)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                for (int i = 0; i < Mathf.Min(hotbarBindings.Count, 9); i++)
                 {
-                    ExecuteHotbarAction(i);
+                    Key targetKey = (Key)((int)Key.Digit1 + i);
+                    if (keyboard[targetKey].wasPressedThisFrame)
+                    {
+                        ExecuteHotbarAction(i);
+                    }
                 }
             }
         }

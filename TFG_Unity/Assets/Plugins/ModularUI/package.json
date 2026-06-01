@@ -2,6 +2,20 @@
     "name": "com.pau.modularui",
     "version": "1.0.0",
     "displayName": "Modular UI System",
-    "description": "Sistema modular de UI para TFG.",
-    "unity": "6000.0"
+    "description": "Modular UI System, highly customizableand adaptable UI system for Unity.",
+    "unity": "6000.0",
+    "author": {
+        "name": "Pau Mena Torres",
+        "email": "paumt128@gmail.com"
+    },
+    "dependencies": {
+        "com.unity.ugui": "2.0.0",
+        "com.unity.inputsystem": "1.18.0"
+    },
+    "keywords": [
+        "ui",
+        "modular",
+        "canvas",
+        "menu"
+    ]
 }

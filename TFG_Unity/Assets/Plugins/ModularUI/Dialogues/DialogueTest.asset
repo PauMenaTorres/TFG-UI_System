@@ -18,7 +18,7 @@ MonoBehaviour:
   - characterName: NPC
     characterPortrait: {fileID: 21300000, guid: e9a8eb08482ca2449a5e43ddb6d2894c, type: 3}
     voiceAudioClip: {fileID: 0}
-    dialogueText: "\xA1El pueblo est\xE1 en peligro! \xBFNos ayudar\xE1s?"
+    dialogueText: "The town is in danger! Will you help us?"
     hasAction: 0
     actionID: 
     endDialogue: 0
@@ -39,26 +39,26 @@ MonoBehaviour:
   - characterName: NPC
     characterPortrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     voiceAudioClip: {fileID: 0}
-    dialogueText: "\xA1Pero eres el Elegido! \xA1No puedes darnos la espalda ahora!
-      \xBFSeguro que no quieres ir al pueblo?"
+    dialogueText: "But you are the Chosen One! You can't turn your back on us now!
+      Are you sure you don't want to go to the town?"
     hasAction: 0
     actionID: 
     endDialogue: 1
     hasChoices: 1
     choices:
-    - choiceText: "\xA1Vale, ayudar\xE9!"
+    - choiceText: "Okay, I will help!"
       actionType: 1
       targetLineIndex: 2
       nextNode: {fileID: 0}
       hasAction: 0
       actionID: 
-    - choiceText: He dicho que NO
+    - choiceText: "I said NO!"
       actionType: 1
       targetLineIndex: 1
       nextNode: {fileID: 0}
       hasAction: 0
       actionID: 
-    - choiceText: Dame la espada YAaaa
+    - choiceText: "Give me the sword NOW!"
       actionType: 3
       targetLineIndex: 1
       nextNode: {fileID: 0}
@@ -67,7 +67,7 @@ MonoBehaviour:
   - characterName: NPC
     characterPortrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
     voiceAudioClip: {fileID: 0}
-    dialogueText: "\xA1Muchas gracias, eres lo mejor!"
+    dialogueText: "Thank you so much, you are the best!"
     hasAction: 1
     actionID: TeleportTown
     endDialogue: 1

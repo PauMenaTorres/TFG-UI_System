@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
 
 namespace ModularUIRuntime
 {
@@ -28,22 +29,27 @@ namespace ModularUIRuntime
                 return;
             }
 
-            for (int i = 0; i < 9; i++)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1 + i))
+                for (int i = 0; i < 9; i++)
                 {
-                    OnHotbarSlotPressed?.Invoke(i);
+                    Key targetKey = (Key)((int)Key.Digit1 + i);
+                    if (keyboard[targetKey].wasPressedThisFrame)
+                    {
+                        OnHotbarSlotPressed?.Invoke(i);
+                    }
                 }
-            }
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
-            {
-                OnCancelPressed?.Invoke();
-            }
+                if (keyboard.escapeKey.wasPressedThisFrame)
+                {
+                    OnCancelPressed?.Invoke();
+                }
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Tab) || UnityEngine.Input.GetKeyDown(KeyCode.I))
-            {
-                OnMenuTogglePressed?.Invoke();
+                if (keyboard.tabKey.wasPressedThisFrame || keyboard.iKey.wasPressedThisFrame)
+                {
+                    OnMenuTogglePressed?.Invoke();
+                }
             }
         }
     }
