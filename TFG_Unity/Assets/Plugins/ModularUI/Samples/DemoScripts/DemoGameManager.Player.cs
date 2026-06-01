@@ -46,8 +46,22 @@ namespace ModularUIRuntime.Demo
             }
         }
 
+        private bool _debugMovementLogged = false;
         void HandleMovement()
         {
+            if (!_debugMovementLogged)
+            {
+                _debugMovementLogged = true;
+                Debug.Log($"[ModularUI Demo] HandleMovement diagnostic: " +
+                    $"playerTransform={(playerTransform != null ? playerTransform.name : "NULL")}, " +
+                    $"inventoryOpen={inventoryOpen}, gamePaused={gamePaused}, " +
+                    $"Keyboard.current={(Keyboard.current != null ? "OK" : "NULL")}, " +
+                    $"Mouse.current={(Mouse.current != null ? "OK" : "NULL")}, " +
+                    $"moveAction={(moveAction != null ? moveAction.name : "NULL")}, " +
+                    $"lookAction={(lookAction != null ? lookAction.name : "NULL")}, " +
+                    $"inputActions={(inputActions != null ? inputActions.name : "NULL")}");
+            }
+
             if (playerTransform == null || inventoryOpen || gamePaused)
             {
                 return;

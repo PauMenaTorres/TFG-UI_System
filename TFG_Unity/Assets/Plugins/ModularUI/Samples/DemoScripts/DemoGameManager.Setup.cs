@@ -276,7 +276,13 @@ namespace ModularUIRuntime.Demo
                     if (r == null || r.gameObject.layer == 5 || r.sharedMaterial == null) continue;
 
                     var shader = r.sharedMaterial.shader;
-                    bool needsFix = shader == null || shader.name == "Hidden/InternalErrorShader" || shader.name.Contains("ErrorShader") || (isURP && shader.name == "Standard");
+                    bool needsFix = shader == null 
+                        || !shader.isSupported
+                        || shader.name == "Hidden/InternalErrorShader" 
+                        || shader.name.Contains("ErrorShader")
+                        || shader.name.Contains("InternalError")
+                        || (isURP && shader.name == "Standard")
+                        || (!isURP && shader.name.Contains("Universal Render Pipeline"));
 
                     if (needsFix)
                     {
