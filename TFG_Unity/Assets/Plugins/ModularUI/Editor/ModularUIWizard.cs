@@ -805,17 +805,28 @@ namespace ModularUIEditor
                     if (gameManager != null)
                     {
                         var fieldInfo = gameManager.GetType().GetField("inputActions", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-                        if (fieldInfo != null && fieldInfo.GetValue(gameManager) == null)
+                        if (fieldInfo != null)
                         {
-                            string actionsPath = targetPath + "/Samples/InputSystem_Actions.inputactions";
-                            var actionsAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(actionsPath);
-                            if (actionsAsset != null)
+                            var currentValue = fieldInfo.GetValue(gameManager) as UnityEngine.Object;
+                            if (currentValue == null)
                             {
-                                fieldInfo.SetValue(gameManager, actionsAsset);
-                                EditorUtility.SetDirty(gameManager);
-                                isModified = true;
-                                Debug.Log($"[ModularUI] Assigned InputSystem_Actions to DemoGameManager in {Path.GetFileName(scenePath)}");
+                                string actionsPath = targetPath + "/Samples/InputSystem_Actions.inputactions";
+                                var actionsAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(actionsPath);
+                                if (actionsAsset != null)
+                                {
+                                    fieldInfo.SetValue(gameManager, actionsAsset);
+                                    EditorUtility.SetDirty(gameManager);
+                                    isModified = true;
+                                    Debug.Log($"[ModularUI] Assigned InputSystem_Actions to DemoGameManager in {Path.GetFileName(scenePath)}");
+                                }
                             }
+                        }
+                        var fixMethod = gameManager.GetType().GetMethod("FixRenderPipelineShaders", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                        if (fixMethod != null)
+                        {
+                            fixMethod.Invoke(gameManager, null);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Triggered FixRenderPipelineShaders on DemoGameManager in {Path.GetFileName(scenePath)}");
                         }
                     }
                 }

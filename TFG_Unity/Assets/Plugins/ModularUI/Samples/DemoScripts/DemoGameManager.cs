@@ -160,6 +160,7 @@ namespace ModularUIRuntime.Demo
             SetupPlayerCamera();
             SetupMapColorChanger();
             SetupSimplifiedElements();
+            FixRenderPipelineShaders();
 
             hudController?.ShowSimplePopUp("Use WASD/Joystick to move, E to collect, I for inventory", 5f);
         }

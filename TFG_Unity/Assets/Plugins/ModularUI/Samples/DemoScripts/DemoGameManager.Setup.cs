@@ -245,6 +245,92 @@ namespace ModularUIRuntime.Demo
             SetupMapColorChanger();
             SetupSimplifiedElements();
             SetupMobileControlsInEditor();
+            FixRenderPipelineShaders();
+        }
+
+        public void FixRenderPipelineShaders()
+        {
+            bool isURP = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null;
+            string targetShaderName = isURP ? "Universal Render Pipeline/Lit" : "Standard";
+            Shader targetShader = Shader.Find(targetShaderName);
+            if (targetShader == null && isURP)
+            {
+                targetShader = Shader.Find("Universal Render Pipeline/Simple Lit");
+            }
+            if (targetShader == null)
+            {
+                targetShader = Shader.Find("Standard");
+            }
+
+            if (targetShader != null)
+            {
+                var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                foreach (var r in renderers)
+                {
+                    // Avoid changing UI or UI text materials (Layer 5 is UI)
+                    if (r != null && r.gameObject.layer == 5)
+                    {
+                        continue;
+                    }
+
+                    if (r != null && r.sharedMaterial != null)
+                    {
+                        var shader = r.sharedMaterial.shader;
+                        bool needsFix = shader == null || 
+                                        shader.name == "Hidden/InternalErrorShader" || 
+                                        shader.name.Contains("ErrorShader") || 
+                                        (isURP && shader.name == "Standard");
+
+                        if (needsFix)
+                        {
+                            Color oldColor = Color.white;
+                            Texture oldMainTex = null;
+
+                            try
+                            {
+                                if (r.sharedMaterial.HasProperty("_Color"))
+                                    oldColor = r.sharedMaterial.color;
+                                else if (r.sharedMaterial.HasProperty("_BaseColor"))
+                                    oldColor = r.sharedMaterial.GetColor("_BaseColor");
+
+                                if (r.sharedMaterial.HasProperty("_MainTex"))
+                                    oldMainTex = r.sharedMaterial.mainTexture;
+                                else if (r.sharedMaterial.HasProperty("_BaseMap"))
+                                    oldMainTex = r.sharedMaterial.GetTexture("_BaseMap");
+                            }
+                            catch {}
+
+                            Material newMat = new Material(targetShader);
+                            newMat.name = r.sharedMaterial.name + "_Fixed";
+                            
+                            if (newMat.HasProperty("_Color"))
+                                newMat.color = oldColor;
+                            else if (newMat.HasProperty("_BaseColor"))
+                                newMat.SetColor("_BaseColor", oldColor);
+
+                            if (oldMainTex != null)
+                            {
+                                if (newMat.HasProperty("_MainTex"))
+                                    newMat.mainTexture = oldMainTex;
+                                else if (newMat.HasProperty("_BaseMap"))
+                                    newMat.SetTexture("_BaseMap", oldMainTex);
+                            }
+
+                            if (Application.isPlaying)
+                            {
+                                r.material = newMat;
+                            }
+                            else
+                            {
+                                r.sharedMaterial = newMat;
+#if UNITY_EDITOR
+                                UnityEditor.EditorUtility.SetDirty(r);
+#endif
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void SubscribeToConfigEvents()

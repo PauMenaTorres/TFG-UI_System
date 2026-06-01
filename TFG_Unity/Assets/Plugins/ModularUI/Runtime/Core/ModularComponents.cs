@@ -102,7 +102,7 @@ namespace ModularUIRuntime
                     if (this != null && !isApplyingTheme)
                     {
                         isApplyingTheme = true;
-                        shouldMarkDirty = true;
+                        shouldMarkDirty = false;
 
                         ApplyTheme();
 
