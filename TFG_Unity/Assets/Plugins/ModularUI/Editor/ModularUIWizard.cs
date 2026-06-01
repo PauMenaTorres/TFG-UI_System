@@ -267,6 +267,7 @@ namespace ModularUIEditor
             {
                 ExecuteImport();
                 CreateAndApplyConfiguration();
+                Close();
             }
             GUILayout.EndVertical();
         }
@@ -342,9 +343,21 @@ namespace ModularUIEditor
                 CopyAssetItem("Resources", "Resources");
                 CopyAssetItem("Minimap", "Minimap");
                 CopyAssetItem("Samples", "Samples");
+                CopyAssetItem("Sprites", "Sprites");
+                CopyAssetItem("Fonts", "Fonts");
+                CopyAssetItem("VR_Enviroment", "VR_Enviroment");
             }
             else
             {
+                // Always copy core assets like Sprites and Fonts
+                CopyAssetItem("Sprites", "Sprites");
+                CopyAssetItem("Fonts", "Fonts");
+
+                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+                {
+                    CopyAssetItem("VR_Enviroment", "VR_Enviroment");
+                }
+
                 if (importBaseUI)
                 {
                     CopyAssetItem("BaseUI", "BaseUI");
