@@ -209,12 +209,33 @@ namespace ModularUIRuntime.Demo
             {
                 if (existing != null)
                 {
+                    Transform rootToDestroy = existing.transform;
+                    while (rootToDestroy.parent != null && rootToDestroy.parent.GetComponent<Canvas>() == null)
+                    {
+                        rootToDestroy = rootToDestroy.parent;
+                    }
+
 #if UNITY_EDITOR
-                    UnityEditor.Undo.DestroyObjectImmediate(existing.gameObject);
+                    UnityEditor.Undo.DestroyObjectImmediate(rootToDestroy.gameObject);
                     UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 #else
-                    DestroyImmediate(existing.gameObject);
+                    DestroyImmediate(rootToDestroy.gameObject);
 #endif
+                }
+
+                Canvas targetCanvas = FindFirstObjectByType<Canvas>(FindObjectsInactive.Include);
+                if (targetCanvas != null)
+                {
+                    Transform mobileControlsTrans = targetCanvas.transform.Find("MobileControls");
+                    if (mobileControlsTrans != null)
+                    {
+#if UNITY_EDITOR
+                        UnityEditor.Undo.DestroyObjectImmediate(mobileControlsTrans.gameObject);
+                        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+#else
+                        DestroyImmediate(mobileControlsTrans.gameObject);
+#endif
+                    }
                 }
             }
         }

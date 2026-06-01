@@ -19,23 +19,23 @@ namespace ModularUIEditor
             SPECIFIC_MODULES
         }
 
-        private UIConfiguration.TargetPlatform selectedPlatform = UIConfiguration.TargetPlatform.Desktop;
-        private UIConfiguration.GameGenre selectedGenre = UIConfiguration.GameGenre.RPG;
-        private ProjectStatus currentStatus = ProjectStatus.NEW_PROJECT;
-        private ImportScope currentScope = ImportScope.FULL_SYSTEM;
+        [SerializeField] private UIConfiguration.TargetPlatform selectedPlatform = UIConfiguration.TargetPlatform.Desktop;
+        [SerializeField] private UIConfiguration.GameGenre selectedGenre = UIConfiguration.GameGenre.RPG;
+        [SerializeField] private ProjectStatus currentStatus = ProjectStatus.NEW_PROJECT;
+        [SerializeField] private ImportScope currentScope = ImportScope.FULL_SYSTEM;
 
-        private bool importBaseUI = true;
-        private bool importHUD = true;
-        private bool importMainMenu = true;
-        private bool importInventory = true;
-        private bool importOptions = true;
-        private bool importPauseMenu = true;
-        private bool importCredits = true;
-        private bool importWinLose = true;
-        private bool importDialogues = true;
-        private bool importSettings = true;
-        private bool importMinimap = true;
-        private bool importSamples = true;
+        [SerializeField] private bool importBaseUI = true;
+        [SerializeField] private bool importHUD = true;
+        [SerializeField] private bool importMainMenu = true;
+        [SerializeField] private bool importInventory = true;
+        [SerializeField] private bool importOptions = true;
+        [SerializeField] private bool importPauseMenu = true;
+        [SerializeField] private bool importCredits = true;
+        [SerializeField] private bool importWinLose = true;
+        [SerializeField] private bool importDialogues = true;
+        [SerializeField] private bool importSettings = true;
+        [SerializeField] private bool importMinimap = true;
+        [SerializeField] private bool importSamples = true;
 
         private string targetPath = "Assets/Plugins/ModularUI";
         private Vector2 scrollPosition;
@@ -275,11 +275,27 @@ namespace ModularUIEditor
 
         private void CreateAndApplyConfiguration()
         {
-            string configFolder = targetPath + "/Settings";
+            // Delete old configuration file if it exists
+            string oldConfigPath = targetPath + "/Settings/UIConfiguration.asset";
+            if (AssetDatabase.LoadAssetAtPath<UIConfiguration>(oldConfigPath) != null)
+            {
+                AssetDatabase.DeleteAsset(oldConfigPath);
+            }
+            string oldConfigFolder = targetPath + "/Settings";
+            if (AssetDatabase.IsValidFolder(oldConfigFolder))
+            {
+                string[] files = Directory.GetFiles(oldConfigFolder);
+                if (files.Length == 0)
+                {
+                    AssetDatabase.DeleteAsset(oldConfigFolder);
+                }
+            }
+
+            string configFolder = targetPath + "/Resources";
 
             if (!AssetDatabase.IsValidFolder(configFolder))
             {
-                AssetDatabase.CreateFolder(targetPath, "Settings");
+                AssetDatabase.CreateFolder(targetPath, "Resources");
             }
 
             string configPath = configFolder + "/UIConfiguration.asset";
@@ -294,6 +310,22 @@ namespace ModularUIEditor
             config.selectedPlatform = selectedPlatform;
             config.selectedGenre = selectedGenre;
 
+            // Clear and bind genre themes by code
+            config.genreThemes.Clear();
+            foreach (UIConfiguration.GameGenre genre in System.Enum.GetValues(typeof(UIConfiguration.GameGenre)))
+            {
+                string themePath = $"{targetPath}/Resources/Theme_{genre}.asset";
+                ModularThemeData themeAsset = AssetDatabase.LoadAssetAtPath<ModularThemeData>(themePath);
+                if (themeAsset != null)
+                {
+                    config.genreThemes.Add(new UIConfiguration.GenreThemeMap
+                    {
+                        genre = genre,
+                        theme = themeAsset
+                    });
+                }
+            }
+
             if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
             {
                 string mobileControlsPath = targetPath + "/Templates/Mobile/MobileControls.prefab";
@@ -302,6 +334,18 @@ namespace ModularUIEditor
                 {
                     config.mobileControlsPrefab = mobileControlsPrefab;
                 }
+            }
+            else if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+            {
+                string vrCameraRigPath = targetPath + "/Templates/VR/Modular_VR_CameraRig.prefab";
+                string vrEventSystemPath = targetPath + "/Templates/VR/Modular_VR_EventSystem.prefab";
+                GameObject vrCameraRigPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(vrCameraRigPath);
+                GameObject vrEventSystemPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(vrEventSystemPath);
+                config.vrSettings = new UIConfiguration.VRPlatformSettings
+                {
+                    vrCameraRigPrefab = vrCameraRigPrefab,
+                    vrEventSystemPrefab = vrEventSystemPrefab
+                };
             }
 
             EditorUtility.SetDirty(config);
@@ -336,99 +380,101 @@ namespace ModularUIEditor
                 EnsureFolderExists(targetPath + "/dummy.txt");
             }
 
-            if (currentScope == ImportScope.FULL_SYSTEM)
+            AssetDatabase.StartAssetEditing();
+            try
             {
-                CopyAssetItem("BaseUI", "BaseUI");
-                CopyAssetItem("Templates", "Templates");
-                CopyAssetItem("Dialogues", "Dialogues");
-                CopyAssetItem("Resources", "Resources");
-                CopyAssetItem("Minimap", "Minimap");
-                CopyAssetItem("Samples", "Samples");
-                CopyAssetItem("Sprites", "Sprites");
-                CopyAssetItem("Fonts", "Fonts");
-                
-                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
-                {
-                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
-                    CopyAssetItem("Templates/VR~", "Templates/VR");
-                }
-            }
-            else
-            {
-                // Always copy core assets like Sprites and Fonts
-                CopyAssetItem("Sprites", "Sprites");
-                CopyAssetItem("Fonts", "Fonts");
-
-                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
-                {
-                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
-                }
-
-                if (importBaseUI)
+                if (currentScope == ImportScope.FULL_SYSTEM)
                 {
                     CopyAssetItem("BaseUI", "BaseUI");
-                }
-
-                if (importMainMenu)
-                {
-                    ImportTemplateVariant("MainMenu");
-                }
-
-                if (importHUD)
-                {
-                    ImportTemplateVariant("HUD");
-                }
-
-                if (importInventory)
-                {
-                    ImportTemplateVariant("InventoryPanel");
-                }
-
-                if (importOptions)
-                {
-                    ImportTemplateVariant("Options");
-                }
-
-                if (importPauseMenu)
-                {
-                    ImportTemplateVariant("PauseMenu");
-                }
-
-                if (importCredits)
-                {
-                    ImportTemplateVariant("Credits");
-                }
-
-                if (importWinLose)
-                {
-                    ImportTemplateVariant("WinLoseMenu");
-                }
-
-                if (importDialogues)
-                {
+                    CopyAssetItem("Templates", "Templates");
                     CopyAssetItem("Dialogues", "Dialogues");
-                    ImportTemplateVariant("DialoguePanel");
-                }
-
-                if (importSettings)
-                {
                     CopyAssetItem("Resources", "Resources");
-                }
-
-                if (importMinimap)
-                {
                     CopyAssetItem("Minimap", "Minimap");
-                }
-
-                if (importSamples)
-                {
                     CopyAssetItem("Samples", "Samples");
+                    
+                    if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+                    {
+                        CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
+                        CopyAssetItem("Templates/VR~", "Templates/VR");
+                    }
                 }
-
-                if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+                else
                 {
-                    CopyAssetItem("Templates/Mobile/MobileControls.prefab", "Templates/Mobile/MobileControls.prefab");
+                    if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+                    {
+                        CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
+                    }
+
+                    if (importBaseUI)
+                    {
+                        CopyAssetItem("BaseUI", "BaseUI");
+                    }
+
+                    if (importMainMenu)
+                    {
+                        ImportTemplateVariant("MainMenu");
+                    }
+
+                    if (importHUD)
+                    {
+                        ImportTemplateVariant("HUD");
+                    }
+
+                    if (importInventory)
+                    {
+                        ImportTemplateVariant("InventoryPanel");
+                    }
+
+                    if (importOptions)
+                    {
+                        ImportTemplateVariant("Options");
+                    }
+
+                    if (importPauseMenu)
+                    {
+                        ImportTemplateVariant("PauseMenu");
+                    }
+
+                    if (importCredits)
+                    {
+                        ImportTemplateVariant("Credits");
+                    }
+
+                    if (importWinLose)
+                    {
+                        ImportTemplateVariant("WinLoseMenu");
+                    }
+
+                    if (importDialogues)
+                    {
+                        CopyAssetItem("Dialogues", "Dialogues");
+                        ImportTemplateVariant("DialoguePanel");
+                    }
+
+                    if (importSettings)
+                    {
+                        CopyAssetItem("Resources", "Resources");
+                    }
+
+                    if (importMinimap)
+                    {
+                        CopyAssetItem("Minimap", "Minimap");
+                    }
+
+                    if (importSamples)
+                    {
+                        CopyAssetItem("Samples", "Samples");
+                    }
+
+                    if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+                    {
+                        CopyAssetItem("Templates/Mobile/MobileControls.prefab", "Templates/Mobile/MobileControls.prefab");
+                    }
                 }
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
             }
 
             AssetDatabase.Refresh();
@@ -589,6 +635,8 @@ namespace ModularUIEditor
             if (!Directory.Exists(samplesPath)) return;
 
             string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
+            
+            // 1. First adapt GUIDs of prefabs in all scenes via fast text replacement
             foreach (string scenePath in unityScenes)
             {
                 try
@@ -619,6 +667,179 @@ namespace ModularUIEditor
                 {
                     Debug.LogError($"[ModularUI] Failed to adapt scene {scenePath}: {e.Message}");
                 }
+            }
+
+            // 2. Open each scene, fix hierarchy (parenting), configuration reference, EventSystem, and pre-render themes
+            string originalScenePath = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().path;
+            
+            // Ask user to save modified scenes first, if they want
+            UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+
+            foreach (string scenePath in unityScenes)
+            {
+                CleanAndParentSceneObjects(scenePath);
+            }
+
+            // Restore the original active scene if it was valid
+            if (!string.IsNullOrEmpty(originalScenePath) && File.Exists(originalScenePath))
+            {
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(originalScenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
+            }
+        }
+
+        private void CleanAndParentSceneObjects(string scenePath)
+        {
+            try
+            {
+                // Open the scene
+                var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(scenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
+                if (!scene.IsValid()) return;
+
+                bool isModified = false;
+                GameObject[] rootObjects = scene.GetRootGameObjects();
+
+                // 1. Find the ModularCanvas
+                GameObject canvasObj = null;
+                foreach (var obj in rootObjects)
+                {
+                    if (obj != null && (obj.name == "ModularCanvas" || obj.GetComponent<Canvas>() != null))
+                    {
+                        canvasObj = obj;
+                        break;
+                    }
+                }
+
+                // Load the configuration asset to link it
+                string configPath = targetPath + "/Resources/UIConfiguration.asset";
+                UIConfiguration configAsset = AssetDatabase.LoadAssetAtPath<UIConfiguration>(configPath);
+
+                // 2. Link configuration to Canvas Initializer
+                if (canvasObj != null && configAsset != null)
+                {
+                    var initializer = canvasObj.GetComponent<ModularCanvasInitializer>();
+                    if (initializer != null)
+                    {
+                        if (initializer.config != configAsset)
+                        {
+                            initializer.config = configAsset;
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Set UIConfiguration on ModularCanvasInitializer in {Path.GetFileName(scenePath)}");
+                        }
+                    }
+                }
+
+                // 3. Reparent any root UI templates (containing RectTransform) under the Canvas
+                if (canvasObj != null)
+                {
+                    // Refresh rootObjects because it may have changed
+                    rootObjects = scene.GetRootGameObjects();
+                    foreach (var obj in rootObjects)
+                    {
+                        if (obj != null && obj != canvasObj)
+                        {
+                            // If it has a RectTransform and is not a Canvas itself, reparent it
+                            if (obj.GetComponent<RectTransform>() != null && obj.GetComponent<Canvas>() == null)
+                            {
+                                // Set its parent to the ModularCanvas
+                                obj.transform.SetParent(canvasObj.transform, false);
+                                isModified = true;
+                                Debug.Log($"[ModularUI] Reparented root UI element {obj.name} under ModularCanvas in {Path.GetFileName(scenePath)}");
+                            }
+                        }
+                    }
+                }
+
+                // 4. Destroy the stale VR EventSystem
+                rootObjects = scene.GetRootGameObjects();
+                foreach (var obj in rootObjects)
+                {
+                    if (obj != null && (obj.name.Contains("VR_EventSystem") || obj.name.Contains("Modular_VR_EventSystem")))
+                    {
+                        Undo.DestroyObjectImmediate(obj);
+                        isModified = true;
+                        Debug.Log($"[ModularUI] Removed VR EventSystem from {Path.GetFileName(scenePath)}");
+                    }
+                }
+
+                // 5. Ensure a standard EventSystem is present
+#if UNITY_2023_1_OR_NEWER
+                var eventSystem = Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>();
+#else
+                var eventSystem = Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+#endif
+                if (eventSystem == null)
+                {
+                    GameObject eventSystemObj = new GameObject("EventSystem");
+                    eventSystemObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
+
+                    // Use reflection to check for InputSystemUIInputModule to avoid compile-time dependency
+                    System.Type inputSystemModuleType = System.Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
+                    if (inputSystemModuleType != null)
+                    {
+                        eventSystemObj.AddComponent(inputSystemModuleType);
+                    }
+                    else
+                    {
+                        eventSystemObj.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                    }
+
+                    Undo.RegisterCreatedObjectUndo(eventSystemObj, "Create standard EventSystem");
+                    isModified = true;
+                    Debug.Log($"[ModularUI] Created standard EventSystem in {Path.GetFileName(scenePath)}");
+                }
+
+                // 6. Link Input Actions to DemoGameManager in Demo_Scene using reflection to avoid direct type dependencies
+                if (Path.GetFileNameWithoutExtension(scenePath) == "Demo_Scene")
+                {
+                    MonoBehaviour gameManager = null;
+                    var allBehaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var behaviour in allBehaviours)
+                    {
+                        if (behaviour != null && behaviour.GetType().Name == "DemoGameManager")
+                        {
+                            gameManager = behaviour;
+                            break;
+                        }
+                    }
+
+                    if (gameManager != null)
+                    {
+                        var fieldInfo = gameManager.GetType().GetField("inputActions", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                        if (fieldInfo != null && fieldInfo.GetValue(gameManager) == null)
+                        {
+                            string actionsPath = targetPath + "/Samples/InputSystem_Actions.inputactions";
+                            var actionsAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(actionsPath);
+                            if (actionsAsset != null)
+                            {
+                                fieldInfo.SetValue(gameManager, actionsAsset);
+                                EditorUtility.SetDirty(gameManager);
+                                isModified = true;
+                                Debug.Log($"[ModularUI] Assigned InputSystem_Actions to DemoGameManager in {Path.GetFileName(scenePath)}");
+                            }
+                        }
+                    }
+                }
+
+                // 7. Force all ModularComponents in the scene to pre-render the active theme and mark them dirty
+                var modularComponents = Object.FindObjectsByType<ModularComponents>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                foreach (var comp in modularComponents)
+                {
+                    if (comp != null)
+                    {
+                        comp.ApplyThemeInEditor();
+                        isModified = true;
+                    }
+                }
+
+                if (isModified)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
+                    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[ModularUI] Error cleaning and parenting scene {scenePath}: {e.Message}");
             }
         }
     }

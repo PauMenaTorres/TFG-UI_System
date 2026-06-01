@@ -137,7 +137,7 @@ namespace ModularUIRuntime
                 ModularComponents[] components = FindObjectsByType<ModularComponents>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var component in components)
                 {
-                    component.ApplyTheme();
+                    component.ApplyThemeInEditor();
                 }
 
                 // Also find in open prefab stage if any
@@ -147,7 +147,7 @@ namespace ModularUIRuntime
                     ModularComponents[] prefabComponents = prefabStage.prefabContentsRoot.GetComponentsInChildren<ModularComponents>(true);
                     foreach (var component in prefabComponents)
                     {
-                        component.ApplyTheme();
+                        component.ApplyThemeInEditor();
                     }
                 }
             }
