@@ -797,7 +797,10 @@ namespace ModularUIEditor
 
                     if (gameManager != null)
                     {
-                        var fieldInfo = gameManager.GetType().GetField("inputActions", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                        var gmType = gameManager.GetType();
+                        var bindFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance;
+
+                        var fieldInfo = gmType.GetField("inputActions", bindFlags);
                         if (fieldInfo != null)
                         {
                             var currentValue = fieldInfo.GetValue(gameManager) as UnityEngine.Object;
@@ -810,16 +813,90 @@ namespace ModularUIEditor
                                     fieldInfo.SetValue(gameManager, actionsAsset);
                                     EditorUtility.SetDirty(gameManager);
                                     isModified = true;
-                                    
                                 }
                             }
                         }
-                        var fixMethod = gameManager.GetType().GetMethod("FixRenderPipelineShaders", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                        var playerField = gmType.GetField("playerTransform", bindFlags);
+                        if (playerField != null)
+                        {
+                            var currentPlayer = playerField.GetValue(gameManager) as UnityEngine.Object;
+                            if (currentPlayer == null)
+                            {
+                                GameObject playerGo = GameObject.Find("Player");
+                                if (playerGo != null)
+                                {
+                                    playerField.SetValue(gameManager, playerGo.transform);
+                                    EditorUtility.SetDirty(gameManager);
+                                    isModified = true;
+                                }
+                            }
+                        }
+
+                        var pickupsField = gmType.GetField("pickupsParent", bindFlags);
+                        if (pickupsField != null)
+                        {
+                            var currentPickups = pickupsField.GetValue(gameManager) as UnityEngine.Object;
+                            if (currentPickups == null)
+                            {
+                                GameObject pickupsGo = GameObject.Find("Pickups");
+                                if (pickupsGo == null)
+                                {
+                                    pickupsGo = new GameObject("Pickups");
+                                    Undo.RegisterCreatedObjectUndo(pickupsGo, "Create Pickups container");
+                                }
+                                pickupsField.SetValue(gameManager, pickupsGo.transform);
+                                EditorUtility.SetDirty(gameManager);
+                                isModified = true;
+                            }
+                        }
+
+                        var slotsField = gmType.GetField("slotsContainer", bindFlags);
+                        if (slotsField != null)
+                        {
+                            var currentSlots = slotsField.GetValue(gameManager) as UnityEngine.Object;
+                            if (currentSlots == null)
+                            {
+                                var invManager = Object.FindAnyObjectByType<ModularInventoryManager>(FindObjectsInactive.Include);
+                                if (invManager != null)
+                                {
+                                    var slot = invManager.GetComponentInChildren<ModularInventorySlot>(true);
+                                    if (slot != null)
+                                    {
+                                        slotsField.SetValue(gameManager, slot.transform.parent);
+                                        EditorUtility.SetDirty(gameManager);
+                                        isModified = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        var itemPrefabField = gmType.GetField("itemPrefab", bindFlags);
+                        if (itemPrefabField != null)
+                        {
+                            var currentPrefab = itemPrefabField.GetValue(gameManager) as UnityEngine.Object;
+                            if (currentPrefab == null)
+                            {
+                                string[] prefabGuids = AssetDatabase.FindAssets("InventoryItem t:Prefab");
+                                if (prefabGuids != null && prefabGuids.Length > 0)
+                                {
+                                    string prefabPath = AssetDatabase.GUIDToAssetPath(prefabGuids[0]);
+                                    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                                    if (prefab != null)
+                                    {
+                                        itemPrefabField.SetValue(gameManager, prefab);
+                                        EditorUtility.SetDirty(gameManager);
+                                        isModified = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        var fixMethod = gmType.GetMethod("FixRenderPipelineShaders", bindFlags);
                         if (fixMethod != null)
                         {
                             fixMethod.Invoke(gameManager, null);
                             isModified = true;
-                            
                         }
                     }
                 }

@@ -208,6 +208,45 @@ namespace ModularUIRuntime.Demo
                 pauseMenu.Resume();
             }
 
+            if (pickupsParent == null)
+            {
+                GameObject pickupsGo = GameObject.Find("Pickups");
+                if (pickupsGo != null)
+                {
+                    pickupsParent = pickupsGo.transform;
+                }
+                else
+                {
+                    pickupsGo = new GameObject("Pickups");
+                    pickupsParent = pickupsGo.transform;
+                }
+            }
+
+            if (slotsContainer == null && inventoryManager != null)
+            {
+                var slot = inventoryManager.GetComponentInChildren<ModularInventorySlot>(true);
+                if (slot != null)
+                {
+                    slotsContainer = slot.transform.parent;
+                }
+            }
+
+            if (itemPrefab == null)
+            {
+                itemPrefab = Resources.Load<GameObject>("InventoryItem");
+#if UNITY_EDITOR
+                if (itemPrefab == null)
+                {
+                    string[] guids = UnityEditor.AssetDatabase.FindAssets("InventoryItem t:Prefab");
+                    if (guids != null && guids.Length > 0)
+                    {
+                        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                        itemPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    }
+                }
+#endif
+            }
+
             SetupPlayerPhysics();
             SetupPlayerCamera();
             SetupMapColorChanger();

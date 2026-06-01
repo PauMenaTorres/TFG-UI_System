@@ -7,8 +7,6 @@ namespace ModularUIEditor
     [InitializeOnLoad]
     public class ModularUIStartup
     {
-        private static int delayFrames = 0;
-
         public static string GetPrefsKey()
         {
             string projectPath = Path.GetFullPath(Application.dataPath).Replace('\\', '/');
@@ -17,23 +15,16 @@ namespace ModularUIEditor
 
         static ModularUIStartup()
         {
-            EditorApplication.update += RunOnce;
+            EditorApplication.delayCall += TryShowWizard;
         }
 
-        private static void RunOnce()
+        private static void TryShowWizard()
         {
             if (EditorApplication.isCompiling || EditorApplication.isUpdating)
             {
+                EditorApplication.delayCall += TryShowWizard;
                 return;
             }
-
-            delayFrames++;
-            if (delayFrames < 30)
-            {
-                return;
-            }
-
-            EditorApplication.update -= RunOnce;
 
             string[] guids = AssetDatabase.FindAssets("t:UIConfiguration");
             bool configured = guids != null && guids.Length > 0;
