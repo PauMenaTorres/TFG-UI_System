@@ -35,8 +35,11 @@ namespace ModularUIEditor
 
             EditorApplication.update -= RunOnce;
 
+            string[] guids = AssetDatabase.FindAssets("t:UIConfiguration");
+            bool configured = guids != null && guids.Length > 0;
+
             string key = GetPrefsKey();
-            if (!EditorPrefs.GetBool(key, false))
+            if (!EditorPrefs.GetBool(key, false) || !configured)
             {
                 ModularUIWizard.ShowWindow();
             }

@@ -333,6 +333,16 @@ namespace ModularUIRuntime.Demo
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (inputActions == null)
+            {
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("InputSystem_Actions t:InputActionAsset");
+                if (guids != null && guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>(path);
+                }
+            }
+
             if (Application.isPlaying) return;
             
             SubscribeToConfigEvents();
