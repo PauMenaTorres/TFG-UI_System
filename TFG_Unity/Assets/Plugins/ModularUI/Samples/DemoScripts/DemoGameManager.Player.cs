@@ -56,33 +56,41 @@ namespace ModularUIRuntime.Demo
             Vector2 move = Vector2.zero;
             Vector2 look = Vector2.zero;
 
-            bool isMobile = GetPlatform() == UIConfiguration.TargetPlatform.MobilePortrait ||
-                            GetPlatform() == UIConfiguration.TargetPlatform.MobileLandscape;
-
-            if (mobileInput != null && isMobile)
+            if (moveAction != null)
             {
-                move = mobileInput.GetMovementInput();
-#if UNITY_EDITOR
-                if (move == Vector2.zero && moveAction != null)
+                try
                 {
                     move = moveAction.ReadValue<Vector2>();
                 }
-                if (lookAction != null)
-                {
-                    look = lookAction.ReadValue<Vector2>();
-                }
-#endif
+                catch (System.Exception) {}
             }
-            else
+            if (lookAction != null)
             {
-                if (moveAction != null)
-                {
-                    move = moveAction.ReadValue<Vector2>();
-                }
-                if (lookAction != null)
+                try
                 {
                     look = lookAction.ReadValue<Vector2>();
                 }
+                catch (System.Exception) {}
+            }
+
+            if (move == Vector2.zero && Keyboard.current != null)
+            {
+                float x = 0;
+                float y = 0;
+                if (Keyboard.current.wKey.isPressed) y += 1f;
+                if (Keyboard.current.sKey.isPressed) y -= 1f;
+                if (Keyboard.current.aKey.isPressed) x -= 1f;
+                if (Keyboard.current.dKey.isPressed) x += 1f;
+                move = new Vector2(x, y);
+            }
+
+            if (look == Vector2.zero && Mouse.current != null)
+            {
+                try
+                {
+                    look = Mouse.current.delta.ReadValue();
+                }
+                catch (System.Exception) {}
             }
 
             yaw += look.x * lookSensitivity;

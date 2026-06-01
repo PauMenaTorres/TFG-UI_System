@@ -125,22 +125,8 @@ namespace ModularUIRuntime.Demo
                 }
             }
 
-            mobileInput = FindFirstObjectByType<MobileTouchInput>();
-
-            bool isMobile = GetPlatform() == UIConfiguration.TargetPlatform.MobilePortrait ||
-                            GetPlatform() == UIConfiguration.TargetPlatform.MobileLandscape;
-
-            if (isMobile)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                SetupMobileControls();
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
             hudController?.SetHealth(1f);
             hudController?.SetSecondaryResource(1f);
@@ -196,11 +182,8 @@ namespace ModularUIRuntime.Demo
                 if (inventoryManager.gameObject.activeSelf != inventoryOpen)
                 {
                     inventoryOpen = inventoryManager.gameObject.activeSelf;
-                    if (GetPlatform() == UIConfiguration.TargetPlatform.Desktop)
-                    {
-                        Cursor.lockState = inventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
-                        Cursor.visible = inventoryOpen;
-                    }
+                    Cursor.lockState = inventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
+                    Cursor.visible = inventoryOpen;
                 }
             }
 
@@ -211,21 +194,15 @@ namespace ModularUIRuntime.Demo
                 {
                     gamePaused = false;
                     Time.timeScale = 1f;
-                    if (GetPlatform() == UIConfiguration.TargetPlatform.Desktop)
-                    {
-                        Cursor.lockState = CursorLockMode.Locked;
-                        Cursor.visible = false;
-                    }
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                 }
                 else if (!gamePaused && pausePanelVisible)
                 {
                     gamePaused = true;
                     Time.timeScale = 0f;
-                    if (GetPlatform() == UIConfiguration.TargetPlatform.Desktop)
-                    {
-                        Cursor.lockState = CursorLockMode.None;
-                        Cursor.visible = true;
-                    }
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
                 }
             }
 
@@ -237,7 +214,25 @@ namespace ModularUIRuntime.Demo
             HandleMovement();
             HandlePickupDetection();
 
-            if (interactAction != null && interactAction.WasPressedThisFrame() && nearestPickup != null)
+            bool interactPressed = false;
+            if (interactAction != null)
+            {
+                try
+                {
+                    interactPressed = interactAction.WasPressedThisFrame();
+                }
+                catch (System.Exception) {}
+            }
+            if (!interactPressed && Keyboard.current != null)
+            {
+                try
+                {
+                    interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
+                }
+                catch (System.Exception) {}
+            }
+
+            if (interactPressed && nearestPickup != null)
             {
                 CollectItem(nearestPickup);
             }
@@ -259,14 +254,9 @@ namespace ModularUIRuntime.Demo
                 ToggleInventory();
             }
 
-            if (IsMobilePlatform())
-            {
-                HandleMobileLook();
-            }
-
             if (!gamePaused && !inventoryOpen)
             {
-                if (GetPlatform() == UIConfiguration.TargetPlatform.Desktop && Cursor.lockState != CursorLockMode.Locked)
+                if (Cursor.lockState != CursorLockMode.Locked)
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                     Cursor.visible = false;
