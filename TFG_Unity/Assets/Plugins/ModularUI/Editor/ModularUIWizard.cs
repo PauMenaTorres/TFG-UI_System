@@ -59,6 +59,15 @@ namespace ModularUIEditor
             window.Show();
         }
 
+        [MenuItem("Tools/Modular UI/Clean and Fix Sample Scenes")]
+        public static void CleanAndFixSampleScenes()
+        {
+            ModularUIWizard wizard = CreateInstance<ModularUIWizard>();
+            wizard.AdaptSampleScenesToPlatform();
+            DestroyImmediate(wizard);
+            Debug.Log("[ModularUI] Completed cleaning and fixing all sample scenes.");
+        }
+
         private string GetRootPath()
         {
             if (Directory.Exists("Packages/com.pau.modularui"))
@@ -839,6 +848,123 @@ namespace ModularUIEditor
                     {
                         comp.ApplyThemeInEditor();
                         isModified = true;
+                    }
+                }
+
+                // 8. Deactivate specific overlay panels that should not start active
+                string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+
+                if (sceneName == "MainMenu_Scene")
+                {
+                    var optionsMenus = Object.FindObjectsByType<ModularOptionsMenu>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var opt in optionsMenus)
+                    {
+                        if (opt != null && opt.gameObject.activeSelf)
+                        {
+                            opt.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(opt.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated options menu {opt.name} in {sceneName}");
+                        }
+                    }
+
+                    var creditsMenus = Object.FindObjectsByType<ModularCredits>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var cred in creditsMenus)
+                    {
+                        if (cred != null && cred.gameObject.activeSelf)
+                        {
+                            cred.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(cred.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated credits menu {cred.name} in {sceneName}");
+                        }
+                    }
+                }
+                else if (sceneName == "HUD_Scene")
+                {
+                    var pauseMenus = Object.FindObjectsByType<ModularPauseMenu>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var pm in pauseMenus)
+                    {
+                        if (pm != null && pm.gameObject.activeSelf)
+                        {
+                            pm.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(pm.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated pause menu {pm.name} in {sceneName}");
+                        }
+                    }
+                }
+                else if (sceneName == "Demo_Scene")
+                {
+                    var pauseMenus = Object.FindObjectsByType<ModularPauseMenu>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var pm in pauseMenus)
+                    {
+                        if (pm != null && pm.gameObject.activeSelf)
+                        {
+                            pm.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(pm.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated pause menu {pm.name} in {sceneName}");
+                        }
+                    }
+
+                    var inventoryManagers = Object.FindObjectsByType<ModularInventoryManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                    foreach (var inv in inventoryManagers)
+                    {
+                        if (inv != null && inv.gameObject.activeSelf)
+                        {
+                            inv.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(inv.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated inventory manager {inv.name} in {sceneName}");
+                        }
+                    }
+                }
+
+                // Double check direct child objects of the ModularCanvas by name to ensure completeness
+                if (canvasObj != null)
+                {
+                    int childCount = canvasObj.transform.childCount;
+                    for (int i = 0; i < childCount; i++)
+                    {
+                        Transform child = canvasObj.transform.GetChild(i);
+                        if (child == null) continue;
+
+                        string childName = child.name.ToLower();
+                        bool shouldDeactivate = false;
+
+                        if (sceneName == "MainMenu_Scene")
+                        {
+                            if ((childName.Contains("options") || childName.Contains("credits")) && 
+                                !childName.Contains("button") && !childName.Contains("btn"))
+                            {
+                                shouldDeactivate = true;
+                            }
+                        }
+                        else if (sceneName == "HUD_Scene")
+                        {
+                            if (childName.Contains("pause") && 
+                                !childName.Contains("button") && !childName.Contains("btn"))
+                            {
+                                shouldDeactivate = true;
+                            }
+                        }
+                        else if (sceneName == "Demo_Scene")
+                        {
+                            if ((childName.Contains("pause") || childName.Contains("inventory")) && 
+                                !childName.Contains("button") && !childName.Contains("btn"))
+                            {
+                                shouldDeactivate = true;
+                            }
+                        }
+
+                        if (shouldDeactivate && child.gameObject.activeSelf)
+                        {
+                            child.gameObject.SetActive(false);
+                            EditorUtility.SetDirty(child.gameObject);
+                            isModified = true;
+                            Debug.Log($"[ModularUI] Deactivated Canvas child {child.name} in {sceneName}");
+                        }
                     }
                 }
 
