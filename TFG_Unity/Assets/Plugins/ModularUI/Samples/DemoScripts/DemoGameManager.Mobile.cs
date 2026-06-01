@@ -18,6 +18,50 @@ namespace ModularUIRuntime.Demo
             StartCoroutine(SpawnMobileControlsDelayed());
         }
 
+        GameObject GetMobileControlsPrefab()
+        {
+            UIConfiguration config = null;
+            if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
+            {
+                config = ModularThemeManager.Instance.Config;
+            }
+            else
+            {
+                ModularCanvasInitializer init = FindFirstObjectByType<ModularCanvasInitializer>(FindObjectsInactive.Include);
+                if (init != null)
+                {
+                    config = init.config;
+                }
+            }
+
+            GameObject mobilePrefab = null;
+            if (config != null)
+            {
+                mobilePrefab = config.mobileControlsPrefab;
+            }
+
+#if UNITY_EDITOR
+            if (mobilePrefab == null)
+            {
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("MobileControls t:Prefab");
+                if (guids != null && guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                }
+            }
+            if (mobilePrefab == null)
+            {
+                mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Plugins/ModularUI/Templates/Mobile/MobileControls.prefab");
+            }
+            if (mobilePrefab == null)
+            {
+                mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Packages/com.pau.modularui/Templates/Mobile/MobileControls.prefab");
+            }
+#endif
+            return mobilePrefab;
+        }
+
         IEnumerator SpawnMobileControlsDelayed()
         {
             yield return null;
@@ -26,27 +70,14 @@ namespace ModularUIRuntime.Demo
 
             if (mobileInput == null)
             {
-                UIConfiguration config = null;
-                if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
-                {
-                    config = ModularThemeManager.Instance.Config;
-                }
-                else
-                {
-                    ModularCanvasInitializer init = FindFirstObjectByType<ModularCanvasInitializer>();
-                    if (init != null)
-                    {
-                        config = init.config;
-                    }
-                }
-
-                if (config != null && config.mobileControlsPrefab != null)
+                GameObject mobilePrefab = GetMobileControlsPrefab();
+                if (mobilePrefab != null)
                 {
                     Canvas targetCanvas = FindFirstObjectByType<Canvas>();
                     if (targetCanvas != null)
                     {
-                        GameObject controls = Instantiate(config.mobileControlsPrefab, targetCanvas.transform);
-                        controls.name = config.mobileControlsPrefab.name;
+                        GameObject controls = Instantiate(mobilePrefab, targetCanvas.transform);
+                        controls.name = mobilePrefab.name;
                         mobileInput = controls.GetComponent<MobileTouchInput>();
                         if (mobileInput == null)
                         {
@@ -67,6 +98,8 @@ namespace ModularUIRuntime.Demo
                 mobileInput.OnCancelPressed += HandleMobileCancel;
                 mobileInput.OnMenuTogglePressed -= HandleMobileMenu;
                 mobileInput.OnMenuTogglePressed += HandleMobileMenu;
+                mobileInput.OnHotbarSlotPressed -= HandleMobileHotbar;
+                mobileInput.OnHotbarSlotPressed += HandleMobileHotbar;
             }
         }
 
@@ -96,6 +129,11 @@ namespace ModularUIRuntime.Demo
             {
                 ToggleInventory();
             }
+        }
+
+        void HandleMobileHotbar(int index)
+        {
+            hudController?.ExecuteHotbarAction(index);
         }
 
         int lastTouchId = -1;
@@ -146,41 +184,27 @@ namespace ModularUIRuntime.Demo
         void SetupMobileControlsInEditor()
         {
             bool isMobile = IsMobilePlatform();
-            
             MobileTouchInput existing = FindFirstObjectByType<MobileTouchInput>(FindObjectsInactive.Include);
             
             if (isMobile)
             {
                 if (existing == null)
                 {
-                    UIConfiguration config = null;
-                    if (ModularThemeManager.Instance != null && ModularThemeManager.Instance.Config != null)
-                    {
-                        config = ModularThemeManager.Instance.Config;
-                    }
-                    else
-                    {
-                        ModularCanvasInitializer init = FindFirstObjectByType<ModularCanvasInitializer>(FindObjectsInactive.Include);
-                        if (init != null)
-                        {
-                            config = init.config;
-                        }
-                    }
-
-                    if (config != null && config.mobileControlsPrefab != null)
+                    GameObject mobilePrefab = GetMobileControlsPrefab();
+                    if (mobilePrefab != null)
                     {
                         Canvas targetCanvas = FindFirstObjectByType<Canvas>(FindObjectsInactive.Include);
                         if (targetCanvas != null)
                         {
                             GameObject controls = null;
 #if UNITY_EDITOR
-                            controls = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(config.mobileControlsPrefab, targetCanvas.transform);
+                            controls = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(mobilePrefab, targetCanvas.transform);
 #else
-                            controls = Instantiate(config.mobileControlsPrefab, targetCanvas.transform);
+                            controls = Instantiate(mobilePrefab, targetCanvas.transform);
 #endif
                             if (controls != null)
                             {
-                                controls.name = config.mobileControlsPrefab.name;
+                                controls.name = mobilePrefab.name;
                                 controls.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                                 controls.transform.localScale = Vector3.one;
                                 existing = controls.GetComponent<MobileTouchInput>();

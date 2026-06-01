@@ -52,6 +52,21 @@ namespace ModularUIRuntime.Demo
         MobileTouchInput mobileInput;
         InputAction moveAction, lookAction, interactAction, cancelAction;
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (inputActions == null)
+            {
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("InputSystem_Actions t:InputActionAsset");
+                if (guids != null && guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>(path);
+                }
+            }
+        }
+#endif
+
         void Start()
         {
             if (!Application.isPlaying) return;
@@ -59,7 +74,16 @@ namespace ModularUIRuntime.Demo
 #if UNITY_EDITOR
             if (inputActions == null)
             {
-                inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Assets/Plugins/ModularUI/Samples/InputSystem_Actions.inputactions");
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("InputSystem_Actions t:InputActionAsset");
+                if (guids != null && guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>(path);
+                }
+                if (inputActions == null)
+                {
+                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Assets/Plugins/ModularUI/Samples/InputSystem_Actions.inputactions");
+                }
                 if (inputActions == null)
                 {
                     inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Packages/com.pau.modularui/Samples/InputSystem_Actions.inputactions");

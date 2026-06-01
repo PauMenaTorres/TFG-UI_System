@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using System.IO;
 
@@ -7,9 +7,10 @@ namespace ModularUIEditor
     [InitializeOnLoad]
     public class ModularUIStartup
     {
-        private static string GetPrefsKey()
+        private static int delayFrames = 0;
+
+        public static string GetPrefsKey()
         {
-            
             string projectPath = Path.GetFullPath(Application.dataPath).Replace('\\', '/');
             return "ModularUI_WizardShown_" + projectPath;
         }
@@ -26,20 +27,18 @@ namespace ModularUIEditor
                 return;
             }
 
+            delayFrames++;
+            if (delayFrames < 30)
+            {
+                return;
+            }
+
             EditorApplication.update -= RunOnce;
 
             string key = GetPrefsKey();
             if (!EditorPrefs.GetBool(key, false))
             {
-                
-                EditorApplication.delayCall += () =>
-                {
-                    EditorApplication.delayCall += () =>
-                    {
-                        ModularUIWizard.ShowWindow();
-                        EditorPrefs.SetBool(key, true);
-                    };
-                };
+                ModularUIWizard.ShowWindow();
             }
         }
 
@@ -47,7 +46,6 @@ namespace ModularUIEditor
         public static void ResetFirstLoad()
         {
             EditorPrefs.DeleteKey(GetPrefsKey());
-            
         }
     }
 }

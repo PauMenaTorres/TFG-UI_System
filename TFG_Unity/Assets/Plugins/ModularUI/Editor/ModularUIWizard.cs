@@ -78,6 +78,12 @@ namespace ModularUIEditor
             return "Assets/Plugins/ModularUI";
         }
 
+        private void OnEnable()
+        {
+            string key = ModularUIStartup.GetPrefsKey();
+            EditorPrefs.SetBool(key, true);
+        }
+
         private void OnDestroy()
         {
             if (headerTex != null) DestroyImmediate(headerTex);
