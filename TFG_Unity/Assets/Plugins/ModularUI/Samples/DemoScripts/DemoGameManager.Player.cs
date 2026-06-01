@@ -75,13 +75,17 @@ namespace ModularUIRuntime.Demo
 
             if (move == Vector2.zero && Keyboard.current != null)
             {
-                float x = 0;
-                float y = 0;
-                if (Keyboard.current.wKey.isPressed) y += 1f;
-                if (Keyboard.current.sKey.isPressed) y -= 1f;
-                if (Keyboard.current.aKey.isPressed) x -= 1f;
-                if (Keyboard.current.dKey.isPressed) x += 1f;
-                move = new Vector2(x, y);
+                try
+                {
+                    float x = 0;
+                    float y = 0;
+                    if (Keyboard.current.wKey.isPressed) y += 1f;
+                    if (Keyboard.current.sKey.isPressed) y -= 1f;
+                    if (Keyboard.current.aKey.isPressed) x -= 1f;
+                    if (Keyboard.current.dKey.isPressed) x += 1f;
+                    move = new Vector2(x, y);
+                }
+                catch (System.Exception) {}
             }
 
             if (look == Vector2.zero && Mouse.current != null)
@@ -92,6 +96,8 @@ namespace ModularUIRuntime.Demo
                 }
                 catch (System.Exception) {}
             }
+
+
 
             yaw += look.x * lookSensitivity;
             pitch -= look.y * lookSensitivity;

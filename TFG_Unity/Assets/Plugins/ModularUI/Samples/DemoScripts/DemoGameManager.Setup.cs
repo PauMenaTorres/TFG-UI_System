@@ -251,7 +251,9 @@ namespace ModularUIRuntime.Demo
 
         public void FixRenderPipelineShaders()
         {
-            bool isURP = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null;
+            bool isURP = UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null 
+                || QualitySettings.renderPipeline != null 
+                || UnityEngine.Rendering.GraphicsSettings.activeRenderPipeline != null;
             string targetShaderName = isURP ? "Universal Render Pipeline/Lit" : "Standard";
             Shader targetShader = Shader.Find(targetShaderName);
             if (targetShader == null && isURP) targetShader = Shader.Find("Universal Render Pipeline/Simple Lit");

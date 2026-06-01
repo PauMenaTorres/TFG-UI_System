@@ -206,7 +206,35 @@ namespace ModularUIRuntime.Demo
                 }
             }
 
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame && !gamePaused && !inventoryOpen)
+            bool spacePressed = false;
+            bool escapePressed = false;
+            bool iPressed = false;
+            bool interactPressed = false;
+
+            try
+            {
+                if (Keyboard.current != null)
+                {
+                    spacePressed = Keyboard.current.spaceKey.wasPressedThisFrame;
+                    escapePressed = Keyboard.current.escapeKey.wasPressedThisFrame;
+                    iPressed = Keyboard.current.iKey.wasPressedThisFrame;
+                    interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
+                }
+            }
+            catch (System.Exception) {}
+
+            try
+            {
+                if (!interactPressed && interactAction != null && interactAction.WasPressedThisFrame())
+                {
+                    interactPressed = true;
+                }
+            }
+            catch (System.Exception) {}
+
+
+
+            if (spacePressed && !gamePaused && !inventoryOpen)
             {
                 Jump();
             }
@@ -214,30 +242,12 @@ namespace ModularUIRuntime.Demo
             HandleMovement();
             HandlePickupDetection();
 
-            bool interactPressed = false;
-            if (interactAction != null)
-            {
-                try
-                {
-                    interactPressed = interactAction.WasPressedThisFrame();
-                }
-                catch (System.Exception) {}
-            }
-            if (!interactPressed && Keyboard.current != null)
-            {
-                try
-                {
-                    interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
-                }
-                catch (System.Exception) {}
-            }
-
             if (interactPressed && nearestPickup != null)
             {
                 CollectItem(nearestPickup);
             }
 
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (escapePressed)
             {
                 if (inventoryOpen)
                 {
@@ -249,7 +259,7 @@ namespace ModularUIRuntime.Demo
                 }
             }
 
-            if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame && !gamePaused)
+            if (iPressed && !gamePaused)
             {
                 ToggleInventory();
             }
