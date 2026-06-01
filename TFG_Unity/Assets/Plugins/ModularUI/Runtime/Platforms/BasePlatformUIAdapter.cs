@@ -26,15 +26,12 @@ namespace ModularUIRuntime
         protected bool IsVRCamera(Camera cam)
         {
             if (cam == null) return false;
-            
-            // Check root name first (case-insensitive)
             string rootName = cam.transform.root.name.ToLower();
             if (rootName.Contains("ovrcamerarig") || rootName.Contains("vrrig") || rootName.Contains("xr-rig") || rootName.Contains("xrrig"))
             {
                 return true;
             }
 
-            // Check if any component in the camera's root has "OVR", "Oculus", "Locomotor", "XRRig" in its type name
             Component[] allComponents = cam.transform.root.GetComponentsInChildren<Component>(true);
             foreach (var comp in allComponents)
             {
@@ -75,7 +72,6 @@ namespace ModularUIRuntime
                 else Object.DestroyImmediate(ovrOverlay, true);
             }
 
-            // Clean up any child or orphaned VR interaction objects in the scene
             var allGOs = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var go in allGOs)
             {
@@ -137,8 +133,6 @@ namespace ModularUIRuntime
             
             if (currentES != null)
             {
-                // We do NOT destroy any VR components (like OVRInputModule or PointableCanvasModule)
-                // to leave the event system exactly as it is, as requested, and prevent scene/prefab dirtying.
                 System.Type standardInputType = System.Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
                 bool hasStandardInput = false;
                 if (standardInputType != null && currentES.GetComponent(standardInputType) != null)

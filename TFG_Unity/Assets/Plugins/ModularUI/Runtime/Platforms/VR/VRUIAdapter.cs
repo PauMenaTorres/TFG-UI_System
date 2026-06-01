@@ -88,7 +88,7 @@ namespace ModularUIRuntime
                         var currentValue = getMethod.Invoke(target, null);
                         if (object.Equals(currentValue, value))
                         {
-                            return; // Already equal, skip setting to avoid dirtying
+                            return;
                         }
                     }
                 }
@@ -128,7 +128,7 @@ namespace ModularUIRuntime
                     var currentValue = field.GetValue(target);
                     if (object.Equals(currentValue, value))
                     {
-                        return; // Already equal, skip setting to avoid dirtying
+                        return;
                     }
                 }
                 catch {}
@@ -160,7 +160,6 @@ namespace ModularUIRuntime
                 targetCanvas.transform.localPosition = vrPos;
             }
 
-            // Configure CanvasScaler
             CanvasScaler scaler = targetCanvas.GetComponent<CanvasScaler>();
             if (scaler == null)
             {
@@ -174,7 +173,6 @@ namespace ModularUIRuntime
                     scaler.dynamicPixelsPerUnit = 1f;
             }
 
-            // Configure GraphicRaycaster (should be kept for interaction)
             GraphicRaycaster raycaster = targetCanvas.GetComponent<GraphicRaycaster>();
             if (raycaster == null)
             {
@@ -187,17 +185,15 @@ namespace ModularUIRuntime
                 if (raycaster.blockingObjects != GraphicRaycaster.BlockingObjects.None)
                     raycaster.blockingObjects = GraphicRaycaster.BlockingObjects.None;
                 if (raycaster.blockingMask != -1)
-                    raycaster.blockingMask = -1; // Everything
+                    raycaster.blockingMask = -1;
             }
 
-            // Configure OVR Overlay Canvas
             System.Type ovrOverlayCanvasType = FindType("OVROverlayCanvas") ?? FindType("Oculus.Interaction.OVROverlayCanvas");
             if (ovrOverlayCanvasType != null && targetCanvas.GetComponent(ovrOverlayCanvasType) == null)
             {
                 targetCanvas.gameObject.AddComponent(ovrOverlayCanvasType);
             }
 
-            // Setup Oculus SDK Pointable/Interaction child objects
             System.Type pointableCanvasType = FindType("Oculus.Interaction.PointableCanvas") ?? FindType("PointableCanvas");
             System.Type rayInteractableType = FindType("Oculus.Interaction.RayInteractable") ?? FindType("RayInteractable");
             System.Type pokeInteractableType = FindType("Oculus.Interaction.PokeInteractable") ?? FindType("PokeInteractable");
@@ -206,7 +202,6 @@ namespace ModularUIRuntime
             bool isPrefabInstance = !Application.isPlaying && UnityEditor.PrefabUtility.IsPartOfPrefabInstance(targetCanvas.gameObject);
             if (isPrefabInstance)
             {
-                // Clean up any orphaned interaction objects in the scene first to avoid leaks
                 var allGOs = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var go in allGOs)
                 {
@@ -226,7 +221,6 @@ namespace ModularUIRuntime
 
             if (pointableCanvasType != null)
             {
-                // 1. Ray Canvas Interaction
                 Transform rayInteractionTrans = targetCanvas.transform.Find("ISDK_RayCanvasInteraction");
                 GameObject rayInteractionGo;
                 if (rayInteractionTrans == null)
@@ -250,7 +244,6 @@ namespace ModularUIRuntime
                     SetupPointableCanvas(rayInteractionGo, targetCanvas, pointableCanvasType, rayInteractableType);
                 }
 
-                // 2. Poke Canvas Interaction
                 Transform pokeInteractionTrans = targetCanvas.transform.Find("ISDK_PokeCanvasInteraction");
                 GameObject pokeInteractionGo;
                 if (pokeInteractionTrans == null)
@@ -286,29 +279,21 @@ namespace ModularUIRuntime
                 pointableCanvas = go.AddComponent(pointableCanvasType);
             }
 
-            // 1. Set canvas on PointableCanvas
-            // Try public InjectCanvas method
             InvokeMethod(pointableCanvas, "InjectCanvas", new object[] { canvas });
             InvokeMethod(pointableCanvas, "InjectAllPointableCanvas", new object[] { canvas });
-            // Direct property/field settings
             SetFieldOrProperty(pointableCanvas, "Canvas", canvas);
             SetFieldOrProperty(pointableCanvas, "_canvas", canvas);
 
-            // Setup interactable component
             Component interactable = go.GetComponent(interactableType);
             if (interactable == null)
             {
                 interactable = go.AddComponent(interactableType);
             }
 
-            // 2. Set PointableElement on the interactable
-            // Try public InjectOptionalPointableElement method
             InvokeMethod(interactable, "InjectOptionalPointableElement", new object[] { pointableCanvas });
-            // Direct property/field settings
             SetFieldOrProperty(interactable, "PointableElement", pointableCanvas);
             SetFieldOrProperty(interactable, "_pointableElement", pointableCanvas);
 
-            // Setup child Surface GameObject for Oculus Raycast/Poke interaction
             System.Type planeSurfaceType = FindType("Oculus.Interaction.Surfaces.PlaneSurface") ?? FindType("PlaneSurface");
             System.Type clippedPlaneSurfaceType = FindType("Oculus.Interaction.Surfaces.ClippedPlaneSurface") ?? FindType("ClippedPlaneSurface");
             System.Type boundsClipperType = FindType("Oculus.Interaction.Surfaces.BoundsClipper") ?? FindType("BoundsClipper");
@@ -365,12 +350,10 @@ namespace ModularUIRuntime
 
                 if (clippedPlaneSurface != null && planeSurface != null && boundsClipper != null)
                 {
-                    // Inject PlaneSurface
                     InvokeMethod(clippedPlaneSurface, "InjectPlaneSurface", new object[] { planeSurface });
                     SetFieldOrProperty(clippedPlaneSurface, "PlaneSurface", planeSurface);
                     SetFieldOrProperty(clippedPlaneSurface, "_planeSurface", planeSurface);
 
-                    // Inject Clippers
                     System.Type boundsClipperInterfaceType = FindType("Oculus.Interaction.Surfaces.IBoundsClipper") ?? FindType("IBoundsClipper");
                     if (boundsClipperInterfaceType != null)
                     {
@@ -383,22 +366,18 @@ namespace ModularUIRuntime
                         }
                         InvokeMethod(clippedPlaneSurface, "InjectClippers", new object[] { list });
 
-                        // Safe property and field setting with correct types
                         var objList = new List<UnityEngine.Object> { boundsClipper as UnityEngine.Object };
                         SetFieldOrProperty(clippedPlaneSurface, "_clippers", objList);
                         SetFieldOrProperty(clippedPlaneSurface, "Clippers", list);
                     }
                 }
 
-                // Set surfaces on interactables
                 if (interactableType.Name.Contains("RayInteractable"))
                 {
-                    // Inject Surfaces
                     InvokeMethod(interactable, "InjectSurface", new object[] { clippedPlaneSurface });
                     InvokeMethod(interactable, "InjectAllRayInteractable", new object[] { clippedPlaneSurface });
                     InvokeMethod(interactable, "InjectOptionalSelectSurface", new object[] { planeSurface });
 
-                    // Set fields/properties directly as fallback/additional safety
                     SetFieldOrProperty(interactable, "Surface", clippedPlaneSurface);
                     SetFieldOrProperty(interactable, "_surface", clippedPlaneSurface);
                     SetFieldOrProperty(interactable, "SelectSurface", planeSurface);
@@ -406,17 +385,14 @@ namespace ModularUIRuntime
                 }
                 else if (interactableType.Name.Contains("PokeInteractable"))
                 {
-                    // Inject Surfaces
                     InvokeMethod(interactable, "InjectSurfacePatch", new object[] { clippedPlaneSurface });
                     InvokeMethod(interactable, "InjectAllPokeInteractable", new object[] { clippedPlaneSurface });
 
-                    // Set fields/properties directly as fallback/additional safety
                     SetFieldOrProperty(interactable, "SurfacePatch", clippedPlaneSurface);
                     SetFieldOrProperty(interactable, "_surfacePatch", clippedPlaneSurface);
                 }
             }
 
-            // Add LayoutElement and ignore layout
             LayoutElement layoutElement = go.GetComponent<LayoutElement>();
             if (layoutElement == null)
             {
@@ -578,7 +554,6 @@ namespace ModularUIRuntime
                 }
             }
 
-            // Setup Oculus PointableCanvasModule on the EventSystem
             System.Type pointableCanvasModuleType = FindType("Oculus.Interaction.PointableCanvasModule") 
                                                     ?? FindType("PointableCanvasModule");
             if (pointableCanvasModuleType != null && currentES != null)

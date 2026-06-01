@@ -1,4 +1,4 @@
-    using UnityEngine;
+using UnityEngine;
 
 namespace ModularUIRuntime
 {
@@ -22,7 +22,7 @@ namespace ModularUIRuntime
                 config.OnConfigurationChanged += Initialize;
             }
 
-            Initialize();
+            InitializeInternal(false);
         }
 
         private void OnDisable()
@@ -58,12 +58,12 @@ namespace ModularUIRuntime
 
         public void ForceInitialize()
         {
-            Initialize();
+            InitializeInternal(true);
         }
 
         private void Initialize()
         {
-            InitializeInternal(true);
+            InitializeInternal(false);
         }
 
         private void InitializeInternal(bool force)

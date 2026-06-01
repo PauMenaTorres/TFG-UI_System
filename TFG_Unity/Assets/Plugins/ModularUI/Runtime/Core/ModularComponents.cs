@@ -13,11 +13,6 @@ namespace ModularUIRuntime
         private bool isApplyingTheme = false;
         protected bool shouldMarkDirty = false;
 
-        /// <summary>
-        /// Returns true when it is safe to modify serialized component properties
-        /// (TMP font/color, Image color, Button transitions, etc.) without
-        /// dirtying the scene. True at runtime or during explicit user actions.
-        /// </summary>
         protected bool canModifyComponents
         {
             get
@@ -44,15 +39,11 @@ namespace ModularUIRuntime
             }
             #endif
 
-            // Unsubscribe first to avoid duplicate events
             if (currentTheme != null)
             {
                 currentTheme.OnThemeChanged -= HandleThemeChanged;
             }
 
-            // Resolve the current theme (base.ApplyTheme sets currentTheme)
-            // but subclasses will check canModifyComponents before touching
-            // serialized Unity component properties.
             ApplyTheme();
 
             if (currentTheme != null)
@@ -61,7 +52,6 @@ namespace ModularUIRuntime
                 currentTheme.OnThemeChanged += HandleThemeChanged;
             }
 
-            // Subscribe to global theme changes
             if (Application.isPlaying && ModularThemeManager.Instance != null)
             {
                 ModularThemeManager.Instance.OnThemeChanged -= HandleThemeChanged;
@@ -180,7 +170,6 @@ namespace ModularUIRuntime
 
                 if (activeTheme != null)
                 {
-                    // If the theme changed, unsubscribe from old and subscribe to new
                     if (currentTheme != activeTheme)
                     {
                         if (currentTheme != null && Application.isPlaying) currentTheme.OnThemeChanged -= HandleThemeChanged;
