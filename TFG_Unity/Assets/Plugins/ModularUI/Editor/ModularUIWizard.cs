@@ -267,6 +267,7 @@ namespace ModularUIEditor
             {
                 ExecuteImport();
                 CreateAndApplyConfiguration();
+                AdaptSampleScenesToPlatform();
                 Close();
             }
             GUILayout.EndVertical();
@@ -345,7 +346,12 @@ namespace ModularUIEditor
                 CopyAssetItem("Samples", "Samples");
                 CopyAssetItem("Sprites", "Sprites");
                 CopyAssetItem("Fonts", "Fonts");
-                CopyAssetItem("VR_Enviroment", "VR_Enviroment");
+                
+                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+                {
+                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
+                    CopyAssetItem("Templates/VR~", "Templates/VR");
+                }
             }
             else
             {
@@ -355,7 +361,7 @@ namespace ModularUIEditor
 
                 if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
                 {
-                    CopyAssetItem("VR_Enviroment", "VR_Enviroment");
+                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
                 }
 
                 if (importBaseUI)
@@ -449,7 +455,7 @@ namespace ModularUIEditor
 
             if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
             {
-                CopyAssetItem($"Templates/VR/{templateName}_VR.prefab", $"Templates/VR/{templateName}_VR.prefab");
+                CopyAssetItem($"Templates/VR~/{templateName}_VR.prefab", $"Templates/VR/{templateName}_VR.prefab");
             }
         }
 
@@ -458,11 +464,41 @@ namespace ModularUIEditor
             string source = GetRootPath() + "/" + subPath;
             string destination = targetPath + "/" + targetSubPath;
 
-            EnsureFolderExists(destination);
-
             if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
             {
-                AssetDatabase.CopyAsset(source, destination);
+                if (AssetDatabase.LoadAssetAtPath<Object>(source) != null)
+                {
+                    EnsureFolderExists(destination);
+                    AssetDatabase.CopyAsset(source, destination);
+                }
+                else
+                {
+                    // Fallback to System.IO for hidden folders (ending in ~)
+                    if (Directory.Exists(source))
+                    {
+                        CopyDirectoryIO(source, destination);
+                    }
+                    else if (File.Exists(source))
+                    {
+                        EnsureFolderExists(destination);
+                        File.Copy(source, destination, true);
+                    }
+                }
+            }
+        }
+
+        private void CopyDirectoryIO(string sourceDir, string destDir)
+        {
+            Directory.CreateDirectory(destDir);
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                string destFile = Path.Combine(destDir, Path.GetFileName(file));
+                File.Copy(file, destFile, true);
+            }
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string destSubDir = Path.Combine(destDir, Path.GetFileName(subDir));
+                CopyDirectoryIO(subDir, destSubDir);
             }
         }
 
@@ -488,6 +524,100 @@ namespace ModularUIEditor
 
                         current += "/" + folders[i];
                     }
+                }
+            }
+        }
+
+        private struct TemplateGuids
+        {
+            public string baseGuid;
+            public string desktopGuid;
+            public string mobilePortraitGuid;
+            public string mobileLandscapeGuid;
+            public string vrGuid;
+
+            public TemplateGuids(string b, string d, string mp, string ml, string vr)
+            {
+                baseGuid = b;
+                desktopGuid = d;
+                mobilePortraitGuid = mp;
+                mobileLandscapeGuid = ml;
+                vrGuid = vr;
+            }
+
+            public string GetGuidForPlatform(UIConfiguration.TargetPlatform platform)
+            {
+                return platform switch
+                {
+                    UIConfiguration.TargetPlatform.Desktop => desktopGuid,
+                    UIConfiguration.TargetPlatform.MobilePortrait => mobilePortraitGuid,
+                    UIConfiguration.TargetPlatform.MobileLandscape => mobileLandscapeGuid,
+                    UIConfiguration.TargetPlatform.VR => vrGuid,
+                    _ => desktopGuid
+                };
+            }
+
+            public string[] GetAllPlatformGuids()
+            {
+                return new string[] { baseGuid, desktopGuid, mobilePortraitGuid, mobileLandscapeGuid, vrGuid };
+            }
+        }
+
+        private static readonly TemplateGuids[] AllTemplates = new TemplateGuids[]
+        {
+            // WinLoseMenu
+            new TemplateGuids("e3afe0e0415f5ba458544930bee5e004", "dec0a1e36b707a642b31b52286f051f0", "df40bc6f858a13a4ba9ba5e891112264", "e1fdd4c627b80614a87403a184b63049", "9353380678cc3184986c119d051853e4"),
+            // PauseMenu
+            new TemplateGuids("702398ab09e300f47ba568e6b4195742", "e823d7a97257a7f49a5f273cbde8a441", "200bb68c930bb7d49905e3ec89a580ad", "39a77a1c7213d024a990f70fe89fc545", "913ec37a587702148a97e4ca5039d799"),
+            // Options
+            new TemplateGuids("1664fdb73fce08d438bff449f1af0220", "ad278d46559f3c6458f8e6ec2ad55b53", "4ac02dbf33a86e341b191ac32da197f4", "075ee29682b3688499750a61d5ffd0fb", "b3db1b8be2b62ee48b7757926c484af3"),
+            // MainMenu
+            new TemplateGuids("280d4a726717bd4479f6c315d0b930f8", "a84a063bee5ced548b5aa022a0c0b16a", "504e6f55592b25540bb0432954ff199c", "4d547bddf8f2fab47a3d349e2bd6e438", "4e6e570e0baba9a4b972aa1bec044e6c"),
+            // InventoryPanel
+            new TemplateGuids("2933797009db68b40add57646c807a0d", "e787e55ab78a0c84faa54ebac8634ea2", "0b00912e1035fed47bbcfde78d866ee4", "49df74fb8385f804fb8fe5b47f2832c5", "d4738b07df292344c87ac10bbcd9d79a"),
+            // HUD
+            new TemplateGuids("099141bdc54090749bd00100da4e795f", "a0a7d573907e6944e89e9a4035204a34", "ab13962dfc683b749908065c4ce4467a", "840983b5871f609469a4e2b5d5a14730", "6bd84b1247604014fb75dd5bd5071cb2"),
+            // DialoguePanel
+            new TemplateGuids("cb47e69543f031b4ab7794cf87273783", "97b13ae1613e1eb448eff8b2184263b5", "6dfc2e2f554f1c943b6f85c46e57d403", "0c0f43bacacf9d6498031ad9a4b7ecb4", "6cbc9461b960b6944a2a8b2c4dbd9c23"),
+            // Credits
+            new TemplateGuids("4d186dd1d003b07428131f324345ef8a", "f752d32f51b315c4ab46d658c614ca0b", "9f77067a6d9aff14082cc74762a8bef7", "6e60e00bd8d0c3a429ff2b44e85f934b", "b1a9daba7191b654a8871f51baee148f")
+        };
+
+        private void AdaptSampleScenesToPlatform()
+        {
+            string samplesPath = targetPath + "/Samples";
+            if (!Directory.Exists(samplesPath)) return;
+
+            string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
+            foreach (string scenePath in unityScenes)
+            {
+                try
+                {
+                    string content = File.ReadAllText(scenePath);
+                    bool modified = false;
+
+                    foreach (var template in AllTemplates)
+                    {
+                        string targetGuid = template.GetGuidForPlatform(selectedPlatform);
+                        foreach (string oldGuid in template.GetAllPlatformGuids())
+                        {
+                            if (oldGuid != targetGuid && content.Contains(oldGuid))
+                            {
+                                content = content.Replace(oldGuid, targetGuid);
+                                modified = true;
+                            }
+                        }
+                    }
+
+                    if (modified)
+                    {
+                        File.WriteAllText(scenePath, content);
+                        Debug.Log($"[ModularUI] Adapted scene prefabs to {selectedPlatform}: {Path.GetFileName(scenePath)}");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[ModularUI] Failed to adapt scene {scenePath}: {e.Message}");
                 }
             }
         }
