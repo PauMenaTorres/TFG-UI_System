@@ -286,8 +286,6 @@ namespace ModularUIEditor
             if (GUILayout.Button("IMPORT & CONFIGURE SYSTEM", buttonStyle, GUILayout.Height(45)))
             {
                 ExecuteImport();
-                CreateAndApplyConfiguration();
-                AdaptSampleScenesToPlatform();
                 Close();
             }
             GUILayout.EndVertical();
@@ -496,6 +494,11 @@ namespace ModularUIEditor
                 AssetDatabase.StopAssetEditing();
             }
 
+            // Save settings for post-compilation Phase 2 setup
+            EditorPrefs.SetBool("ModularUI_PendingSetup", true);
+            EditorPrefs.SetInt("ModularUI_SelectedPlatform", (int)selectedPlatform);
+            EditorPrefs.SetInt("ModularUI_SelectedGenre", (int)selectedGenre);
+
             AssetDatabase.Refresh();
         }
 
@@ -529,14 +532,10 @@ namespace ModularUIEditor
             string source = GetRootPath() + "/" + subPath;
             string destination = targetPath + "/" + targetSubPath;
 
-            if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
+            // If the source path contains ~ or is not in the AssetDatabase, copy physically
+            if (subPath.Contains("~") || AssetDatabase.LoadAssetAtPath<Object>(source) == null)
             {
-                if (AssetDatabase.LoadAssetAtPath<Object>(source) != null)
-                {
-                    EnsureFolderExists(destination);
-                    AssetDatabase.CopyAsset(source, destination);
-                }
-                else
+                if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
                 {
                     string physicalSource = GetPhysicalSourcePath(source);
                     if (Directory.Exists(physicalSource))
@@ -549,6 +548,57 @@ namespace ModularUIEditor
                         File.Copy(physicalSource, destination, true);
                     }
                 }
+                return;
+            }
+
+            // Otherwise, it's an asset in the AssetDatabase.
+            // If it is a folder, copy recursively to merge files safely without skipping existing folders
+            string physicalPath = GetPhysicalSourcePath(source);
+            if (Directory.Exists(physicalPath))
+            {
+                CopyDirectoryRecursive(source, destination);
+            }
+            else
+            {
+                // Single file copy
+                if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
+                {
+                    EnsureFolderExists(destination);
+                    AssetDatabase.CopyAsset(source, destination);
+                }
+            }
+        }
+
+        private void CopyDirectoryRecursive(string sourceFolder, string destFolder)
+        {
+            string physicalSource = GetPhysicalSourcePath(sourceFolder);
+            if (!Directory.Exists(physicalSource)) return;
+
+            EnsureFolderExists(destFolder + "/dummy.txt");
+
+            foreach (string physicalFile in Directory.GetFiles(physicalSource))
+            {
+                string fileName = Path.GetFileName(physicalFile);
+                if (fileName.EndsWith(".meta") || fileName.Contains("~")) continue;
+
+                string sourceFile = sourceFolder + "/" + fileName;
+                string destFile = destFolder + "/" + fileName;
+
+                if (AssetDatabase.LoadAssetAtPath<Object>(destFile) == null)
+                {
+                    AssetDatabase.CopyAsset(sourceFile, destFile);
+                }
+            }
+
+            foreach (string physicalSubDir in Directory.GetDirectories(physicalSource))
+            {
+                string dirName = Path.GetFileName(physicalSubDir);
+                if (dirName.Contains("~")) continue;
+
+                string sourceSubDir = sourceFolder + "/" + dirName;
+                string destSubDir = destFolder + "/" + dirName;
+
+                CopyDirectoryRecursive(sourceSubDir, destSubDir);
             }
         }
 
@@ -655,24 +705,55 @@ namespace ModularUIEditor
                 return;
             }
 
+            var guidReplacements = new System.Collections.Generic.Dictionary<string, string>();
+            string packageRoot = "Packages/com.pau.modularui";
+            if (AssetDatabase.IsValidFolder(packageRoot))
+            {
+                var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(packageRoot);
+                if (packageInfo != null)
+                {
+                    string physicalPackageRoot = packageInfo.resolvedPath.Replace('\\', '/');
+                    string[] allFiles = Directory.GetFiles(physicalPackageRoot, "*.*", SearchOption.AllDirectories);
+                    foreach (string physicalFile in allFiles)
+                    {
+                        string normPath = physicalFile.Replace('\\', '/');
+                        if (normPath.EndsWith(".meta") || normPath.Contains("~")) continue;
+
+                        string relativePath = normPath.Substring(physicalPackageRoot.Length);
+                        string packageAssetPath = packageRoot + relativePath;
+                        string localAssetPath = targetPath + relativePath;
+
+                        string oldGuid = AssetDatabase.AssetPathToGUID(packageAssetPath);
+                        string newGuid = AssetDatabase.AssetPathToGUID(localAssetPath);
+
+                        if (!string.IsNullOrEmpty(oldGuid) && !string.IsNullOrEmpty(newGuid) && oldGuid != newGuid)
+                        {
+                            guidReplacements[oldGuid] = newGuid;
+                        }
+                    }
+                }
+            }
+
+            // 2. Find all assets that need to be patched (.unity, .prefab, .asset)
             var filesToPatch = new System.Collections.Generic.List<string>();
             foreach (string file in Directory.GetFiles(targetPath, "*.*", SearchOption.AllDirectories))
             {
                 string ext = Path.GetExtension(file).ToLower();
-                if (ext == ".unity" || ext == ".prefab")
+                if (ext == ".unity" || ext == ".prefab" || ext == ".asset")
                 {
                     filesToPatch.Add(file.Replace('\\', '/'));
                 }
             }
 
+            // 3. Patch the files
             foreach (string filePath in filesToPatch)
             {
                 try
                 {
                     string content = File.ReadAllText(filePath);
                     bool modified = false;
-                    string fileName = Path.GetFileNameWithoutExtension(filePath);
 
+                    // Apply platform-specific template swaps
                     foreach (var template in AllTemplates)
                     {
                         string targetGuid = template.GetGuidForPlatform(selectedPlatform);
@@ -687,44 +768,13 @@ namespace ModularUIEditor
                         }
                     }
 
-                    if (fileName == "Demo_Scene" || fileName == "DemoGameManager")
+                    // Apply automatic package-to-local GUID replacements
+                    foreach (var replacement in guidReplacements)
                     {
-                        string oldScriptsFolder = "Packages/com.pau.modularui/Samples/DemoScripts";
-                        string newScriptsFolder = "Assets/Plugins/ModularUI/Samples/DemoScripts";
-
-                        string physicalOldScriptsFolder = GetPhysicalSourcePath(oldScriptsFolder);
-                        if (Directory.Exists(physicalOldScriptsFolder) && Directory.Exists(newScriptsFolder))
+                        if (content.Contains(replacement.Key))
                         {
-                            string[] targetScripts = new string[]
-                            {
-                                "DemoGameManager.cs",
-                                "DemoEventSimulator.cs",
-                                "DemoMapColorChanger.cs",
-                                "DemoPickup.cs",
-                                "DemoTrigger.cs",
-                                "DemoHotbarActions.cs"
-                            };
-
-                            foreach (string scriptName in targetScripts)
-                            {
-                                string oldScriptPath = oldScriptsFolder + "/" + scriptName;
-                                string newScriptPath = newScriptsFolder + "/" + scriptName;
-
-                                if (File.Exists(GetPhysicalSourcePath(oldScriptPath)) && File.Exists(newScriptPath))
-                                {
-                                    string oldGuid = AssetDatabase.AssetPathToGUID(oldScriptPath);
-                                    string newGuid = AssetDatabase.AssetPathToGUID(newScriptPath);
-
-                                    if (!string.IsNullOrEmpty(oldGuid) && !string.IsNullOrEmpty(newGuid) && oldGuid != newGuid)
-                                    {
-                                        if (content.Contains(oldGuid))
-                                        {
-                                            content = content.Replace(oldGuid, newGuid);
-                                            modified = true;
-                                        }
-                                    }
-                                }
-                            }
+                            content = content.Replace(replacement.Key, replacement.Value);
+                            modified = true;
                         }
                     }
 
@@ -1277,6 +1327,53 @@ namespace ModularUIEditor
 
             so.ApplyModifiedProperties();
             EditorUtility.SetDirty(creditsMenu);
+        }
+
+        public void InitializeAfterCompilation(UIConfiguration.TargetPlatform platform, UIConfiguration.GameGenre genre)
+        {
+            selectedPlatform = platform;
+            selectedGenre = genre;
+
+            CreateAndApplyConfiguration();
+            AdaptSampleScenesToPlatform();
+
+            AssetDatabase.Refresh();
+        }
+    }
+
+    [InitializeOnLoad]
+    public static class ModularUIPostProcessor
+    {
+        static ModularUIPostProcessor()
+        {
+            EditorApplication.delayCall += CheckPendingSetup;
+        }
+
+        private static void CheckPendingSetup()
+        {
+            if (EditorPrefs.GetBool("ModularUI_PendingSetup", false))
+            {
+                if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+                {
+                    EditorApplication.delayCall += CheckPendingSetup;
+                    return;
+                }
+
+                EditorPrefs.SetBool("ModularUI_PendingSetup", false);
+                RunPhase2Setup();
+            }
+        }
+
+        private static void RunPhase2Setup()
+        {
+            var platform = (UIConfiguration.TargetPlatform)EditorPrefs.GetInt("ModularUI_SelectedPlatform", 0);
+            var genre = (UIConfiguration.GameGenre)EditorPrefs.GetInt("ModularUI_SelectedGenre", 0);
+
+            ModularUIWizard wizard = ScriptableObject.CreateInstance<ModularUIWizard>();
+            wizard.InitializeAfterCompilation(platform, genre);
+            ScriptableObject.DestroyImmediate(wizard);
+
+            Debug.Log("[Modular UI] Setup and scene adaptation completed successfully after script compilation!");
         }
     }
 }
