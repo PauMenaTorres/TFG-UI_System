@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using ModularUIRuntime;
 
 namespace ModularUI.Editor
 {
@@ -212,9 +213,31 @@ namespace ModularUI.Editor
 
         #endregion
 
+        private static GameObject LoadPrefabWithFallback(string assetPath, params string[] fallbackAssetPaths)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (prefab != null) return prefab;
+
+            if (fallbackAssetPaths != null)
+            {
+                foreach (var fallback in fallbackAssetPaths)
+                {
+                    if (string.IsNullOrWhiteSpace(fallback)) continue;
+                    prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fallback);
+                    if (prefab != null) return prefab;
+                }
+            }
+
+            return null;
+        }
+
         private static void InstantiatePrefab(string path, string defaultName)
         {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            GameObject prefab = LoadPrefabWithFallback(
+                path,
+                // VR templates can live under VR~ when copied from a package
+                path.Replace("/Templates/VR/", "/Templates/VR~/")
+            );
             if (prefab == null)
             {
                 
@@ -240,12 +263,21 @@ namespace ModularUI.Editor
 
             if (canvas == null)
             {
-                canvas = Object.FindObjectOfType<Canvas>();
+                var modularInitializer = Object.FindFirstObjectByType<ModularCanvasInitializer>();
+                if (modularInitializer != null)
+                {
+                    canvas = modularInitializer.GetComponent<Canvas>();
+                }
+
                 if (canvas == null)
                 {
                     canvas = CreateNewCanvas();
                 }
-                GameObjectUtility.SetParentAndAlign(instance, canvas.gameObject);
+
+                if (canvas != null)
+                {
+                    GameObjectUtility.SetParentAndAlign(instance, canvas.gameObject);
+                }
             }
 
             Undo.RegisterCreatedObjectUndo(instance, $"Create {instance.name}");
@@ -254,16 +286,32 @@ namespace ModularUI.Editor
 
         private static Canvas CreateNewCanvas()
         {
+            // Create the system's ModularCanvas prefab so it configures itself via ModularCanvasInitializer.
+            var modularCanvasPrefab = LoadPrefabWithFallback(BASE_UI_PATH + "ModularCanvas.prefab");
+            if (modularCanvasPrefab != null)
+            {
+                var instance = (GameObject)PrefabUtility.InstantiatePrefab(modularCanvasPrefab);
+                if (instance != null)
+                {
+                    instance.name = "ModularCanvas";
+                    Undo.RegisterCreatedObjectUndo(instance, "Create ModularCanvas");
+
+                    var canvas = instance.GetComponent<Canvas>();
+                    if (canvas != null) return canvas;
+                }
+            }
+
+            // Hard fallback: plain Unity Canvas.
             GameObject canvasObj = new GameObject("Canvas");
             canvasObj.layer = LayerMask.NameToLayer("UI");
-            Canvas canvas = canvasObj.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            Canvas fallbackCanvas = canvasObj.AddComponent<Canvas>();
+            fallbackCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvasObj.AddComponent<CanvasScaler>();
             canvasObj.AddComponent<GraphicRaycaster>();
-            
+
             Undo.RegisterCreatedObjectUndo(canvasObj, "Create Canvas");
 
-            if (Object.FindObjectOfType<EventSystem>() == null)
+            if (Object.FindFirstObjectByType<EventSystem>() == null)
             {
                 GameObject esObj = new GameObject("EventSystem");
                 esObj.AddComponent<EventSystem>();
@@ -271,7 +319,7 @@ namespace ModularUI.Editor
                 Undo.RegisterCreatedObjectUndo(esObj, "Create EventSystem");
             }
 
-            return canvas;
+            return fallbackCanvas;
         }
     }
 }
