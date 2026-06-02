@@ -56,7 +56,7 @@ namespace ModularUIRuntime
                     UIConfiguration config = Resources.Load<UIConfiguration>("UIConfiguration");
                     if (config == null)
                     {
-                        config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+                        config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>(ModularUIPaths.SettingsConfigPath);
                     }
                     if (config != null && config.selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
                     {

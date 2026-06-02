@@ -52,11 +52,7 @@ namespace ModularUIRuntime.Demo
             }
             if (mobilePrefab == null)
             {
-                mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Plugins/ModularUI/Templates/Mobile/MobileControls.prefab");
-            }
-            if (mobilePrefab == null)
-            {
-                mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Packages/com.pau.modularui/Templates/Mobile/MobileControls.prefab");
+                mobilePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(ModularUIPaths.BasePathNoSlash + "/Templates/Mobile/MobileControls.prefab");
             }
 #endif
             return mobilePrefab;

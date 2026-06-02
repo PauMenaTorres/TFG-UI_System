@@ -54,7 +54,7 @@ namespace ModularUIRuntime
 
         private void HandleAdaptiveControls(Canvas canvas)
         {
-            MobileControlRequirement requirement = Object.FindObjectOfType<MobileControlRequirement>();
+            MobileControlRequirement requirement = Object.FindFirstObjectByType<MobileControlRequirement>();
             
             if (requirement == null || requirement.mode == UIConfiguration.MobileControlMode.None)
             {
@@ -82,7 +82,7 @@ namespace ModularUIRuntime
 
         private UIConfiguration GetConfig()
         {
-            return Object.FindObjectOfType<ModularCanvasInitializer>()?.config;
+            return Object.FindFirstObjectByType<ModularCanvasInitializer>()?.config;
         }
     }
-}
+}

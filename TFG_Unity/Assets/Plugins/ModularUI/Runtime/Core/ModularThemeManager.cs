@@ -120,7 +120,7 @@ namespace ModularUIRuntime
 #if UNITY_EDITOR
                 if (config == null)
                 {
-                    config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>("Assets/Plugins/ModularUI/Settings/UIConfiguration.asset");
+                    config = UnityEditor.AssetDatabase.LoadAssetAtPath<UIConfiguration>(ModularUIPaths.SettingsConfigPath);
                 }
 #endif
             }

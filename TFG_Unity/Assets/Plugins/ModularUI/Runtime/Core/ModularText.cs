@@ -178,6 +178,7 @@ namespace ModularUIRuntime
                         changed = true;
                     }
                 }
+#pragma warning disable CS0618
                 else if (overrideFont != null)
                 {
 #if UNITY_EDITOR
@@ -194,6 +195,7 @@ namespace ModularUIRuntime
                         }
                     }
                 }
+#pragma warning restore CS0618
 
                 float targetSize = useCustomFontSize ? customFontSize : overrideFontSize;
 
