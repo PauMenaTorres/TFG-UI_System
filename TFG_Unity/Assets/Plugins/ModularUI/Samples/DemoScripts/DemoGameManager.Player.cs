@@ -46,22 +46,8 @@ namespace ModularUIRuntime.Demo
             }
         }
 
-        private bool _debugMovementLogged = false;
         void HandleMovement()
         {
-            if (!_debugMovementLogged)
-            {
-                _debugMovementLogged = true;
-                Debug.Log($"[ModularUI Demo] HandleMovement diagnostic: " +
-                    $"playerTransform={(playerTransform != null ? playerTransform.name : "NULL")}, " +
-                    $"inventoryOpen={inventoryOpen}, gamePaused={gamePaused}, " +
-                    $"Keyboard.current={(Keyboard.current != null ? "OK" : "NULL")}, " +
-                    $"Mouse.current={(Mouse.current != null ? "OK" : "NULL")}, " +
-                    $"moveAction={(moveAction != null ? moveAction.name : "NULL")}, " +
-                    $"lookAction={(lookAction != null ? lookAction.name : "NULL")}, " +
-                    $"inputActions={(inputActions != null ? inputActions.name : "NULL")}");
-            }
-
             if (playerTransform == null || inventoryOpen || gamePaused)
             {
                 return;
@@ -70,45 +56,20 @@ namespace ModularUIRuntime.Demo
             Vector2 move = Vector2.zero;
             Vector2 look = Vector2.zero;
 
-            if (moveAction != null)
+            if (Keyboard.current != null)
             {
-                try
-                {
-                    move = moveAction.ReadValue<Vector2>();
-                }
-                catch (System.Exception) {}
-            }
-            if (lookAction != null)
-            {
-                try
-                {
-                    look = lookAction.ReadValue<Vector2>();
-                }
-                catch (System.Exception) {}
+                float x = 0;
+                float y = 0;
+                if (Keyboard.current.wKey.isPressed) y += 1f;
+                if (Keyboard.current.sKey.isPressed) y -= 1f;
+                if (Keyboard.current.aKey.isPressed) x -= 1f;
+                if (Keyboard.current.dKey.isPressed) x += 1f;
+                move = new Vector2(x, y);
             }
 
-            if (move == Vector2.zero && Keyboard.current != null)
+            if (Mouse.current != null)
             {
-                try
-                {
-                    float x = 0;
-                    float y = 0;
-                    if (Keyboard.current.wKey.isPressed) y += 1f;
-                    if (Keyboard.current.sKey.isPressed) y -= 1f;
-                    if (Keyboard.current.aKey.isPressed) x -= 1f;
-                    if (Keyboard.current.dKey.isPressed) x += 1f;
-                    move = new Vector2(x, y);
-                }
-                catch (System.Exception) {}
-            }
-
-            if (look == Vector2.zero && Mouse.current != null)
-            {
-                try
-                {
-                    look = Mouse.current.delta.ReadValue();
-                }
-                catch (System.Exception) {}
+                look = Mouse.current.delta.ReadValue();
             }
 
 

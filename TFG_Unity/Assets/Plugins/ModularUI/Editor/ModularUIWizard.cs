@@ -800,22 +800,6 @@ namespace ModularUIEditor
                         var gmType = gameManager.GetType();
                         var bindFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance;
 
-                        var fieldInfo = gmType.GetField("inputActions", bindFlags);
-                        if (fieldInfo != null)
-                        {
-                            var currentValue = fieldInfo.GetValue(gameManager) as UnityEngine.Object;
-                            if (currentValue == null)
-                            {
-                                string actionsPath = targetPath + "/Samples/InputSystem_Actions.inputactions";
-                                var actionsAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(actionsPath);
-                                if (actionsAsset != null)
-                                {
-                                    fieldInfo.SetValue(gameManager, actionsAsset);
-                                    EditorUtility.SetDirty(gameManager);
-                                    isModified = true;
-                                }
-                            }
-                        }
 
                         var playerField = gmType.GetField("playerTransform", bindFlags);
                         if (playerField != null)

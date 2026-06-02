@@ -36,9 +36,6 @@ namespace ModularUIRuntime.Demo
         [Header("Objectives")]
         public List<string> objectives = new List<string>();
 
-        [Header("Input")]
-        public InputActionAsset inputActions;
-
         float currentHealth = 1f;
         float currentMana = 1f;
         int currentObjective = 0;
@@ -50,68 +47,10 @@ namespace ModularUIRuntime.Demo
         DemoPickup lastDetectedPickup;
         Canvas inventoryCanvas;
         MobileTouchInput mobileInput;
-        InputAction moveAction, lookAction, interactAction, cancelAction;
-
-
-
-        private void OnEnable()
-        {
-#if UNITY_EDITOR
-            if (inputActions == null)
-            {
-                string[] guids = UnityEditor.AssetDatabase.FindAssets("InputSystem_Actions t:InputActionAsset");
-                if (guids != null && guids.Length > 0)
-                {
-                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>(path);
-                }
-                if (inputActions == null)
-                {
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Assets/Plugins/ModularUI/Samples/InputSystem_Actions.inputactions");
-                }
-                if (inputActions == null)
-                {
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Packages/com.pau.modularui/Samples/InputSystem_Actions.inputactions");
-                }
-            }
-#endif
-            if (inputActions != null)
-            {
-                inputActions.Enable();
-            }
-        }
-
-        private void OnDisable()
-        {
-            if (inputActions != null)
-            {
-                inputActions.Disable();
-            }
-        }
 
         void Start()
         {
             if (!Application.isPlaying) return;
-
-#if UNITY_EDITOR
-            if (inputActions == null)
-            {
-                string[] guids = UnityEditor.AssetDatabase.FindAssets("InputSystem_Actions t:InputActionAsset");
-                if (guids != null && guids.Length > 0)
-                {
-                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>(path);
-                }
-                if (inputActions == null)
-                {
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Assets/Plugins/ModularUI/Samples/InputSystem_Actions.inputactions");
-                }
-                if (inputActions == null)
-                {
-                    inputActions = UnityEditor.AssetDatabase.LoadAssetAtPath<InputActionAsset>("Packages/com.pau.modularui/Samples/InputSystem_Actions.inputactions");
-                }
-            }
-#endif
 
             if (playerTransform == null)
             {
@@ -148,24 +87,6 @@ namespace ModularUIRuntime.Demo
                 {
                     parent.gameObject.SetActive(true);
                     parent = parent.parent;
-                }
-            }
-
-            if (inputActions != null)
-            {
-                var playerMap = inputActions.FindActionMap("Player");
-                if (playerMap != null)
-                {
-                    moveAction = playerMap.FindAction("Move");
-                    lookAction = playerMap.FindAction("Look");
-                    interactAction = playerMap.FindAction("Interact");
-                    playerMap.Enable();
-                }
-                var uiMap = inputActions.FindActionMap("UI");
-                if (uiMap != null)
-                {
-                    cancelAction = uiMap.FindAction("Cancel");
-                    uiMap.Enable();
                 }
             }
 
@@ -294,26 +215,13 @@ namespace ModularUIRuntime.Demo
             bool iPressed = false;
             bool interactPressed = false;
 
-            try
+            if (Keyboard.current != null)
             {
-                if (Keyboard.current != null)
-                {
-                    spacePressed = Keyboard.current.spaceKey.wasPressedThisFrame;
-                    escapePressed = Keyboard.current.escapeKey.wasPressedThisFrame;
-                    iPressed = Keyboard.current.iKey.wasPressedThisFrame;
-                    interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
-                }
+                spacePressed = Keyboard.current.spaceKey.wasPressedThisFrame;
+                escapePressed = Keyboard.current.escapeKey.wasPressedThisFrame;
+                iPressed = Keyboard.current.iKey.wasPressedThisFrame;
+                interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
             }
-            catch (System.Exception) {}
-
-            try
-            {
-                if (!interactPressed && interactAction != null && interactAction.WasPressedThisFrame())
-                {
-                    interactPressed = true;
-                }
-            }
-            catch (System.Exception) {}
 
 
 
