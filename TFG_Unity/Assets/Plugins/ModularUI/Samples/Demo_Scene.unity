@@ -1005,6 +1005,18 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 4687294933647417651, guid: e787e55ab78a0c84faa54ebac8634ea2, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4687294933647417651, guid: e787e55ab78a0c84faa54ebac8634ea2, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4687294933647417651, guid: e787e55ab78a0c84faa54ebac8634ea2, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4793103730146120555, guid: e787e55ab78a0c84faa54ebac8634ea2, type: 3}
       propertyPath: currentTheme
       value: 
@@ -9177,6 +9189,10 @@ PrefabInstance:
       propertyPath: slotsContainer
       value: 
       objectReference: {fileID: 1034782013}
+    - target: {fileID: 4266015612615619429, guid: 4fac87ff7c14b8147b69221a1d39af48, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 2141505878}
     - target: {fileID: 4266015612615619429, guid: 4fac87ff7c14b8147b69221a1d39af48, type: 3}
       propertyPath: inventoryManager
       value: 

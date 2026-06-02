@@ -247,6 +247,14 @@ namespace ModularUIRuntime.Demo
         {
             if (Application.isPlaying) return;
 
+#if UNITY_EDITOR
+            string sceneName = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name;
+            if (sceneName != "Demo_Scene")
+            {
+                return;
+            }
+#endif
+
             if (playerTransform == null)
             {
                 GameObject playerGo = GameObject.Find("Player");
@@ -260,7 +268,6 @@ namespace ModularUIRuntime.Demo
             SetupPlayerCamera();
             SetupMapColorChanger();
             SetupSimplifiedElements();
-            SetupMobileControlsInEditor();
             FixRenderPipelineShaders();
         }
 

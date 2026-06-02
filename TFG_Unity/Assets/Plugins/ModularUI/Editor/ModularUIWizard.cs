@@ -79,7 +79,14 @@ namespace ModularUIEditor
             ModularUIWizard wizard = CreateInstance<ModularUIWizard>();
             wizard.AdaptSampleScenesToPlatform();
             DestroyImmediate(wizard);
-            
+        }
+
+        public static void ReadaptScenesForPlatform(UIConfiguration.TargetPlatform platform)
+        {
+            ModularUIWizard wizard = CreateInstance<ModularUIWizard>();
+            wizard.selectedPlatform = platform;
+            wizard.AdaptSampleScenesToPlatform();
+            DestroyImmediate(wizard);
         }
 
         private static string GetRootPath()
@@ -949,10 +956,16 @@ namespace ModularUIEditor
                     {
                         File.WriteAllText(filePath, content);
                         AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceSynchronousImport);
+#if UNITY_EDITOR
+                        Debug.Log($"[Modular UI] Updated scene templates: {Path.GetFileNameWithoutExtension(filePath)}");
+#endif
                     }
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
+#if UNITY_EDITOR
+                    Debug.LogError($"[Modular UI] Error patching file {filePath}: {ex.Message}");
+#endif
                 }
             }
 

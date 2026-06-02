@@ -45,7 +45,24 @@ namespace ModularUIRuntime
             StandardGameplay
         }
 
-        public TargetPlatform selectedPlatform;
+        [SerializeField]
+        private TargetPlatform _selectedPlatform;
+
+        public TargetPlatform selectedPlatform
+        {
+            get { return _selectedPlatform; }
+            set
+            {
+                if (_selectedPlatform != value)
+                {
+                    _selectedPlatform = value;
+#if UNITY_EDITOR
+                    UnityEditor.EditorApplication.delayCall += ExecuteSwap;
+#endif
+                }
+            }
+        }
+
         public GameGenre selectedGenre;
 
         [Header("Mobile Settings")]
@@ -68,37 +85,65 @@ namespace ModularUIRuntime
 
         public event Action OnConfigurationChanged;
 
+#if UNITY_EDITOR
+        private TargetPlatform _previousPlatform;
+
+        private void ExecuteSwap()
+        {
+            if (this != null)
+            {
+                var swapperType = System.Type.GetType("ModularUIRuntime.ModularUIPlatformSwapper, Assembly-CSharp-Editor");
+                if (swapperType != null)
+                {
+                    var method = swapperType.GetMethod("SwapPrefabs", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    if (method != null)
+                    {
+                        method.Invoke(null, new object[] { _selectedPlatform });
+                    }
+                }
+                OnConfigurationChanged?.Invoke();
+            }
+        }
+
         private void OnValidate()
         {
-            if (selectedPlatform == TargetPlatform.MobilePortrait)
+            if (_previousPlatform != _selectedPlatform)
             {
-                if (designResolution.x > designResolution.y)
-                {
-                    float temp = designResolution.x;
-                    designResolution.x = designResolution.y;
-                    designResolution.y = temp;
-                }
+                _previousPlatform = _selectedPlatform;
+                UnityEditor.EditorApplication.delayCall -= ExecuteSwap;
+                UnityEditor.EditorApplication.delayCall += ExecuteSwap;
             }
             else
             {
-                if (designResolution.y > designResolution.x)
+                if (_selectedPlatform == TargetPlatform.MobilePortrait)
                 {
-                    float temp = designResolution.x;
-                    designResolution.x = designResolution.y;
-                    designResolution.y = temp;
+                    if (designResolution.x > designResolution.y)
+                    {
+                        float temp = designResolution.x;
+                        designResolution.x = designResolution.y;
+                        designResolution.y = temp;
+                    }
                 }
-            }
+                else
+                {
+                    if (designResolution.y > designResolution.x)
+                    {
+                        float temp = designResolution.x;
+                        designResolution.x = designResolution.y;
+                        designResolution.y = temp;
+                    }
+                }
 
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.delayCall += () =>
-            {
-                if (this != null)
+                UnityEditor.EditorApplication.delayCall += () =>
                 {
-                    OnConfigurationChanged?.Invoke();
-                }
-            };
-#endif
+                    if (this != null)
+                    {
+                        OnConfigurationChanged?.Invoke();
+                    }
+                };
+            }
         }
+#endif
 
         public ModularThemeData GetActiveTheme()
         {
