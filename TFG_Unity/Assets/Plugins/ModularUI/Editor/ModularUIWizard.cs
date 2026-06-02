@@ -650,22 +650,28 @@ namespace ModularUIEditor
 
         private void AdaptSampleScenesToPlatform()
         {
-            string samplesPath = targetPath + "/Samples";
-
-            if (!Directory.Exists(samplesPath))
+            if (!Directory.Exists(targetPath))
             {
                 return;
             }
 
-            string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
+            var filesToPatch = new System.Collections.Generic.List<string>();
+            foreach (string file in Directory.GetFiles(targetPath, "*.*", SearchOption.AllDirectories))
+            {
+                string ext = Path.GetExtension(file).ToLower();
+                if (ext == ".unity" || ext == ".prefab")
+                {
+                    filesToPatch.Add(file.Replace('\\', '/'));
+                }
+            }
 
-            foreach (string scenePath in unityScenes)
+            foreach (string filePath in filesToPatch)
             {
                 try
                 {
-                    string content = File.ReadAllText(scenePath);
+                    string content = File.ReadAllText(filePath);
                     bool modified = false;
-                    string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
 
                     foreach (var template in AllTemplates)
                     {
@@ -681,7 +687,7 @@ namespace ModularUIEditor
                         }
                     }
 
-                    if (sceneName == "Demo_Scene")
+                    if (fileName == "Demo_Scene" || fileName == "DemoGameManager")
                     {
                         string oldScriptsFolder = "Packages/com.pau.modularui/Samples/DemoScripts";
                         string newScriptsFolder = "Assets/Plugins/ModularUI/Samples/DemoScripts";
@@ -724,7 +730,7 @@ namespace ModularUIEditor
 
                     if (modified)
                     {
-                        File.WriteAllText(scenePath, content);
+                        File.WriteAllText(filePath, content);
                     }
                 }
                 catch (System.Exception)
@@ -736,9 +742,14 @@ namespace ModularUIEditor
 
             UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
-            foreach (string scenePath in unityScenes)
+            string samplesPath = targetPath + "/Samples";
+            if (Directory.Exists(samplesPath))
             {
-                CleanAndParentSceneObjects(scenePath);
+                string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
+                foreach (string scenePath in unityScenes)
+                {
+                    CleanAndParentSceneObjects(scenePath.Replace('\\', '/'));
+                }
             }
 
             if (!string.IsNullOrEmpty(originalScenePath) && File.Exists(GetPhysicalSourcePath(originalScenePath)))
