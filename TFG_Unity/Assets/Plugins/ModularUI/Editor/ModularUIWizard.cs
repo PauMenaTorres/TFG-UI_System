@@ -37,6 +37,20 @@ namespace ModularUIEditor
         [SerializeField] private bool importMinimap = true;
         [SerializeField] private bool importSamples = true;
 
+        private static string BasePath
+        {
+            get
+            {
+                if (AssetDatabase.IsValidFolder("Assets/Plugins/ModularUI"))
+                {
+                    return "Assets/Plugins/ModularUI/";
+                }
+                return "Packages/com.pau.modularui/";
+            }
+        }
+
+        private static string BasePathNoSlash => BasePath.TrimEnd('/');
+
         private string targetPath = "Assets/Plugins/ModularUI";
         private Vector2 scrollPosition;
 
@@ -68,24 +82,19 @@ namespace ModularUIEditor
             
         }
 
-        private string GetRootPath()
+        private static string GetRootPath()
         {
-            if (AssetDatabase.IsValidFolder("Packages/com.pau.modularui"))
-            {
-                return "Packages/com.pau.modularui";
-            }
-
-            return "Assets/Plugins/ModularUI";
+            return BasePathNoSlash;
         }
 
         private string GetPhysicalSourcePath(string assetPath)
         {
-            if (assetPath.StartsWith("Packages/com.pau.modularui"))
+            if (assetPath.StartsWith(BasePathNoSlash))
             {
-                var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath("Packages/com.pau.modularui");
+                var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(BasePathNoSlash);
                 if (packageInfo != null)
                 {
-                    string relativePath = assetPath.Substring("Packages/com.pau.modularui".Length);
+                    string relativePath = assetPath.Substring(BasePathNoSlash.Length);
                     return (packageInfo.resolvedPath + relativePath).Replace('\\', '/');
                 }
             }
@@ -824,7 +833,7 @@ namespace ModularUIEditor
             if (guidReplacements == null)
             {
                 guidReplacements = new System.Collections.Generic.Dictionary<string, string>();
-                string packageRoot = "Packages/com.pau.modularui";
+                string packageRoot = BasePathNoSlash;
                 if (AssetDatabase.IsValidFolder(packageRoot))
                 {
                     var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(packageRoot);

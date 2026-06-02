@@ -8,15 +8,21 @@ namespace ModularUI.Editor
 {
     public static class ModularUIMenuItems
     {
-        private const string ASSETS_ROOT = "Assets/Plugins/ModularUI";
-        private const string PACKAGE_ROOT = "Packages/com.pau.modularui";
+        private static string BasePath
+        {
+            get
+            {
+                if (AssetDatabase.IsValidFolder("Assets/Plugins/ModularUI"))
+                {
+                    return "Assets/Plugins/ModularUI/";
+                }
+                return "Packages/com.pau.modularui/";
+            }
+        }
 
-        private static string RootPath =>
-            AssetDatabase.IsValidFolder(ASSETS_ROOT) ? ASSETS_ROOT : PACKAGE_ROOT;
-
-        private static string BASE_PATH => RootPath + "/";
-        private static string BASE_UI_PATH => RootPath + "/BaseUI/";
-        private static string TEMPLATES_PATH => RootPath + "/Templates/";
+        private static string BASE_PATH => BasePath;
+        private static string BASE_UI_PATH => BasePath + "BaseUI/";
+        private static string TEMPLATES_PATH => BasePath + "Templates/";
         private const int MENU_PRIORITY = 10;
 
         #region Base UI
