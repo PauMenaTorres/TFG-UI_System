@@ -691,7 +691,7 @@ namespace ModularUIEditor
             return sb.ToString();
         }
 
-        private System.Collections.Generic.Dictionary<string, string> DeserializeGuidMap(string data)
+        public System.Collections.Generic.Dictionary<string, string> DeserializeGuidMap(string data)
         {
             var map = new System.Collections.Generic.Dictionary<string, string>();
             if (string.IsNullOrEmpty(data)) return map;
@@ -1305,7 +1305,7 @@ namespace ModularUIEditor
                     UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
                 }
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 
             }
