@@ -298,7 +298,6 @@ namespace ModularUI.Editor
 
         private static Canvas CreateNewCanvas()
         {
-            // Create the system's ModularCanvas prefab so it configures itself via ModularCanvasInitializer.
             var modularCanvasPrefab = LoadPrefabWithFallback(BASE_UI_PATH + "ModularCanvas.prefab");
             if (modularCanvasPrefab != null)
             {
@@ -313,15 +312,23 @@ namespace ModularUI.Editor
                 }
             }
 
-            // Hard fallback: plain Unity Canvas.
-            GameObject canvasObj = new GameObject("Canvas");
+            return CreateFallbackCanvas();
+        }
+
+        private static Canvas CreateFallbackCanvas()
+        {
+            GameObject canvasObj = new GameObject("ModularCanvas");
             canvasObj.layer = LayerMask.NameToLayer("UI");
             Canvas fallbackCanvas = canvasObj.AddComponent<Canvas>();
             fallbackCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvasObj.AddComponent<CanvasScaler>();
             canvasObj.AddComponent<GraphicRaycaster>();
 
-            Undo.RegisterCreatedObjectUndo(canvasObj, "Create Canvas");
+            var initializer = canvasObj.AddComponent<ModularCanvasInitializer>();
+            initializer.config = LoadDefaultConfiguration();
+            initializer.ForceInitialize();
+
+            Undo.RegisterCreatedObjectUndo(canvasObj, "Create ModularCanvas");
 
             if (Object.FindFirstObjectByType<EventSystem>() == null)
             {
@@ -332,6 +339,22 @@ namespace ModularUI.Editor
             }
 
             return fallbackCanvas;
+        }
+
+        private static UIConfiguration LoadDefaultConfiguration()
+        {
+            UIConfiguration config = Resources.Load<UIConfiguration>("UIConfiguration");
+#if UNITY_EDITOR
+            if (config == null)
+            {
+                config = AssetDatabase.LoadAssetAtPath<UIConfiguration>(BASE_PATH + "Settings/UIConfiguration.asset");
+                if (config == null)
+                {
+                    config = AssetDatabase.LoadAssetAtPath<UIConfiguration>(BASE_PATH + "Resources/UIConfiguration.asset");
+                }
+            }
+#endif
+            return config;
         }
     }
 }
