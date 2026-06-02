@@ -637,7 +637,11 @@ namespace ModularUIEditor
         private void AdaptSampleScenesToPlatform()
         {
             string samplesPath = targetPath + "/Samples";
-            if (!Directory.Exists(samplesPath)) return;
+
+            if (!Directory.Exists(samplesPath))
+            {
+                return;
+            }
 
             string[] unityScenes = Directory.GetFiles(samplesPath, "*.unity", SearchOption.AllDirectories);
 
@@ -647,10 +651,12 @@ namespace ModularUIEditor
                 {
                     string content = File.ReadAllText(scenePath);
                     bool modified = false;
+                    string sceneName = Path.GetFileNameWithoutExtension(scenePath);
 
                     foreach (var template in AllTemplates)
                     {
                         string targetGuid = template.GetGuidForPlatform(selectedPlatform);
+
                         foreach (string oldGuid in template.GetAllPlatformGuids())
                         {
                             if (oldGuid != targetGuid && content.Contains(oldGuid))
@@ -661,15 +667,53 @@ namespace ModularUIEditor
                         }
                     }
 
+                    if (sceneName == "Demo_Scene")
+                    {
+                        string oldScriptsFolder = "Packages/com.pau.modularui/Samples/DemoScripts";
+                        string newScriptsFolder = "Assets/Plugins/ModularUI/Samples/DemoScripts";
+
+                        if (Directory.Exists(oldScriptsFolder) && Directory.Exists(newScriptsFolder))
+                        {
+                            string[] targetScripts = new string[]
+                            {
+                                "DemoGameManager.cs",
+                                "DemoEventSimulator.cs",
+                                "DemoMapColorChanger.cs",
+                                "DemoPickup.cs",
+                                "DemoTrigger.cs",
+                                "DemoHotbarActions.cs"
+                            };
+
+                            foreach (string scriptName in targetScripts)
+                            {
+                                string oldScriptPath = oldScriptsFolder + "/" + scriptName;
+                                string newScriptPath = newScriptsFolder + "/" + scriptName;
+
+                                if (File.Exists(oldScriptPath) && File.Exists(newScriptPath))
+                                {
+                                    string oldGuid = AssetDatabase.AssetPathToGUID(oldScriptPath);
+                                    string newGuid = AssetDatabase.AssetPathToGUID(newScriptPath);
+
+                                    if (!string.IsNullOrEmpty(oldGuid) && !string.IsNullOrEmpty(newGuid) && oldGuid != newGuid)
+                                    {
+                                        if (content.Contains(oldGuid))
+                                        {
+                                            content = content.Replace(oldGuid, newGuid);
+                                            modified = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     if (modified)
                     {
                         File.WriteAllText(scenePath, content);
-                        
                     }
                 }
-                catch (System.Exception e)
+                catch (System.Exception)
                 {
-                    
                 }
             }
 
