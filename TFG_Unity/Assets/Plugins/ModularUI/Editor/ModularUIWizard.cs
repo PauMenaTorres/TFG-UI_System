@@ -843,7 +843,6 @@ namespace ModularUIEditor
                 }
             }
 
-            // 2. Find all assets that need to be patched (.unity, .prefab, .asset)
             var filesToPatch = new System.Collections.Generic.List<string>();
             foreach (string file in Directory.GetFiles(targetPath, "*.*", SearchOption.AllDirectories))
             {
@@ -854,7 +853,6 @@ namespace ModularUIEditor
                 }
             }
 
-            // 3. Patch the files
             foreach (string filePath in filesToPatch)
             {
                 try
@@ -862,7 +860,6 @@ namespace ModularUIEditor
                     string content = File.ReadAllText(filePath);
                     bool modified = false;
 
-                    // Apply platform-specific template swaps
                     foreach (var template in AllTemplates)
                     {
                         string targetGuid = template.GetGuidForPlatform(selectedPlatform);
@@ -890,6 +887,7 @@ namespace ModularUIEditor
                     if (modified)
                     {
                         File.WriteAllText(filePath, content);
+                        AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceSynchronousImport);
                     }
                 }
                 catch (System.Exception)
@@ -1475,6 +1473,8 @@ namespace ModularUIEditor
 
         private static void RunPhase2Setup()
         {
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+
             var platform = (UIConfiguration.TargetPlatform)EditorPrefs.GetInt("ModularUI_SelectedPlatform", 0);
             var genre = (UIConfiguration.GameGenre)EditorPrefs.GetInt("ModularUI_SelectedGenre", 0);
             string guidData = EditorPrefs.GetString("ModularUI_GuidReplacements", "");
