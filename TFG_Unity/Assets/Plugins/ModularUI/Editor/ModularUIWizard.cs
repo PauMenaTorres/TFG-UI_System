@@ -354,8 +354,8 @@ namespace ModularUIEditor
             }
             else if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
             {
-                string vrCameraRigPath = targetPath + "/Templates/VR/Modular_VR_CameraRig.prefab";
-                string vrEventSystemPath = targetPath + "/Templates/VR/Modular_VR_EventSystem.prefab";
+                string vrCameraRigPath = targetPath + "/VR_Enviroment/Modular_VR_CameraRig.prefab";
+                string vrEventSystemPath = targetPath + "/VR_Enviroment/Modular_VR_EventSystem.prefab";
                 GameObject vrCameraRigPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(vrCameraRigPath);
                 GameObject vrEventSystemPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(vrEventSystemPath);
                 config.vrSettings = new UIConfiguration.VRPlatformSettings
@@ -872,13 +872,52 @@ namespace ModularUIEditor
 
                     if (Path.GetExtension(filePath).ToLower() == ".unity")
                     {
-                        foreach (var template in AllTemplates)
+                        var templateNames = new string[]
                         {
-                            string targetGuid = template.GetGuidForPlatform(selectedPlatform);
+                            "MainMenu",
+                            "HUD",
+                            "InventoryPanel",
+                            "Options",
+                            "PauseMenu",
+                            "Credits",
+                            "WinLoseMenu",
+                            "DialoguePanel"
+                        };
 
-                            foreach (string oldGuid in template.GetAllPlatformGuids())
+                        foreach (var templateName in templateNames)
+                        {
+                            string basePath = $"{targetPath}/Templates/Base/{templateName}_Base.prefab";
+                            string desktopPath = $"{targetPath}/Templates/Desktop/{templateName}_Desktop.prefab";
+                            string portraitPath = $"{targetPath}/Templates/Mobile/Portrait/{templateName}_Portrait.prefab";
+                            string landscapePath = $"{targetPath}/Templates/Mobile/Landscape/{templateName}_Landscape.prefab";
+                            string vrPathA = $"{targetPath}/Templates/VR/{templateName}_VR.prefab";
+                            string vrPathB = $"{targetPath}/Templates/VR~/{templateName}_VR.prefab";
+
+                            string baseGuid = AssetDatabase.AssetPathToGUID(basePath);
+                            string desktopGuid = AssetDatabase.AssetPathToGUID(desktopPath);
+                            string portraitGuid = AssetDatabase.AssetPathToGUID(portraitPath);
+                            string landscapeGuid = AssetDatabase.AssetPathToGUID(landscapePath);
+                            string vrGuid = AssetDatabase.AssetPathToGUID(vrPathA);
+                            if (string.IsNullOrEmpty(vrGuid)) vrGuid = AssetDatabase.AssetPathToGUID(vrPathB);
+
+                            string targetGuid = selectedPlatform switch
                             {
-                                if (oldGuid != targetGuid && content.Contains(oldGuid))
+                                UIConfiguration.TargetPlatform.MobilePortrait => portraitGuid,
+                                UIConfiguration.TargetPlatform.MobileLandscape => landscapeGuid,
+                                UIConfiguration.TargetPlatform.VR => vrGuid,
+                                _ => desktopGuid
+                            };
+
+                            if (string.IsNullOrEmpty(targetGuid))
+                            {
+                                continue;
+                            }
+
+                            string[] candidates = new[] { baseGuid, desktopGuid, portraitGuid, landscapeGuid, vrGuid };
+                            foreach (var oldGuid in candidates)
+                            {
+                                if (string.IsNullOrEmpty(oldGuid) || oldGuid == targetGuid) continue;
+                                if (content.Contains(oldGuid))
                                 {
                                     content = content.Replace(oldGuid, targetGuid);
                                     modified = true;
@@ -949,8 +988,9 @@ namespace ModularUIEditor
                     }
                 }
 
-                string configPath = targetPath + "/Resources/UIConfiguration.asset";
-                UIConfiguration configAsset = AssetDatabase.LoadAssetAtPath<UIConfiguration>(configPath);
+                UIConfiguration configAsset =
+                    AssetDatabase.LoadAssetAtPath<UIConfiguration>(targetPath + "/Settings/UIConfiguration.asset") ??
+                    AssetDatabase.LoadAssetAtPath<UIConfiguration>(targetPath + "/Resources/UIConfiguration.asset");
 
                 if (canvasObj != null && configAsset != null)
                 {
