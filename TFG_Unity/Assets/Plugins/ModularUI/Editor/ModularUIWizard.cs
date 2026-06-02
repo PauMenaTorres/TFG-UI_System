@@ -70,12 +70,26 @@ namespace ModularUIEditor
 
         private string GetRootPath()
         {
-            if (Directory.Exists("Packages/com.pau.modularui"))
+            if (AssetDatabase.IsValidFolder("Packages/com.pau.modularui"))
             {
                 return "Packages/com.pau.modularui";
             }
 
             return "Assets/Plugins/ModularUI";
+        }
+
+        private string GetPhysicalSourcePath(string assetPath)
+        {
+            if (assetPath.StartsWith("Packages/com.pau.modularui"))
+            {
+                var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath("Packages/com.pau.modularui");
+                if (packageInfo != null)
+                {
+                    string relativePath = assetPath.Substring("Packages/com.pau.modularui".Length);
+                    return (packageInfo.resolvedPath + relativePath).Replace('\\', '/');
+                }
+            }
+            return assetPath;
         }
 
         private void OnEnable()
@@ -524,15 +538,15 @@ namespace ModularUIEditor
                 }
                 else
                 {
-                    
-                    if (Directory.Exists(source))
+                    string physicalSource = GetPhysicalSourcePath(source);
+                    if (Directory.Exists(physicalSource))
                     {
-                        CopyDirectoryIO(source, destination);
+                        CopyDirectoryIO(physicalSource, destination);
                     }
-                    else if (File.Exists(source))
+                    else if (File.Exists(physicalSource))
                     {
                         EnsureFolderExists(destination);
-                        File.Copy(source, destination, true);
+                        File.Copy(physicalSource, destination, true);
                     }
                 }
             }
@@ -672,7 +686,8 @@ namespace ModularUIEditor
                         string oldScriptsFolder = "Packages/com.pau.modularui/Samples/DemoScripts";
                         string newScriptsFolder = "Assets/Plugins/ModularUI/Samples/DemoScripts";
 
-                        if (Directory.Exists(oldScriptsFolder) && Directory.Exists(newScriptsFolder))
+                        string physicalOldScriptsFolder = GetPhysicalSourcePath(oldScriptsFolder);
+                        if (Directory.Exists(physicalOldScriptsFolder) && Directory.Exists(newScriptsFolder))
                         {
                             string[] targetScripts = new string[]
                             {
@@ -689,7 +704,7 @@ namespace ModularUIEditor
                                 string oldScriptPath = oldScriptsFolder + "/" + scriptName;
                                 string newScriptPath = newScriptsFolder + "/" + scriptName;
 
-                                if (File.Exists(oldScriptPath) && File.Exists(newScriptPath))
+                                if (File.Exists(GetPhysicalSourcePath(oldScriptPath)) && File.Exists(newScriptPath))
                                 {
                                     string oldGuid = AssetDatabase.AssetPathToGUID(oldScriptPath);
                                     string newGuid = AssetDatabase.AssetPathToGUID(newScriptPath);
@@ -726,7 +741,7 @@ namespace ModularUIEditor
                 CleanAndParentSceneObjects(scenePath);
             }
 
-            if (!string.IsNullOrEmpty(originalScenePath) && File.Exists(originalScenePath))
+            if (!string.IsNullOrEmpty(originalScenePath) && File.Exists(GetPhysicalSourcePath(originalScenePath)))
             {
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(originalScenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
             }
