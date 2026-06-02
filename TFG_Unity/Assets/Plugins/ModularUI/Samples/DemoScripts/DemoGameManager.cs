@@ -81,12 +81,19 @@ namespace ModularUIRuntime.Demo
 
             if (hudController != null)
             {
-                hudController.gameObject.SetActive(true);
-                Transform parent = hudController.transform.parent;
-                while (parent != null)
+                try
                 {
-                    parent.gameObject.SetActive(true);
-                    parent = parent.parent;
+                    hudController.gameObject.SetActive(true);
+                    Transform parent = hudController.transform.parent;
+                    while (parent != null)
+                    {
+                        parent.gameObject.SetActive(true);
+                        parent = parent.parent;
+                    }
+                }
+                catch (System.Exception)
+                {
+                    hudController = null;
                 }
             }
 
@@ -106,27 +113,41 @@ namespace ModularUIRuntime.Demo
 
             if (inventoryManager != null)
             {
-                inventoryManager.gameObject.SetActive(true);
-                Transform parent = inventoryManager.transform.parent;
-                while (parent != null)
+                try
                 {
-                    parent.gameObject.SetActive(true);
-                    parent = parent.parent;
+                    inventoryManager.gameObject.SetActive(true);
+                    Transform parent = inventoryManager.transform.parent;
+                    while (parent != null)
+                    {
+                        parent.gameObject.SetActive(true);
+                        parent = parent.parent;
+                    }
+                    inventoryManager.gameObject.SetActive(false);
+                    inventoryOpen = false;
                 }
-                inventoryManager.gameObject.SetActive(false);
-                inventoryOpen = false;
+                catch (System.Exception)
+                {
+                    inventoryManager = null;
+                }
             }
 
             if (pauseMenu != null)
             {
-                pauseMenu.gameObject.SetActive(true);
-                Transform parent = pauseMenu.transform.parent;
-                while (parent != null)
+                try
                 {
-                    parent.gameObject.SetActive(true);
-                    parent = parent.parent;
+                    pauseMenu.gameObject.SetActive(true);
+                    Transform parent = pauseMenu.transform.parent;
+                    while (parent != null)
+                    {
+                        parent.gameObject.SetActive(true);
+                        parent = parent.parent;
+                    }
+                    pauseMenu.Resume();
                 }
-                pauseMenu.Resume();
+                catch (System.Exception)
+                {
+                    pauseMenu = null;
+                }
             }
 
             if (pickupsParent == null)
@@ -180,88 +201,70 @@ namespace ModularUIRuntime.Demo
         void Update()
         {
             if (!Application.isPlaying) return;
+            if (playerTransform == null) return;
 
-            if (inventoryManager != null)
+            var kb = Keyboard.current;
+            var mouse = Mouse.current;
+            if (kb == null) return;
+
+            // Movement (WASD)
+            if (!gamePaused && !inventoryOpen)
             {
-                if (inventoryManager.gameObject.activeSelf != inventoryOpen)
+                float mx = 0, my = 0;
+                if (kb.wKey.isPressed) my += 1f;
+                if (kb.sKey.isPressed) my -= 1f;
+                if (kb.aKey.isPressed) mx -= 1f;
+                if (kb.dKey.isPressed) mx += 1f;
+
+                // Look (Mouse)
+                Vector2 look = mouse != null ? mouse.delta.ReadValue() : Vector2.zero;
+                yaw += look.x * lookSensitivity;
+                pitch -= look.y * lookSensitivity;
+                pitch = Mathf.Clamp(pitch, -90f, 90f);
+                playerTransform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+
+                // Apply movement
+                Vector3 fwd = playerTransform.forward; fwd.y = 0; fwd.Normalize();
+                Vector3 right = playerTransform.right; right.y = 0; right.Normalize();
+
+                // Gravity / Jump
+                if (playerTransform.position.y > groundY + 0.05f)
                 {
-                    inventoryOpen = inventoryManager.gameObject.activeSelf;
-                    Cursor.lockState = inventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
-                    Cursor.visible = inventoryOpen;
-                }
-            }
-
-            if (pauseMenu != null)
-            {
-                bool pausePanelVisible = pauseMenu.IsPanelActive && pauseMenu.gameObject.activeInHierarchy;
-                if (gamePaused && (!pausePanelVisible || Time.timeScale == 1f))
-                {
-                    gamePaused = false;
-                    Time.timeScale = 1f;
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-                else if (!gamePaused && pausePanelVisible)
-                {
-                    gamePaused = true;
-                    Time.timeScale = 0f;
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
-                }
-            }
-
-            bool spacePressed = false;
-            bool escapePressed = false;
-            bool iPressed = false;
-            bool interactPressed = false;
-
-            if (Keyboard.current != null)
-            {
-                spacePressed = Keyboard.current.spaceKey.wasPressedThisFrame;
-                escapePressed = Keyboard.current.escapeKey.wasPressedThisFrame;
-                iPressed = Keyboard.current.iKey.wasPressedThisFrame;
-                interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
-            }
-
-
-
-            if (spacePressed && !gamePaused && !inventoryOpen)
-            {
-                Jump();
-            }
-
-            HandleMovement();
-            HandlePickupDetection();
-
-            if (interactPressed && nearestPickup != null)
-            {
-                CollectItem(nearestPickup);
-            }
-
-            if (escapePressed)
-            {
-                if (inventoryOpen)
-                {
-                    ToggleInventory();
+                    verticalVelocity += gravity * Time.deltaTime;
+                    isGrounded = false;
                 }
                 else
                 {
-                    TogglePauseMenu();
+                    if (playerTransform.position.y < groundY)
+                    {
+                        Vector3 p = playerTransform.position; p.y = groundY; playerTransform.position = p;
+                    }
+                    verticalVelocity = 0f;
+                    isGrounded = true;
                 }
+
+                if (kb.spaceKey.wasPressedThisFrame && isGrounded) { verticalVelocity = jumpForce; isGrounded = false; }
+
+                Vector3 delta = (fwd * my + right * mx) * moveSpeed * Time.deltaTime;
+                delta.y = verticalVelocity * Time.deltaTime;
+                playerTransform.position += delta;
+
+                // Lock cursor while playing
+                if (Cursor.lockState != CursorLockMode.Locked) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             }
 
-            if (iPressed && !gamePaused)
-            {
-                ToggleInventory();
-            }
+            // Pickup detection
+            HandlePickupDetection();
+            if (kb.eKey.wasPressedThisFrame && nearestPickup != null) CollectItem(nearestPickup);
 
-            if (!gamePaused && !inventoryOpen)
+            // Toggle Inventory (I)
+            if (kb.iKey.wasPressedThisFrame && !gamePaused) ToggleInventory();
+
+            // Toggle Pause / Close Inventory (ESC)
+            if (kb.escapeKey.wasPressedThisFrame)
             {
-                if (Cursor.lockState != CursorLockMode.Locked)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
+                if (inventoryOpen) ToggleInventory();
+                else TogglePauseMenu();
             }
         }
 
