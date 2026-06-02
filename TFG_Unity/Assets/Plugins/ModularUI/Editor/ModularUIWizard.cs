@@ -41,11 +41,11 @@ namespace ModularUIEditor
         {
             get
             {
-                if (AssetDatabase.IsValidFolder("Assets/Plugins/ModularUI"))
+                if (AssetDatabase.IsValidFolder("Packages/com.pau.modularui"))
                 {
-                    return "Assets/Plugins/ModularUI/";
+                    return "Packages/com.pau.modularui/";
                 }
-                return "Packages/com.pau.modularui/";
+                return "Assets/Plugins/ModularUI/";
             }
         }
 
