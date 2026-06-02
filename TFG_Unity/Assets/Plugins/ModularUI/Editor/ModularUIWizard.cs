@@ -377,6 +377,8 @@ namespace ModularUIEditor
                 {
                     GameObject root = editingScope.prefabContentsRoot;
 
+                    RemoveMissingScriptsRecursively(root);
+
                     var initializer = root.GetComponent<ModularCanvasInitializer>();
 
                     if (initializer != null)
@@ -387,7 +389,15 @@ namespace ModularUIEditor
             }
 
             AssetDatabase.Refresh();
-            
+        }
+
+        private void RemoveMissingScriptsRecursively(GameObject go)
+        {
+            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(go);
+            foreach (Transform child in go.transform)
+            {
+                RemoveMissingScriptsRecursively(child.gameObject);
+            }
         }
 
         private void ExecuteImport()
@@ -860,16 +870,19 @@ namespace ModularUIEditor
                     string content = File.ReadAllText(filePath);
                     bool modified = false;
 
-                    foreach (var template in AllTemplates)
+                    if (Path.GetExtension(filePath).ToLower() == ".unity")
                     {
-                        string targetGuid = template.GetGuidForPlatform(selectedPlatform);
-
-                        foreach (string oldGuid in template.GetAllPlatformGuids())
+                        foreach (var template in AllTemplates)
                         {
-                            if (oldGuid != targetGuid && content.Contains(oldGuid))
+                            string targetGuid = template.GetGuidForPlatform(selectedPlatform);
+
+                            foreach (string oldGuid in template.GetAllPlatformGuids())
                             {
-                                content = content.Replace(oldGuid, targetGuid);
-                                modified = true;
+                                if (oldGuid != targetGuid && content.Contains(oldGuid))
+                                {
+                                    content = content.Replace(oldGuid, targetGuid);
+                                    modified = true;
+                                }
                             }
                         }
                     }
