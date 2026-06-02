@@ -170,7 +170,14 @@ namespace ModularUIRuntime.Demo
             Renderer rend = visual.GetComponent<Renderer>();
             if (rend != null)
             {
-                rend.material.color = data.type == ItemType.Consumable ? Color.red : Color.yellow;
+                if (Application.isPlaying)
+                {
+                    rend.material.color = data.type == ItemType.Consumable ? Color.red : Color.yellow;
+                }
+                else
+                {
+                    rend.sharedMaterial.color = data.type == ItemType.Consumable ? Color.red : Color.yellow;
+                }
             }
         }
 

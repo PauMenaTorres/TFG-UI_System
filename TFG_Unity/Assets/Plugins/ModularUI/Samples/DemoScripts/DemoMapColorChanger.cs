@@ -36,7 +36,14 @@ namespace ModularUIRuntime.Demo
             {
                 timer = 0f;
                 currentIndex = (currentIndex + 1) % colors.Length;
-                planeRenderer.material.color = colors[currentIndex];
+                if (Application.isPlaying)
+                {
+                    planeRenderer.material.color = colors[currentIndex];
+                }
+                else
+                {
+                    planeRenderer.sharedMaterial.color = colors[currentIndex];
+                }
             }
         }
     }

@@ -326,7 +326,6 @@ namespace ModularUI.Editor
 
             var initializer = canvasObj.AddComponent<ModularCanvasInitializer>();
             initializer.config = LoadDefaultConfiguration();
-            initializer.ForceInitialize();
 
             Undo.RegisterCreatedObjectUndo(canvasObj, "Create ModularCanvas");
 
@@ -337,6 +336,14 @@ namespace ModularUI.Editor
                 esObj.AddComponent<StandaloneInputModule>();
                 Undo.RegisterCreatedObjectUndo(esObj, "Create EventSystem");
             }
+
+            EditorApplication.delayCall += () =>
+            {
+                if (canvasObj != null)
+                {
+                    initializer.ForceInitialize();
+                }
+            };
 
             return fallbackCanvas;
         }
