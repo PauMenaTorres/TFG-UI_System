@@ -392,214 +392,320 @@ namespace ModularUIEditor
 
         private void ExecuteImport()
         {
+            CleanupTargetDirectories();
+
             if (!AssetDatabase.IsValidFolder(targetPath))
             {
                 EnsureFolderExists(targetPath + "/dummy.txt");
             }
 
-            AssetDatabase.StartAssetEditing();
-            try
+            var guidReplacements = new System.Collections.Generic.Dictionary<string, string>();
+
+            if (currentScope == ImportScope.FULL_SYSTEM)
             {
-                if (currentScope == ImportScope.FULL_SYSTEM)
+                CopyAssetItem("BaseUI", "BaseUI", guidReplacements);
+                CopyAssetItem("Templates", "Templates", guidReplacements);
+                CopyAssetItem("Dialogues", "Dialogues", guidReplacements);
+                CopyAssetItem("Resources", "Resources", guidReplacements);
+                CopyAssetItem("Minimap", "Minimap", guidReplacements);
+                CopyAssetItem("Samples", "Samples", guidReplacements);
+                
+                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
                 {
-                    CopyAssetItem("BaseUI", "BaseUI");
-                    CopyAssetItem("Templates", "Templates");
-                    CopyAssetItem("Dialogues", "Dialogues");
-                    CopyAssetItem("Resources", "Resources");
-                    CopyAssetItem("Minimap", "Minimap");
-                    CopyAssetItem("Samples", "Samples");
-                    
-                    if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
-                    {
-                        CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
-                        CopyAssetItem("Templates/VR~", "Templates/VR");
-                    }
-                }
-                else
-                {
-                    if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
-                    {
-                        CopyAssetItem("VR_Enviroment~", "VR_Enviroment");
-                    }
-
-                    if (importBaseUI)
-                    {
-                        CopyAssetItem("BaseUI", "BaseUI");
-                    }
-
-                    if (importMainMenu)
-                    {
-                        ImportTemplateVariant("MainMenu");
-                    }
-
-                    if (importHUD)
-                    {
-                        ImportTemplateVariant("HUD");
-                    }
-
-                    if (importInventory)
-                    {
-                        ImportTemplateVariant("InventoryPanel");
-                    }
-
-                    if (importOptions)
-                    {
-                        ImportTemplateVariant("Options");
-                    }
-
-                    if (importPauseMenu)
-                    {
-                        ImportTemplateVariant("PauseMenu");
-                    }
-
-                    if (importCredits)
-                    {
-                        ImportTemplateVariant("Credits");
-                    }
-
-                    if (importWinLose)
-                    {
-                        ImportTemplateVariant("WinLoseMenu");
-                    }
-
-                    if (importDialogues)
-                    {
-                        CopyAssetItem("Dialogues", "Dialogues");
-                        ImportTemplateVariant("DialoguePanel");
-                    }
-
-                    if (importSettings)
-                    {
-                        CopyAssetItem("Resources", "Resources");
-                    }
-
-                    if (importMinimap)
-                    {
-                        CopyAssetItem("Minimap", "Minimap");
-                    }
-
-                    if (importSamples)
-                    {
-                        CopyAssetItem("Samples", "Samples");
-                    }
-
-                    if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
-                    {
-                        CopyAssetItem("Templates/Mobile/MobileControls.prefab", "Templates/Mobile/MobileControls.prefab");
-                    }
+                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment", guidReplacements);
+                    CopyAssetItem("Templates/VR~", "Templates/VR", guidReplacements);
                 }
             }
-            finally
+            else
             {
-                AssetDatabase.StopAssetEditing();
+                if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
+                {
+                    CopyAssetItem("VR_Enviroment~", "VR_Enviroment", guidReplacements);
+                }
+
+                if (importBaseUI)
+                {
+                    CopyAssetItem("BaseUI", "BaseUI", guidReplacements);
+                }
+
+                if (importMainMenu)
+                {
+                    ImportTemplateVariant("MainMenu", guidReplacements);
+                }
+
+                if (importHUD)
+                {
+                    ImportTemplateVariant("HUD", guidReplacements);
+                }
+
+                if (importInventory)
+                {
+                    ImportTemplateVariant("InventoryPanel", guidReplacements);
+                }
+
+                if (importOptions)
+                {
+                    ImportTemplateVariant("Options", guidReplacements);
+                }
+
+                if (importPauseMenu)
+                {
+                    ImportTemplateVariant("PauseMenu", guidReplacements);
+                }
+
+                if (importCredits)
+                {
+                    ImportTemplateVariant("Credits", guidReplacements);
+                }
+
+                if (importWinLose)
+                {
+                    ImportTemplateVariant("WinLoseMenu", guidReplacements);
+                }
+
+                if (importDialogues)
+                {
+                    CopyAssetItem("Dialogues", "Dialogues", guidReplacements);
+                    ImportTemplateVariant("DialoguePanel", guidReplacements);
+                }
+
+                if (importSettings)
+                {
+                    CopyAssetItem("Resources", "Resources", guidReplacements);
+                }
+
+                if (importMinimap)
+                {
+                    CopyAssetItem("Minimap", "Minimap", guidReplacements);
+                }
+
+                if (importSamples)
+                {
+                    CopyAssetItem("Samples", "Samples", guidReplacements);
+                }
+
+                if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait || selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
+                {
+                    CopyAssetItem("Templates/Mobile/MobileControls.prefab", "Templates/Mobile/MobileControls.prefab", guidReplacements);
+                }
             }
 
-            // Save settings for post-compilation Phase 2 setup
             EditorPrefs.SetBool("ModularUI_PendingSetup", true);
             EditorPrefs.SetInt("ModularUI_SelectedPlatform", (int)selectedPlatform);
             EditorPrefs.SetInt("ModularUI_SelectedGenre", (int)selectedGenre);
+            EditorPrefs.SetString("ModularUI_GuidReplacements", SerializeGuidMap(guidReplacements));
 
             AssetDatabase.Refresh();
         }
 
-        private void ImportTemplateVariant(string templateName)
+        private void ImportTemplateVariant(string templateName, System.Collections.Generic.Dictionary<string, string> guidReplacements)
         {
-            CopyAssetItem($"Templates/Base/{templateName}_Base.prefab", $"Templates/Base/{templateName}_Base.prefab");
+            CopyAssetItem($"Templates/Base/{templateName}_Base.prefab", $"Templates/Base/{templateName}_Base.prefab", guidReplacements);
 
             if (selectedPlatform == UIConfiguration.TargetPlatform.Desktop)
             {
-                CopyAssetItem($"Templates/Desktop/{templateName}_Desktop.prefab", $"Templates/Desktop/{templateName}_Desktop.prefab");
+                CopyAssetItem($"Templates/Desktop/{templateName}_Desktop.prefab", $"Templates/Desktop/{templateName}_Desktop.prefab", guidReplacements);
             }
 
             if (selectedPlatform == UIConfiguration.TargetPlatform.MobilePortrait)
             {
-                CopyAssetItem($"Templates/Mobile/Portrait/{templateName}_Portrait.prefab", $"Templates/Mobile/Portrait/{templateName}_Portrait.prefab");
+                CopyAssetItem($"Templates/Mobile/Portrait/{templateName}_Portrait.prefab", $"Templates/Mobile/Portrait/{templateName}_Portrait.prefab", guidReplacements);
             }
 
             if (selectedPlatform == UIConfiguration.TargetPlatform.MobileLandscape)
             {
-                CopyAssetItem($"Templates/Mobile/Landscape/{templateName}_Landscape.prefab", $"Templates/Mobile/Landscape/{templateName}_Landscape.prefab");
+                CopyAssetItem($"Templates/Mobile/Landscape/{templateName}_Landscape.prefab", $"Templates/Mobile/Landscape/{templateName}_Landscape.prefab", guidReplacements);
             }
 
             if (selectedPlatform == UIConfiguration.TargetPlatform.VR)
             {
-                CopyAssetItem($"Templates/VR~/{templateName}_VR.prefab", $"Templates/VR/{templateName}_VR.prefab");
+                CopyAssetItem($"Templates/VR~/{templateName}_VR.prefab", $"Templates/VR/{templateName}_VR.prefab", guidReplacements);
             }
         }
 
-        private void CopyAssetItem(string subPath, string targetSubPath)
+        private void CopyAssetItem(string subPath, string targetSubPath, System.Collections.Generic.Dictionary<string, string> guidReplacements)
         {
             string source = GetRootPath() + "/" + subPath;
             string destination = targetPath + "/" + targetSubPath;
 
-            // If the source path contains ~ or is not in the AssetDatabase, copy physically
-            if (subPath.Contains("~") || AssetDatabase.LoadAssetAtPath<Object>(source) == null)
+            string physicalSource = GetPhysicalSourcePath(source);
+            string physicalDest = Path.GetFullPath(destination).Replace('\\', '/');
+            string physicalSourceNorm = Path.GetFullPath(physicalSource).Replace('\\', '/');
+
+            if (string.Equals(physicalSourceNorm, physicalDest, System.StringComparison.OrdinalIgnoreCase))
             {
-                if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
-                {
-                    string physicalSource = GetPhysicalSourcePath(source);
-                    if (Directory.Exists(physicalSource))
-                    {
-                        CopyDirectoryIO(physicalSource, destination);
-                    }
-                    else if (File.Exists(physicalSource))
-                    {
-                        EnsureFolderExists(destination);
-                        File.Copy(physicalSource, destination, true);
-                    }
-                }
                 return;
             }
 
-            // Otherwise, it's an asset in the AssetDatabase.
-            // If it is a folder, copy recursively to merge files safely without skipping existing folders
-            string physicalPath = GetPhysicalSourcePath(source);
-            if (Directory.Exists(physicalPath))
+            if (Directory.Exists(physicalSourceNorm))
             {
-                CopyDirectoryRecursive(source, destination);
+                PhysicalCopyFolder(physicalSourceNorm, physicalDest, guidReplacements);
             }
-            else
+            else if (File.Exists(physicalSourceNorm))
             {
-                // Single file copy
-                if (AssetDatabase.LoadAssetAtPath<Object>(destination) == null)
+                Directory.CreateDirectory(Path.GetDirectoryName(physicalDest));
+                try
                 {
-                    EnsureFolderExists(destination);
-                    AssetDatabase.CopyAsset(source, destination);
+                    File.Copy(physicalSourceNorm, physicalDest, true);
+                    
+                    string sourceMeta = physicalSourceNorm + ".meta";
+                    string destMeta = physicalDest + ".meta";
+                    if (File.Exists(sourceMeta))
+                    {
+                        string metaContent = File.ReadAllText(sourceMeta);
+                        string oldGuid = ExtractGuidFromMeta(metaContent);
+                        if (!string.IsNullOrEmpty(oldGuid))
+                        {
+                            string newGuid = System.Guid.NewGuid().ToString("N");
+                            guidReplacements[oldGuid] = newGuid;
+                            string newMetaContent = ReplaceGuidInMeta(metaContent, oldGuid, newGuid);
+                            File.WriteAllText(destMeta, newMetaContent);
+                        }
+                    }
+                }
+                catch (System.Exception) { }
+            }
+        }
+
+        private void PhysicalCopyFolder(string sourceDir, string destDir, System.Collections.Generic.Dictionary<string, string> guidReplacements)
+        {
+            Directory.CreateDirectory(destDir);
+
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                if (file.EndsWith(".meta")) continue;
+
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(destDir, fileName);
+
+                try
+                {
+                    File.Copy(file, destFile, true);
+
+                    string sourceMeta = file + ".meta";
+                    string destMeta = destFile + ".meta";
+                    if (File.Exists(sourceMeta))
+                    {
+                        string metaContent = File.ReadAllText(sourceMeta);
+                        string oldGuid = ExtractGuidFromMeta(metaContent);
+                        if (!string.IsNullOrEmpty(oldGuid))
+                        {
+                            string newGuid = System.Guid.NewGuid().ToString("N");
+                            guidReplacements[oldGuid] = newGuid;
+                            string newMetaContent = ReplaceGuidInMeta(metaContent, oldGuid, newGuid);
+                            File.WriteAllText(destMeta, newMetaContent);
+                        }
+                    }
+                }
+                catch (System.Exception) { }
+            }
+
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string dirName = Path.GetFileName(subDir);
+                if (dirName.Contains("~")) continue;
+
+                string destSubDir = Path.Combine(destDir, dirName);
+                
+                PhysicalCopyFolder(subDir, destSubDir, guidReplacements);
+
+                string sourceMeta = subDir + ".meta";
+                string destMeta = destSubDir + ".meta";
+                if (File.Exists(sourceMeta))
+                {
+                    try
+                    {
+                        string metaContent = File.ReadAllText(sourceMeta);
+                        string oldGuid = ExtractGuidFromMeta(metaContent);
+                        if (!string.IsNullOrEmpty(oldGuid))
+                        {
+                            string newGuid = System.Guid.NewGuid().ToString("N");
+                            guidReplacements[oldGuid] = newGuid;
+                            string newMetaContent = ReplaceGuidInMeta(metaContent, oldGuid, newGuid);
+                            File.WriteAllText(destMeta, newMetaContent);
+                        }
+                    }
+                    catch (System.Exception) { }
                 }
             }
         }
 
-        private void CopyDirectoryRecursive(string sourceFolder, string destFolder)
+        private void CleanupTargetDirectories()
         {
-            string physicalSource = GetPhysicalSourcePath(sourceFolder);
-            if (!Directory.Exists(physicalSource)) return;
+            if (!Directory.Exists(targetPath)) return;
 
-            EnsureFolderExists(destFolder + "/dummy.txt");
-
-            foreach (string physicalFile in Directory.GetFiles(physicalSource))
+            string[] directories = Directory.GetDirectories(targetPath);
+            foreach (string dir in directories)
             {
-                string fileName = Path.GetFileName(physicalFile);
-                if (fileName.EndsWith(".meta") || fileName.Contains("~")) continue;
+                string dirName = Path.GetFileName(dir);
+                
+                bool shouldDelete = dirName == "BaseUI" || dirName == "Templates" || 
+                                   dirName == "Dialogues" || dirName == "Minimap" || 
+                                   dirName == "Samples" || dirName == "VR_Enviroment" ||
+                                   dirName.StartsWith("BaseUI ") || dirName.StartsWith("Templates ") ||
+                                   dirName.StartsWith("Dialogues ") || dirName.StartsWith("Minimap ") ||
+                                   dirName.StartsWith("Samples ") || dirName.StartsWith("VR_Enviroment ");
 
-                string sourceFile = sourceFolder + "/" + fileName;
-                string destFile = destFolder + "/" + fileName;
-
-                if (AssetDatabase.LoadAssetAtPath<Object>(destFile) == null)
+                if (shouldDelete)
                 {
-                    AssetDatabase.CopyAsset(sourceFile, destFile);
+                    try
+                    {
+                        Directory.Delete(dir, true);
+                        
+                        string metaFile = dir + ".meta";
+                        if (File.Exists(metaFile))
+                        {
+                            File.Delete(metaFile);
+                        }
+                    }
+                    catch (System.Exception) { }
                 }
             }
+        }
 
-            foreach (string physicalSubDir in Directory.GetDirectories(physicalSource))
+        private string ExtractGuidFromMeta(string metaContent)
+        {
+            int index = metaContent.IndexOf("guid: ");
+            if (index >= 0)
             {
-                string dirName = Path.GetFileName(physicalSubDir);
-                if (dirName.Contains("~")) continue;
-
-                string sourceSubDir = sourceFolder + "/" + dirName;
-                string destSubDir = destFolder + "/" + dirName;
-
-                CopyDirectoryRecursive(sourceSubDir, destSubDir);
+                int start = index + "guid: ".Length;
+                int end = metaContent.IndexOf('\n', start);
+                if (end < 0) end = metaContent.Length;
+                return metaContent.Substring(start, end - start).Trim().Replace("\r", "");
             }
+            return null;
+        }
+
+        private string ReplaceGuidInMeta(string metaContent, string oldGuid, string newGuid)
+        {
+            return metaContent.Replace(oldGuid, newGuid);
+        }
+
+        private string SerializeGuidMap(System.Collections.Generic.Dictionary<string, string> map)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var kvp in map)
+            {
+                sb.Append(kvp.Key).Append(':').Append(kvp.Value).Append(';');
+            }
+            return sb.ToString();
+        }
+
+        private System.Collections.Generic.Dictionary<string, string> DeserializeGuidMap(string data)
+        {
+            var map = new System.Collections.Generic.Dictionary<string, string>();
+            if (string.IsNullOrEmpty(data)) return map;
+
+            string[] pairs = data.Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
+            foreach (string pair in pairs)
+            {
+                string[] kv = pair.Split(':');
+                if (kv.Length == 2)
+                {
+                    map[kv[0]] = kv[1];
+                }
+            }
+            return map;
         }
 
         private void CopyDirectoryIO(string sourceDir, string destDir)
@@ -698,37 +804,40 @@ namespace ModularUIEditor
             new TemplateGuids("4d186dd1d003b07428131f324345ef8a", "f752d32f51b315c4ab46d658c614ca0b", "9f77067a6d9aff14082cc74762a8bef7", "6e60e00bd8d0c3a429ff2b44e85f934b", "b1a9daba7191b654a8871f51baee148f")
         };
 
-        private void AdaptSampleScenesToPlatform()
+        private void AdaptSampleScenesToPlatform(System.Collections.Generic.Dictionary<string, string> guidReplacements = null)
         {
             if (!Directory.Exists(targetPath))
             {
                 return;
             }
 
-            var guidReplacements = new System.Collections.Generic.Dictionary<string, string>();
-            string packageRoot = "Packages/com.pau.modularui";
-            if (AssetDatabase.IsValidFolder(packageRoot))
+            if (guidReplacements == null)
             {
-                var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(packageRoot);
-                if (packageInfo != null)
+                guidReplacements = new System.Collections.Generic.Dictionary<string, string>();
+                string packageRoot = "Packages/com.pau.modularui";
+                if (AssetDatabase.IsValidFolder(packageRoot))
                 {
-                    string physicalPackageRoot = packageInfo.resolvedPath.Replace('\\', '/');
-                    string[] allFiles = Directory.GetFiles(physicalPackageRoot, "*.*", SearchOption.AllDirectories);
-                    foreach (string physicalFile in allFiles)
+                    var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(packageRoot);
+                    if (packageInfo != null)
                     {
-                        string normPath = physicalFile.Replace('\\', '/');
-                        if (normPath.EndsWith(".meta") || normPath.Contains("~")) continue;
-
-                        string relativePath = normPath.Substring(physicalPackageRoot.Length);
-                        string packageAssetPath = packageRoot + relativePath;
-                        string localAssetPath = targetPath + relativePath;
-
-                        string oldGuid = AssetDatabase.AssetPathToGUID(packageAssetPath);
-                        string newGuid = AssetDatabase.AssetPathToGUID(localAssetPath);
-
-                        if (!string.IsNullOrEmpty(oldGuid) && !string.IsNullOrEmpty(newGuid) && oldGuid != newGuid)
+                        string physicalPackageRoot = packageInfo.resolvedPath.Replace('\\', '/');
+                        string[] allFiles = Directory.GetFiles(physicalPackageRoot, "*.*", SearchOption.AllDirectories);
+                        foreach (string physicalFile in allFiles)
                         {
-                            guidReplacements[oldGuid] = newGuid;
+                            string normPath = physicalFile.Replace('\\', '/');
+                            if (normPath.EndsWith(".meta") || normPath.Contains("~")) continue;
+
+                            string relativePath = normPath.Substring(physicalPackageRoot.Length);
+                            string packageAssetPath = packageRoot + relativePath;
+                            string localAssetPath = targetPath + relativePath;
+
+                            string oldGuid = AssetDatabase.AssetPathToGUID(packageAssetPath);
+                            string newGuid = AssetDatabase.AssetPathToGUID(localAssetPath);
+
+                            if (!string.IsNullOrEmpty(oldGuid) && !string.IsNullOrEmpty(newGuid) && oldGuid != newGuid)
+                            {
+                                guidReplacements[oldGuid] = newGuid;
+                            }
                         }
                     }
                 }
@@ -1329,13 +1438,13 @@ namespace ModularUIEditor
             EditorUtility.SetDirty(creditsMenu);
         }
 
-        public void InitializeAfterCompilation(UIConfiguration.TargetPlatform platform, UIConfiguration.GameGenre genre)
+        public void InitializeAfterCompilation(UIConfiguration.TargetPlatform platform, UIConfiguration.GameGenre genre, System.Collections.Generic.Dictionary<string, string> guidReplacements)
         {
             selectedPlatform = platform;
             selectedGenre = genre;
 
             CreateAndApplyConfiguration();
-            AdaptSampleScenesToPlatform();
+            AdaptSampleScenesToPlatform(guidReplacements);
 
             AssetDatabase.Refresh();
         }
@@ -1368,10 +1477,16 @@ namespace ModularUIEditor
         {
             var platform = (UIConfiguration.TargetPlatform)EditorPrefs.GetInt("ModularUI_SelectedPlatform", 0);
             var genre = (UIConfiguration.GameGenre)EditorPrefs.GetInt("ModularUI_SelectedGenre", 0);
+            string guidData = EditorPrefs.GetString("ModularUI_GuidReplacements", "");
 
             ModularUIWizard wizard = ScriptableObject.CreateInstance<ModularUIWizard>();
-            wizard.InitializeAfterCompilation(platform, genre);
+            var guidReplacements = wizard.DeserializeGuidMap(guidData);
+            wizard.InitializeAfterCompilation(platform, genre, guidReplacements);
             ScriptableObject.DestroyImmediate(wizard);
+
+            EditorPrefs.DeleteKey("ModularUI_GuidReplacements");
+            EditorPrefs.DeleteKey("ModularUI_SelectedPlatform");
+            EditorPrefs.DeleteKey("ModularUI_SelectedGenre");
 
             Debug.Log("[Modular UI] Setup and scene adaptation completed successfully after script compilation!");
         }

@@ -352,10 +352,15 @@ namespace ModularUIRuntime.Demo
         {
             if (Application.isPlaying) return;
             
+            UnityEditor.EditorApplication.delayCall -= SafeSetupAndSubscribe;
+            UnityEditor.EditorApplication.delayCall += SafeSetupAndSubscribe;
+        }
+
+        private void SafeSetupAndSubscribe()
+        {
+            if (this == null) return;
             SubscribeToConfigEvents();
-            
-            UnityEditor.EditorApplication.delayCall -= EditorSetup;
-            UnityEditor.EditorApplication.delayCall += EditorSetup;
+            EditorSetup();
         }
 #endif
     }
